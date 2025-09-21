@@ -1526,7 +1526,7 @@ export default function MyVehicles() {
                 {vehicles.length} vozila
               </span>
               <Link to="/add-vehicle">
-                <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+                <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-base">
                   <FaPlus className="mr-2" />
                   Dodaj novo vozilo
                 </button>
@@ -1567,7 +1567,7 @@ export default function MyVehicles() {
             <div className="flex items-end">
               <button
                 onClick={handleResetFilters}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-colors w-full h-[42px]"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-colors w-full h-[42px] text-base"
               >
                 <FaSyncAlt className="mr-2" />
                 Reset filtera
@@ -1808,13 +1808,13 @@ export default function MyVehicles() {
                           <button
                             onClick={() => saveEdit(vehicle._id)}
                             disabled={saving}
-                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center"
+                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-base"
                           >
                             {saving ? "Čuvanje..." : "Sačuvaj izmene"}
                           </button>
                           <button
                             onClick={() => setEditingVehicle(null)}
-                            className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-2 rounded-lg transition-colors"
+                            className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-2 rounded-lg transition-colors text-base"
                           >
                             Odustani
                           </button>
@@ -1904,14 +1904,14 @@ export default function MyVehicles() {
                       <div className="flex gap-2 pt-4 mt-4 border-t border-gray-200">
                         <button
                           onClick={() => startEditing(vehicle)}
-                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-base px-3 py-2 rounded-lg transition-colors flex items-center justify-center"
                         >
                           <FaEdit className="mr-1" />
                           Izmeni
                         </button>
                         <button
                           onClick={() => deleteVehicle(vehicle._id)}
-                          className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
+                          className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-base"
                         >
                           <FaTrash className="mr-1" />
                           Obriši

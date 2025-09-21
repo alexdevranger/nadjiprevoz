@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import ScreenshotOne from "../images/screenshot1.png";
+import ScreenshotOne from "../images/monitor2.png";
 
 const steps = [
   {

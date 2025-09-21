@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs"; // 👈 Dodaj ako želiš hash/compare
 import jwt from "jsonwebtoken";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -93,6 +94,49 @@ users.post("/login", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: "Login failed" });
+  }
+});
+
+// PUT /api/auth/profile - Ažuriranje profila
+users.put("/profile", authMiddleware, async (req, res) => {
+  const { id } = req.user; // Dobija se iz JWT tokena
+  const { name, company } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, company },
+      { new: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ success: true, user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
+// PUT /api/auth/delete-company - Brisanje kompanije
+users.put("/delete-company", async (req, res) => {
+  const { id } = req.user; // Dobija se iz JWT tokena
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { hasCompany: false, company: "" },
+      { new: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ success: true, user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete company" });
   }
 });
 
