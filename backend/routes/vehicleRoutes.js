@@ -97,11 +97,11 @@ vehicleRouter.post(
       const vehicle = new Vehicle(vehicleData);
       await vehicle.save();
       // Ažuriraj shop ako korisnik ima shop
-      const shop = await Shop.findOne({ userId: req.user.id });
-      if (shop) {
-        shop.vehicles.push(vehicle._id);
-        await shop.save();
-      }
+      // const shop = await Shop.findOne({ userId: req.user.id });
+      // if (shop) {
+      //   shop.vehicles.push(vehicle._id);
+      //   await shop.save();
+      // }
       res.status(201).json(vehicle);
     } catch (err) {
       console.error("Greška pri dodavanju vozila:", err);

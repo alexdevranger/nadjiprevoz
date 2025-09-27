@@ -97,6 +97,36 @@ users.post("/login", async (req, res) => {
   }
 });
 
+// ✅ GET /api/auth/me - Dobijanje trenutnog korisnika
+users.get("/me", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        hasCompany: user.hasCompany,
+        company: user.company,
+        roles: user.roles,
+        banned: user.banned,
+        profileImage: user.profileImage || null,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error in /me route:", error);
+    res.status(500).json({ error: "Failed to fetch user data" });
+  }
+});
+
 // PUT /api/auth/profile - Ažuriranje profila
 users.put("/profile", authMiddleware, async (req, res) => {
   const { id } = req.user; // Dobija se iz JWT tokena

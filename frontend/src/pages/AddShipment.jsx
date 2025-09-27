@@ -1,250 +1,3 @@
-// import React, { useState, useRef } from "react";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-// import DatePicker, { registerLocale } from "react-datepicker";
-// import { format } from "date-fns";
-// import srLatin from "../helper/sr-latin";
-// import "react-datepicker/dist/react-datepicker.css";
-// import { useGlobalState } from "../helper/globalState";
-// import LocationAutocomplete from "../components/LocationAutocomplete";
-
-// registerLocale("sr-latin", srLatin);
-
-// export default function AddShipment() {
-//   const navigate = useNavigate();
-//   const [token] = useGlobalState("token");
-//   const [form, setForm] = useState({
-//     pickupLocation: "",
-//     dropoffLocation: "",
-//     date: new Date(),
-//     weightKg: "",
-//     pallets: null,
-//     dimensions: { length: "", width: "", height: "" },
-//     goodsType: "",
-//     note: "",
-//     contactPhone: "",
-//   });
-//   const [loading, setLoading] = useState(false);
-//   const [startCoords, setStartCoords] = useState("");
-//   const [endCoords, setEndCoords] = useState("");
-//   const mapRef = useRef(null);
-//   const polyRef = useRef(null);
-
-//   function handleChange(e) {
-//     const { name, value } = e.target;
-//     if (["length", "width", "height"].includes(name)) {
-//       setForm((f) => ({
-//         ...f,
-//         dimensions: { ...f.dimensions, [name]: value },
-//       }));
-//     } else {
-//       setForm((f) => ({ ...f, [name]: value }));
-//     }
-//   }
-
-//   function handleDate(d) {
-//     setForm((f) => ({ ...f, date: d }));
-//   }
-
-//   async function handleSubmit(e) {
-//     e.preventDefault();
-//     setLoading(true);
-//     try {
-//       // formatiraj datum za API kao yyyy-MM-dd (lokalni datum)
-//       const dateStr = format(form.date, "yyyy-MM-dd");
-
-//       const routeRes = await axios.get(
-//         `http://localhost:4000/api/route?start=${startCoords}&end=${endCoords}`
-//       );
-//       console.log("ruta", routeRes.data);
-//       const distanceData = await routeRes.data;
-
-//       // draw geometry on map
-//       const coords = distanceData.geometry.coordinates.map((c) => [c[1], c[0]]);
-//       //   if (polyRef.current) mapRef.current.removeLayer(polyRef.current);
-//       //   polyRef.current = L.polyline(coords).addTo(mapRef.current);
-//       //   mapRef.current.fitBounds(polyRef.current.getBounds());
-
-//       const km = (distanceData.distanceMeters / 1000).toFixed(2);
-//       const mins = Math.round(distanceData.durationSec / 60);
-//       const { distanceMeters, durationSec } = distanceData;
-
-//       console.log("km", km);
-//       console.log("mins", mins);
-
-//       const payload = {
-//         pickupLocation: form.pickupLocation,
-//         dropoffLocation: form.dropoffLocation,
-//         date: dateStr,
-//         weightKg: Number(form.weightKg),
-//         pallets: Number(form.pallets),
-//         dimensions: {
-//           length: form.dimensions.length
-//             ? Number(form.dimensions.length)
-//             : undefined,
-//           width: form.dimensions.width
-//             ? Number(form.dimensions.width)
-//             : undefined,
-//           height: form.dimensions.height
-//             ? Number(form.dimensions.height)
-//             : undefined,
-//         },
-//         goodsType: form.goodsType,
-//         note: form.note,
-//         contactPhone: form.contactPhone,
-//         distanceMeters,
-//         durationSec,
-//       };
-
-//       console.log(payload);
-
-//       await axios.post("/api/shipments", payload, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-
-//       alert("Zahtev poslat.");
-//       setForm({
-//         pickupLocation: "",
-//         dropoffLocation: "",
-//         date: new Date(),
-//         weightKg: "",
-//         pallets: 0,
-//         dimensions: { length: "", width: "", height: "" },
-//         goodsType: "",
-//         note: "",
-//         contactPhone: "",
-//       });
-//       setTimeout(() => {
-//         navigate("/my-shipments");
-//       }, 1000);
-//     } catch (err) {
-//       console.error(err);
-//       alert(err.response?.data?.error || "Greška pri slanju zahteva");
-//     } finally {
-//       setLoading(false);
-//     }
-//   }
-
-//   return (
-//     <div className="max-w-xl mx-auto p-4 bg-white rounded shadow">
-//       <h1 className="text-2xl mb-4">Dodaj zahtev za prevoz</h1>
-//       <form onSubmit={handleSubmit} className="space-y-3">
-//         <div>
-//           <label className="block mb-1">Datum transporta</label>
-//           <DatePicker
-//             selected={form.date}
-//             onChange={handleDate}
-//             locale="sr-latin"
-//             dateFormat="d. MMMM yyyy"
-//             className="border p-2 w-full focus-visible:outline-none focus-visible:ring-0"
-//             required
-//           />
-//         </div>
-//         <LocationAutocomplete
-//           label="Početna destinacija"
-//           value={form.pickupLocation}
-//           onSelect={(val) => {
-//             console.log("Start lokacija:", val); // Dodato za debagovanje
-//             setStartCoords(`${val.lng},${val.lat}`);
-//             setForm((prev) => ({
-//               ...prev,
-//               pickupLocation: val.address,
-//             }));
-//           }}
-//         />
-//         <LocationAutocomplete
-//           label="Krajnja destinacija"
-//           value={form.dropoffLocation}
-//           onSelect={(val) => {
-//             console.log("Krajnja destinacija:", val); // Dodato za debagovanje
-//             setEndCoords(`${val.lng},${val.lat}`);
-//             setForm((prev) => ({
-//               ...prev,
-//               dropoffLocation: val.address,
-//             }));
-//           }}
-//         />
-
-//         <input
-//           name="weightKg"
-//           value={form.weightKg}
-//           onChange={handleChange}
-//           type="number"
-//           placeholder="Težina (t)"
-//           required
-//           className="border p-2 w-full focus-visible:outline-none focus-visible:ring-0"
-//         />
-
-//         <input
-//           name="pallets"
-//           value={form.pallets}
-//           onChange={handleChange}
-//           type="number"
-//           placeholder="Broj paletnih mesta"
-//           className="border p-2 w-full focus-visible:outline-none focus-visible:ring-0"
-//         />
-
-//         <div className="grid grid-cols-3 gap-2">
-//           <input
-//             name="length"
-//             value={form.dimensions.length}
-//             onChange={handleChange}
-//             placeholder="Dužina (cm)"
-//             className="border p-2 focus-visible:outline-none focus-visible:ring-0"
-//           />
-//           <input
-//             name="width"
-//             value={form.dimensions.width}
-//             onChange={handleChange}
-//             placeholder="Širina (cm)"
-//             className="border p-2 focus-visible:outline-none focus-visible:ring-0"
-//           />
-//           <input
-//             name="height"
-//             value={form.dimensions.height}
-//             onChange={handleChange}
-//             placeholder="Visina (cm)"
-//             className="border p-2 focus-visible:outline-none focus-visible:ring-0"
-//           />
-//         </div>
-
-//         <input
-//           name="goodsType"
-//           value={form.goodsType}
-//           onChange={handleChange}
-//           placeholder="Vrsta robe (opciono)"
-//           className="border p-2 w-full focus-visible:outline-none focus-visible:ring-0"
-//         />
-//         <input
-//           name="contactPhone"
-//           value={form.contactPhone}
-//           onChange={handleChange}
-//           placeholder="Kontakt telefon (opciono)"
-//           className="border p-2 w-full focus-visible:outline-none focus-visible:ring-0"
-//         />
-
-//         <textarea
-//           name="note"
-//           value={form.note}
-//           onChange={handleChange}
-//           placeholder="Napomena"
-//           className="border p-2 w-full focus-visible:outline-none focus-visible:ring-0"
-//           rows={3}
-//         />
-//         {/* <pre className="mt-4 bg-gray-100 p-2 rounded">
-//           {JSON.stringify(form, null, 2)}
-//         </pre> */}
-
-//         <button
-//           className="bg-blue-600 text-white px-4 py-2 rounded"
-//           disabled={loading}
-//         >
-//           {loading ? "Šaljem..." : "Pošalji zahtev"}
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -266,6 +19,7 @@ import {
   FaMapMarkerAlt,
   FaRoad,
   FaClock,
+  FaArrowLeft,
 } from "react-icons/fa";
 
 registerLocale("sr-latin", srLatin);
@@ -605,21 +359,31 @@ export default function AddShipment() {
               />
             </div>
 
-            {/* Dugme za submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                "Slanje..."
-              ) : (
-                <>
-                  <FaPlus className="mr-2" />
-                  Pošalji Zahtev
-                </>
-              )}
-            </button>
+            <div className="flex justify-between gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg flex items-center justify-center transition-colors duration-300 w-full"
+              >
+                <FaArrowLeft className="mr-2" />
+                Odustani
+              </button>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 transition-colors duration-300 w-full"
+              >
+                {loading ? (
+                  <>Dodavanje...</>
+                ) : (
+                  <>
+                    <FaPlus className="mr-2" />
+                    Pošalji Zahtev
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
       </div>

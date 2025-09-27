@@ -1,239 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import { useGlobalState } from "../helper/globalState";
-// import { useNavigate } from "react-router-dom";
-
-// import LocationAutocomplete from "../components/LocationAutocomplete";
-// import DatePicker, { registerLocale } from "react-datepicker";
-// import srLatin from "../helper/sr-latin";
-// import "react-datepicker/dist/react-datepicker.css";
-
-// registerLocale("sr-latin", srLatin);
-
-// export default function AddTour() {
-//   const navigate = useNavigate();
-//   const [token] = useGlobalState("token");
-//   const [vehicles, setVehicles] = useState([]);
-//   const [formData, setFormData] = useState({
-//     date: new Date(),
-//     vehicle: "",
-//     contactPerson: "",
-//     contactPhone: "",
-//     startLocation: "",
-//     startLocationLat: null,
-//     startLocationLng: null,
-//     endLocation: "",
-//     endLocationLat: null,
-//     endLocationLng: null,
-//     note: "",
-//   });
-//   const [loading, setLoading] = useState(false);
-
-//   useEffect(() => {
-//     const fetchVehicles = async () => {
-//       try {
-//         const res = await axios.get("/api/vehicles", {
-//           headers: { Authorization: `Bearer ${token}` },
-//         });
-//         setVehicles(Array.isArray(res.data) ? res.data : []);
-//       } catch (err) {
-//         console.error("Greška pri učitavanju vozila:", err);
-//         setVehicles([]);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchVehicles();
-//   }, [token]);
-
-//   function handleChange(e) {
-//     const { name, value, type, checked } = e.target;
-//     setFormData((prev) => ({
-//       ...prev,
-//       [name]: type === "checkbox" ? checked : value,
-//     }));
-//   }
-
-//   // handleChange za datum iz datepicker-a
-//   function handleDateChange(date) {
-//     setFormData((prev) => ({
-//       ...prev,
-//       date: date,
-//     }));
-//   }
-
-//   async function handleSubmit(e) {
-//     e.preventDefault();
-//     setLoading(true);
-//     try {
-//       const postData = {
-//         ...formData,
-//       };
-
-//       // ako imamo koordinate, pošalji i GeoJSON
-//       if (
-//         formData.startLocationLat != null &&
-//         formData.startLocationLng != null
-//       ) {
-//         postData.startPoint = {
-//           type: "Point",
-//           coordinates: [formData.startLocationLng, formData.startLocationLat],
-//         };
-//       }
-//       if (formData.endLocationLat != null && formData.endLocationLng != null) {
-//         postData.endPoint = {
-//           type: "Point",
-//           coordinates: [formData.endLocationLng, formData.endLocationLat],
-//         };
-//       }
-//       console.log("📤 Sending tour data:", postData);
-
-//       const res = await axios.post("/api/tours", postData, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       if (res.data) {
-//         console.log(res.data);
-//       }
-
-//       alert("Tura uspešno dodata");
-//       setFormData({
-//         date: new Date(),
-//         vehicle: "",
-//         contactPerson: "",
-//         contactPhone: "",
-//         startLocation: "",
-//         startLocationLat: null,
-//         startLocationLng: null,
-//         endLocation: "",
-//         endLocationLat: null,
-//         endLocationLng: null,
-//         note: "",
-//       });
-//       setTimeout(() => navigate("/my-tours"), 800);
-//     } catch (err) {
-//       console.error(err);
-//       alert(err.response?.data?.error || "Greška prilikom dodavanja ture");
-//     } finally {
-//       setLoading(false);
-//     }
-//   }
-
-//   return (
-//     <div className="max-w-lg mx-auto p-4 bg-white rounded shadow">
-//       <h1 className="text-2xl mb-4">Dodaj turu</h1>
-//       <form onSubmit={handleSubmit} className="space-y-3">
-//         <label>
-//           Datum ture:
-//           <DatePicker
-//             selected={formData.date}
-//             onChange={handleDateChange}
-//             locale="sr-latin"
-//             dateFormat="d. MMMM yyyy" // npr. 9. avgust 2025
-//             placeholderText="Izaberite datum"
-//             className="border p-2 w-full"
-//             required
-//           />
-//         </label>
-//         <label className="block">
-//           Kontakt osoba:
-//           <input
-//             type="text"
-//             name="contactPerson"
-//             value={formData.contactPerson}
-//             onChange={handleChange}
-//             className="border p-2 w-full"
-//             placeholder="Ime i prezime"
-//             required
-//           />
-//         </label>
-
-//         <label className="block">
-//           Kontakt telefon:
-//           <input
-//             type="tel"
-//             name="contactPhone"
-//             value={formData.contactPhone}
-//             onChange={handleChange}
-//             className="border p-2 w-full"
-//             placeholder="+381 6x xxx xxxx"
-//             required
-//           />
-//         </label>
-
-//         <label>
-//           Izaberi vozilo:
-//           <select
-//             name="vehicle"
-//             value={formData.vehicle}
-//             onChange={handleChange}
-//             required
-//             className="border p-2 w-full"
-//           >
-//             <option value="">-- Izaberi vozilo --</option>
-//             {vehicles.map((v) => (
-//               <option key={v._id} value={v._id}>
-//                 {v.type} - {v.licensePlate} ({v.capacity} kg)
-//               </option>
-//             ))}
-//           </select>
-//         </label>
-
-//         <div className="p-4">
-//           <LocationAutocomplete
-//             label="Početna destinacija"
-//             value={formData.startLocation}
-//             onSelect={(val) => {
-//               console.log("Start lokacija:", val); // Dodato za debagovanje
-//               setFormData((prev) => ({
-//                 ...prev,
-//                 startLocation: val.address,
-//                 startLocationLat: val.lat,
-//                 startLocationLng: val.lng,
-//               }));
-//             }}
-//           />
-
-//           <LocationAutocomplete
-//             label="Krajnja destinacija"
-//             value={formData.endLocation}
-//             onSelect={(val) => {
-//               console.log("Krajnja lokacija:", val); // Dodato za debagovanje
-//               setFormData((prev) => ({
-//                 ...prev,
-//                 endLocation: val.address,
-//                 endLocationLat: val.lat,
-//                 endLocationLng: val.lng,
-//               }));
-//             }}
-//           />
-//         </div>
-
-//         <label>
-//           Napomena:
-//           <textarea
-//             name="note"
-//             value={formData.note}
-//             onChange={handleChange}
-//             className="border p-2 w-full"
-//             placeholder="Unesite dodatne informacije"
-//           />
-//         </label>
-
-//         {/* <pre className="mt-4 bg-gray-100 p-2 rounded">
-//           {JSON.stringify(formData, null, 2)}
-//         </pre> */}
-//         <button
-//           type="submit"
-//           disabled={loading}
-//           className="bg-blue-600 text-white py-2 px-4 rounded"
-//         >
-//           {loading ? "Dodavanje..." : "Dodaj turu"}
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
@@ -246,6 +10,7 @@ import {
   FaTruck,
   FaMapMarkerAlt,
   FaStickyNote,
+  FaArrowLeft,
 } from "react-icons/fa";
 
 import LocationAutocomplete from "../components/LocationAutocomplete";
@@ -516,21 +281,31 @@ export default function AddTour() {
               />
             </div>
 
-            {/* Dugme za submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center transition-colors duration-300 disabled:opacity-50"
-            >
-              {loading ? (
-                <>Dodavanje...</>
-              ) : (
-                <>
-                  <FaPlus className="mr-2" />
-                  Dodaj Turu
-                </>
-              )}
-            </button>
+            <div className="flex justify-between gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg flex items-center justify-center transition-colors duration-300 w-full"
+              >
+                <FaArrowLeft className="mr-2" />
+                Odustani
+              </button>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 transition-colors duration-300 w-full"
+              >
+                {loading ? (
+                  <>Dodavanje...</>
+                ) : (
+                  <>
+                    <FaPlus className="mr-2" />
+                    Dodaj Turu
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -47,6 +47,7 @@ const shopSchema = new mongoose.Schema(
     services: [serviceSchema],
     contact: {
       phone: String,
+      phone2: String,
       email: String,
       website: String,
     },

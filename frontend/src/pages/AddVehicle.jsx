@@ -1,145 +1,3 @@
-// import React, { useState } from "react";
-// import axios from "axios";
-// import { useGlobalState } from "../helper/globalState";
-// import { useNavigate } from "react-router-dom";
-
-// export default function AddVehicle() {
-//   const navigate = useNavigate();
-//   const [token] = useGlobalState("token");
-//   const [formData, setFormData] = useState({
-//     type: "",
-//     capacity: "",
-//     licensePlate: "",
-//     year: "",
-//     description: "",
-//     pallets: "",
-//     dimensions: { length: "", width: "", height: "" },
-//   });
-
-//   // const handleChange = (e) => {
-//   //   setFormData({ ...formData, [e.target.name]: e.target.value });
-//   // };
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-
-//     // 👇 specijalan case za dimensions
-//     if (["length", "width", "height"].includes(name)) {
-//       setFormData({
-//         ...formData,
-//         dimensions: { ...formData.dimensions, [name]: value },
-//       });
-//     } else {
-//       setFormData({ ...formData, [name]: value });
-//     }
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const res = await axios.post("/api/vehicles", formData, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       console.log("Dodato vozilo iz baze:", res.data);
-//       alert("Vozilo dodato");
-//       setTimeout(() => {
-//         navigate("/my-vehicles");
-//       }, 1000);
-//     } catch (err) {
-//       console.error(err);
-//       alert("Greška pri dodavanju vozila");
-//     }
-//   };
-
-//   return (
-//     <div className="p-4 max-w-lg mx-auto">
-//       <h1 className="text-xl font-bold mb-4">Dodaj vozilo</h1>
-//       <form onSubmit={handleSubmit} className="space-y-3">
-//         <select
-//           name="type"
-//           value={formData.type}
-//           onChange={handleChange}
-//           required
-//           className="border p-2 w-full"
-//         >
-//           <option value="">Odaberi vrstu vozila</option>
-//           <option value="Kamion">Kamion</option>
-//           <option value="Kombi">Kombi</option>
-//           <option value="Šleper">Šleper</option>
-//         </select>
-//         <input
-//           name="capacity"
-//           type="number"
-//           placeholder="Nosivost (kg)"
-//           value={formData.capacity}
-//           onChange={handleChange}
-//           required
-//           className="border p-2 w-full"
-//         />
-//         <input
-//           name="licensePlate"
-//           placeholder="Registracija"
-//           value={formData.licensePlate}
-//           onChange={handleChange}
-//           required
-//           className="border p-2 w-full"
-//         />
-//         <input
-//           name="year"
-//           type="number"
-//           placeholder="Godina proizvodnje"
-//           value={formData.year}
-//           onChange={handleChange}
-//           className="border p-2 w-full"
-//         />
-//         <textarea
-//           name="description"
-//           placeholder="Opis"
-//           value={formData.description}
-//           onChange={handleChange}
-//           className="border p-2 w-full"
-//         />
-//         <input
-//           name="pallets"
-//           type="number"
-//           placeholder="Broj paletnih mesta"
-//           value={formData.pallets}
-//           onChange={handleChange}
-//           className="border p-2 w-full"
-//         />
-
-//         {/* 👇 dodat unos za dimenzije */}
-//         <div className="grid grid-cols-3 gap-2">
-//           <input
-//             name="length"
-//             type="number"
-//             placeholder="Dužina (cm)"
-//             value={formData.dimensions.length}
-//             onChange={handleChange}
-//             className="border p-2 w-full"
-//           />
-//           <input
-//             name="width"
-//             type="number"
-//             placeholder="Širina (cm)"
-//             value={formData.dimensions.width}
-//             onChange={handleChange}
-//             className="border p-2 w-full"
-//           />
-//           <input
-//             name="height"
-//             type="number"
-//             placeholder="Visina (cm)"
-//             value={formData.dimensions.height}
-//             onChange={handleChange}
-//             className="border p-2 w-full"
-//           />
-//         </div>
-//         <button className="bg-blue-500 text-white p-2 w-full">Dodaj</button>
-//       </form>
-//     </div>
-//   );
-// }
-
 import React, { useState } from "react";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
@@ -156,6 +14,7 @@ import {
   FaTimes,
   FaPlus,
   FaInfo,
+  FaArrowLeft,
 } from "react-icons/fa";
 
 export default function AddVehicle() {
@@ -350,7 +209,7 @@ export default function AddVehicle() {
                     Dimenzije (cm)
                   </div>
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2 mt-0">
                   <input
                     name="length"
                     type="number"
@@ -477,7 +336,7 @@ export default function AddVehicle() {
               />
             </div>
 
-            <button
+            {/* <button
               type="submit"
               disabled={uploading}
               className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center w-full disabled:opacity-50 transition-colors duration-300"
@@ -490,7 +349,32 @@ export default function AddVehicle() {
                   Dodaj vozilo
                 </>
               )}
-            </button>
+            </button> */}
+            <div className="flex justify-between gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg flex items-center justify-center transition-colors duration-300 w-full"
+              >
+                <FaArrowLeft className="mr-2" />
+                Odustani
+              </button>
+
+              <button
+                type="submit"
+                disabled={uploading}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 transition-colors duration-300 w-full"
+              >
+                {uploading ? (
+                  <>Dodavanje...</>
+                ) : (
+                  <>
+                    <FaPlus className="mr-2" />
+                    Dodaj Vozilo
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
       </div>

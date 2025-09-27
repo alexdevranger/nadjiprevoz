@@ -15,7 +15,9 @@ registerLocale("sr-latin", srLatin);
 const vehicles = [
   { id: "kombi", label: "Kombi" },
   { id: "kamion", label: "Kamion" },
-  { id: "sanduk", label: "Sandučar" },
+  { id: "šleper", label: "Šleper" },
+  { id: "Dostavno vozilo", label: "Dostavno vozilo" },
+  { id: "Hladnjača", label: "Hladnjača" },
 ];
 
 export default function Agent() {
