@@ -1,181 +1,9 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
-// import Lottie from "lottie-react";
-// import { NavLink, useNavigate } from "react-router-dom";
-// import { useGlobalState, setGlobalState } from "../helper/globalState";
-// import bellAnimation from "../animations/notifications.json";
-
-// export default function Navbar() {
-//   const [user] = useGlobalState("user");
-//   const [totalUnread] = useGlobalState("totalUnread");
-//   const navigate = useNavigate();
-
-//   function handleLogout() {
-//     localStorage.removeItem("token");
-//     localStorage.removeItem("user");
-//     setGlobalState("user", null);
-//     setGlobalState("token", null);
-//     navigate("/login");
-//   }
-
-//   const linkClass = ({ isActive }) =>
-//     `mr-4 underline decoration-2 underline-offset-4 ${
-//       isActive ? "decoration-white font-bold" : "decoration-transparent"
-//     }`;
-
-//   return (
-//     <nav className="bg-blue-600 text-white p-4 flex justify-between items-center">
-//       <div>
-//         {user && (
-//           <>
-//             <NavLink to="/" className={linkClass}>
-//               Pocetna
-//             </NavLink>
-//             <NavLink to="/map" className={linkClass}>
-//               Map
-//             </NavLink>
-//             <NavLink to="/alltours" className={linkClass}>
-//               Sve ture
-//             </NavLink>
-//             <NavLink to="/allshipments" className={linkClass}>
-//               Zahtevi
-//             </NavLink>
-//             <NavLink to="/dashboard" className={linkClass}>
-//               Kontrolna Tabla
-//             </NavLink>
-//             <NavLink to="/add-vehicle" className={linkClass}>
-//               Dodaj vozilo
-//             </NavLink>
-//             <NavLink to="/my-vehicles" className={linkClass}>
-//               Moja vozila
-//             </NavLink>
-//             <NavLink to="/add-tour" className={linkClass}>
-//               Dodaj turu
-//             </NavLink>
-//             <NavLink to="/my-tours" className={linkClass}>
-//               Moje Ture
-//             </NavLink>
-//             <NavLink to="/add-shipment" className={linkClass}>
-//               Dodaj Zahtev
-//             </NavLink>
-//             <NavLink to="/my-shipments" className={linkClass}>
-//               Moji zahtevi
-//             </NavLink>
-//             <NavLink
-//               to="/chat"
-//               className={linkClass}
-//               style={{ position: "relative" }}
-//             >
-//               Chat
-//               {totalUnread > 0 && (
-//                 <span className="absolute -top-2 -right-4 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-//                   {totalUnread}
-//                 </span>
-//               )}
-//             </NavLink>
-//           </>
-//         )}
-//       </div>
-//       <div>
-//         {user ? (
-//           <div className="relative group">
-//             {/* Ime korisnika SA SLIKOM */}
-//             <div className="flex items-center cursor-pointer">
-//               {/* Prikaz slike ako postoji */}
-//               {user?.profileImage ? (
-//                 <img
-//                   src={user.profileImage}
-//                   alt="Profil"
-//                   className="w-8 h-8 rounded-full object-cover border-2 border-white mr-2"
-//                 />
-//               ) : (
-//                 <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold mr-2">
-//                   {user?.name?.charAt(0) ||
-//                     user?.companyName?.charAt(0) ||
-//                     user?.username?.charAt(0) ||
-//                     "K"}
-//                 </div>
-//               )}
-
-//               <span className="ml-2 font-medium text-white">
-//                 {user?.name ||
-//                   user?.companyName ||
-//                   user?.username ||
-//                   "Korisnik"}
-//               </span>
-
-//               <svg
-//                 className="w-4 h-4 ml-1"
-//                 fill="none"
-//                 stroke="currentColor"
-//                 viewBox="0 0 24 24"
-//               >
-//                 <path
-//                   strokeLinecap="round"
-//                   strokeLinejoin="round"
-//                   strokeWidth={2}
-//                   d="M19 9l-7 7-7-7"
-//                 />
-//               </svg>
-//             </div>
-
-//             {/* Dropdown meni (OSTAJE ISTI) */}
-//             <div className="absolute right-0 bg-white text-blue-600 shadow-lg rounded w-48 group-hover:block z-50 hidden">
-//               <Link
-//                 to="/dashboard"
-//                 className="block px-4 py-3 hover:bg-blue-100 border-b"
-//               >
-//                 Kontrolna tabla
-//               </Link>
-//               <Link
-//                 to="/istorija"
-//                 className="px-2 py-3 hover:bg-blue-100 border-b flex items-center"
-//               >
-//                 Istorija poslova
-//                 <Lottie
-//                   animationData={bellAnimation}
-//                   className="w-9 h-9 ml-2"
-//                   loop={true}
-//                 />
-//               </Link>
-//               <Link
-//                 to="/alltours"
-//                 className="px-2 py-3 hover:bg-blue-100 border-b flex items-center"
-//               >
-//                 Ponudjeni poslovi
-//                 <Lottie
-//                   animationData={bellAnimation}
-//                   className="w-9 h-9 ml-2"
-//                   loop={true}
-//                 />
-//               </Link>
-//               <button
-//                 onClick={handleLogout}
-//                 className="block px-4 py-3 hover:bg-blue-100 w-full text-left"
-//               >
-//                 Odjavi se
-//               </button>
-//             </div>
-//           </div>
-//         ) : (
-//           <>
-//             <NavLink to="/login" className={linkClass}>
-//               Login
-//             </NavLink>
-//             <NavLink to="/register" className={linkClass}>
-//               Register
-//             </NavLink>
-//           </>
-//         )}
-//       </div>
-//     </nav>
-//   );
-// }
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useGlobalState, setGlobalState } from "../helper/globalState";
 import Lottie from "lottie-react";
 import bellAnimation from "../animations/notifications.json";
+import axios from "axios";
 import {
   FaHome,
   FaMap,
@@ -190,6 +18,7 @@ import {
   FaHistory,
   FaSignOutAlt,
   FaCog,
+  FaStore,
 } from "react-icons/fa";
 
 export default function Navbar() {
@@ -197,6 +26,9 @@ export default function Navbar() {
   const [totalUnread] = useGlobalState("totalUnread");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [profileTimeout, setProfileTimeout] = useState(null);
+  const [hasShop, setHasShop] = useState(false);
+  const [shop, setShop] = useState(null);
+  const [token] = useGlobalState("token");
   const navigate = useNavigate();
 
   function handleLogout() {
@@ -227,6 +59,28 @@ export default function Navbar() {
     e.stopPropagation();
     setIsProfileOpen(!isProfileOpen);
   };
+
+  // proveri shop
+  useEffect(() => {
+    const checkShop = async () => {
+      try {
+        const shopRes = await axios.get("/api/shop", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("Shop podaci:", shopRes.data);
+        setHasShop(shopRes.data !== null);
+        setShop(shopRes.data);
+      } catch (err) {
+        console.error("Greška pri proveri shopa:", err);
+        setHasShop(false);
+        setShop(null);
+      }
+    };
+
+    if (token) {
+      checkShop();
+    }
+  }, [token]);
 
   // Zatvori dropdown kada se klikne negde drugde
   useEffect(() => {
@@ -402,6 +256,16 @@ export default function Navbar() {
                     tabla
                   </Link>
 
+                  {hasShop && shop && (
+                    <Link
+                      to={`/shop/${shop.slug}`}
+                      className="flex items-center px-4 py-3 mx-2 my-2 bg-purple-100 hover:bg-purple-200 
+               rounded-lg shadow-sm border border-purple-300 transition-colors font-medium text-purple-800"
+                    >
+                      <FaStore className="mr-2 text-purple-700 text-lg" /> Moja
+                      radnja
+                    </Link>
+                  )}
                   {/* Usluge - grupisane */}
                   <div className="px-4 py-2 text-xs font-semibold text-gray-500 border-t">
                     MOJE USLUGE

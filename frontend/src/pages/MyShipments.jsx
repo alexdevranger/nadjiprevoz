@@ -18,6 +18,7 @@ import {
   FaPallet,
   FaRulerCombined,
   FaArrowLeft,
+  FaComment,
 } from "react-icons/fa";
 
 registerLocale("sr-latin", srLatin);
@@ -262,7 +263,13 @@ export default function MyShipments() {
                       <div className="flex items-center">
                         <FaRulerCombined className="text-indigo-500 mr-2" />
                         {req.dimensions.length} × {req.dimensions.width} ×{" "}
-                        {req.dimensions.height} cm
+                        {req.dimensions.height} m
+                      </div>
+                    )}
+                    {req.note && (
+                      <div className="flex items-center">
+                        <FaComment className="text-gray-500 mr-2" />
+                        {req.note}
                       </div>
                     )}
                   </div>

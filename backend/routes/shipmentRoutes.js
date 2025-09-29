@@ -19,6 +19,7 @@ shipmentRouter.post("/", authMiddleware, async (req, res) => {
       contactPhone,
       distanceMeters,
       durationSec,
+      isPremium,
     } = req.body;
 
     if (!pickupLocation || !date || !weightKg) {
@@ -40,6 +41,7 @@ shipmentRouter.post("/", authMiddleware, async (req, res) => {
       contactPhone,
       distanceMeters: distanceMeters || null,
       durationSec: durationSec || null,
+      isPremium: isPremium || false,
     });
 
     await shipment.save();
@@ -50,28 +52,6 @@ shipmentRouter.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-// shipmentRouter.get("/myshipments", authMiddleware, async (req, res) => {
-//   try {
-//     if (!req.user) return res.status(401).json({ error: "Unauthorized" });
-
-//     // podrška za oba polja (id ili _id) u slučaju različitih middleware-a
-//     const userId = req.user.id || req.user._id || req.user;
-
-//     console.log("MysShipments for user:", userId);
-
-//     const shipments = await Shipment.find({ createdBy: userId }).sort({
-//       createdAt: -1,
-//     });
-//     console.log("Found shipments:", shipments);
-
-//     return res.json(shipments);
-//   } catch (err) {
-//     console.error("Error /myshipments:", err);
-//     return res
-//       .status(500)
-//       .json({ error: "Greška pri dohvatanju vaših zahteva" });
-//   }
-// });
 shipmentRouter.get("/myshipments", authMiddleware, async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ error: "Unauthorized" });
@@ -102,35 +82,6 @@ shipmentRouter.get("/myshipments", authMiddleware, async (req, res) => {
     return res
       .status(500)
       .json({ error: "Greška pri dohvatanju vaših zahteva" });
-  }
-});
-
-// Get all shipments with optional filters (date, minWeight, pickupLocation)
-shipmentRouter.get("/", async (req, res) => {
-  try {
-    const { date, minWeight, pickupLocation, goodsType } = req.query;
-    const filter = {};
-
-    if (date) {
-      // const d = parseLocalDate(date);
-      const d = date;
-      const next = new Date(d);
-      next.setDate(next.getDate() + 1);
-      filter.date = { $gte: d, $lt: next };
-    }
-
-    if (minWeight) filter.weightKg = { $gte: Number(minWeight) };
-    if (pickupLocation)
-      filter.pickupLocation = { $regex: pickupLocation, $options: "i" };
-    if (goodsType) filter.goodsType = { $regex: goodsType, $options: "i" };
-
-    const shipments = await Shipment.find(filter)
-      .sort({ date: 1 })
-      .populate("createdBy", "name company email");
-    res.json(shipments);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Greška pri dohvatanju zahteva" });
   }
 });
 
@@ -182,6 +133,78 @@ shipmentRouter.delete("/:id", authMiddleware, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Greška pri brisanju zahteva" });
+  }
+});
+
+// Get all shipments with optional filters (date, minWeight, pickupLocation)
+// shipmentRouter.get("/", async (req, res) => {
+//   try {
+//     const { date, minWeight, pickupLocation, goodsType } = req.query;
+//     const filter = {};
+
+//     if (date) {
+//       // const d = parseLocalDate(date);
+//       const d = date;
+//       const next = new Date(d);
+//       next.setDate(next.getDate() + 1);
+//       filter.date = { $gte: d, $lt: next };
+//     }
+
+//     if (minWeight) filter.weightKg = { $gte: Number(minWeight) };
+//     if (pickupLocation)
+//       filter.pickupLocation = { $regex: pickupLocation, $options: "i" };
+//     if (goodsType) filter.goodsType = { $regex: goodsType, $options: "i" };
+
+//     const shipments = await Shipment.find(filter)
+//       .sort({ date: 1 })
+//       .populate("createdBy", "name company email");
+//     res.json(shipments);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Greška pri dohvatanju zahteva" });
+//   }
+// });
+shipmentRouter.get("/", async (req, res) => {
+  try {
+    const {
+      date,
+      minWeight,
+      pickupLocation,
+      goodsType,
+      page = 1,
+      limit = 20,
+    } = req.query;
+    const filter = {};
+
+    if (date) {
+      const d = new Date(date);
+      const next = new Date(d);
+      next.setDate(next.getDate() + 1);
+      filter.date = { $gte: d, $lt: next };
+    }
+
+    if (minWeight) filter.weightKg = { $gte: Number(minWeight) };
+    if (pickupLocation)
+      filter.pickupLocation = { $regex: pickupLocation, $options: "i" };
+    if (goodsType) filter.goodsType = { $regex: goodsType, $options: "i" };
+
+    const total = await Shipment.countDocuments(filter);
+
+    let shipments = await Shipment.find(filter)
+      .sort({ date: 1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .populate("createdBy", "name company email");
+
+    res.json({
+      shipments,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Greška pri dohvatanju zahteva" });
   }
 });
 

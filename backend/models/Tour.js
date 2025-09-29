@@ -23,6 +23,18 @@ const tourSchema = new mongoose.Schema(
       coordinates: { type: [Number], index: "2dsphere", default: [0, 0] },
     },
 
+    geometry: {
+      type: {
+        type: String,
+        enum: ["LineString"],
+        default: undefined,
+      },
+      coordinates: {
+        type: [[Number]], // niz nizova [lng, lat]
+        default: undefined,
+      },
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

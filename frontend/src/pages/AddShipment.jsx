@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -37,6 +37,7 @@ export default function AddShipment() {
     goodsType: "",
     note: "",
     contactPhone: "",
+    isPremium: false,
   });
   const [loading, setLoading] = useState(false);
   const [startCoords, setStartCoords] = useState("");
@@ -76,14 +77,21 @@ export default function AddShipment() {
       const startCoordsEx = `${pickupGeo.data.lon},${pickupGeo.data.lat}`;
       const endCoordsEx = `${dropoffGeo.data.lon},${dropoffGeo.data.lat}`;
 
+      console.log("startCoordsEx", startCoordsEx);
+      console.log("form.pickupLocation", form.pickupLocation);
+
+      console.log("endCoordsEx", endCoordsEx);
+      console.log("form.dropoffLocation", form.dropoffLocation);
+
       const routeRes = await axios.get(
         `http://localhost:4000/api/route?start=${startCoordsEx}&end=${endCoordsEx}`
       );
 
       const distanceData = await routeRes.data;
+      console.log("distanceData", distanceData);
       setDistanceInfo({
         distance: (distanceData.distanceMeters / 1000).toFixed(1),
-        duration: Math.round(distanceData.durationSec / 60),
+        duration: Math.round((distanceData.distanceMeters / 1000 / 75) * 60),
       });
 
       setStartCoords(startCoordsEx);
@@ -95,7 +103,7 @@ export default function AddShipment() {
   };
 
   // Pozovi izračunavanje rute kada se promene lokacije
-  React.useEffect(() => {
+  useEffect(() => {
     calculateRoute();
   }, [form.pickupLocation, form.dropoffLocation]);
 
@@ -126,6 +134,7 @@ export default function AddShipment() {
         goodsType: form.goodsType,
         note: form.note,
         contactPhone: form.contactPhone,
+        isPremium: form.isPremium,
         distanceMeters: distanceInfo ? distanceInfo.distance * 1000 : 0,
         durationSec: distanceInfo ? distanceInfo.duration * 60 : 0,
       };
@@ -147,6 +156,7 @@ export default function AddShipment() {
         goodsType: "",
         note: "",
         contactPhone: "",
+        isPremium: false,
       });
       setDistanceInfo(null);
 
@@ -222,7 +232,7 @@ export default function AddShipment() {
             </div>
 
             {/* Informacije o ruti */}
-            {distanceInfo && (
+            {/* {distanceInfo && (
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-blue-800 mb-2 flex items-center">
                   <FaRoad className="mr-2" />
@@ -236,6 +246,36 @@ export default function AddShipment() {
                   <div className="flex items-center">
                     <FaClock className="text-purple-500 mr-2" />
                     Vreme: {distanceInfo.duration} min
+                  </div>
+                </div>
+              </div>
+            )} */}
+            {distanceInfo && (
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-blue-800 mb-2 flex items-center">
+                  <FaRoad className="mr-2" />
+                  Informacije o ruti
+                </h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center">
+                    <FaRoad className="text-green-500 mr-2" />
+                    Udaljenost: {distanceInfo.distance} km
+                  </div>
+                  <div className="flex items-center">
+                    <FaClock className="text-purple-500 mr-2" />
+                    {(() => {
+                      const totalMinutes = distanceInfo.duration;
+                      const hours = Math.floor(totalMinutes / 60);
+                      const minutes = Math.round(totalMinutes % 60);
+                      return (
+                        <>
+                          Vreme:{" "}
+                          {hours > 0
+                            ? `${hours}h ${minutes}min`
+                            : `${minutes}min`}
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -279,7 +319,7 @@ export default function AddShipment() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaRulerCombined className="text-indigo-500 mr-2" />
-                Dimenzije (cm)
+                Dimenzije (m)
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <div>

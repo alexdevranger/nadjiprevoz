@@ -495,46 +495,6 @@ export default function Agent() {
                   required
                 />
 
-                {/* <SelectPrimitive.Root
-                  onValueChange={setVehicle}
-                  value={vehicle}
-                >
-                  <SelectPrimitive.Trigger className="z-50 w-full border rounded px-2 py-1 flex justify-between items-center relative">
-                    <SelectPrimitive.Value placeholder="Izaberi vozilo" />
-                    <SelectPrimitive.Icon>
-                      <ChevronDown size={16} />
-                    </SelectPrimitive.Icon>
-                  </SelectPrimitive.Trigger>
-                  <SelectPrimitive.Portal>
-                    <SelectPrimitive.Content
-                      side="top"
-                      className="bg-white border rounded shadow-md max-h-40 overflow-y-auto w-[--radix-select-trigger-width]"
-                    >
-                      <SelectPrimitive.ScrollUpButton>
-                        <ChevronUp size={16} />
-                      </SelectPrimitive.ScrollUpButton>
-                      <SelectPrimitive.Viewport>
-                        {vehicles.map((v) => (
-                          <SelectPrimitive.Item
-                            key={v.id}
-                            value={v.label}
-                            className="px-2 py-1 cursor-pointer hover:bg-blue-100 rounded flex items-center"
-                          >
-                            <SelectPrimitive.ItemText>
-                              {v.label}
-                            </SelectPrimitive.ItemText>
-                            <SelectPrimitive.ItemIndicator className="ml-auto">
-                              <Check size={14} />
-                            </SelectPrimitive.ItemIndicator>
-                          </SelectPrimitive.Item>
-                        ))}
-                      </SelectPrimitive.Viewport>
-                      <SelectPrimitive.ScrollDownButton>
-                        <ChevronDown size={16} />
-                      </SelectPrimitive.ScrollDownButton>
-                    </SelectPrimitive.Content>
-                  </SelectPrimitive.Portal>
-                </SelectPrimitive.Root> */}
                 {/* TIP VOZILA */}
                 <select
                   value={vehicle}
@@ -566,42 +526,6 @@ export default function Agent() {
                   <option value="pallets">Pretraga po broju paleta</option>
                   <option value="dimensions">Pretraga po gabaritima</option>
                 </select>
-                {/* <SelectPrimitive.Root
-                  onValueChange={setExtraOption}
-                  value={extraOption}
-                >
-                  <SelectPrimitive.Trigger className="w-full border rounded px-2 py-1 flex justify-between items-center">
-                    <SelectPrimitive.Value placeholder="Dodatne opcije pretrage" />
-                    <SelectPrimitive.Icon>
-                      <ChevronDown size={16} />
-                    </SelectPrimitive.Icon>
-                  </SelectPrimitive.Trigger>
-                  <SelectPrimitive.Portal>
-                    <SelectPrimitive.Content
-                      side="top"
-                      className="bg-white border rounded shadow-md max-h-40 overflow-y-auto"
-                    >
-                      <SelectPrimitive.Viewport>
-                        <SelectPrimitive.Item
-                          value="pallets"
-                          className="px-2 py-1 cursor-pointer hover:bg-blue-100"
-                        >
-                          <SelectPrimitive.ItemText>
-                            Pretraga po broju paleta
-                          </SelectPrimitive.ItemText>
-                        </SelectPrimitive.Item>
-                        <SelectPrimitive.Item
-                          value="dimensions"
-                          className="px-2 py-1 cursor-pointer hover:bg-blue-100"
-                        >
-                          <SelectPrimitive.ItemText>
-                            Pretraga po gabaritima
-                          </SelectPrimitive.ItemText>
-                        </SelectPrimitive.Item>
-                      </SelectPrimitive.Viewport>
-                    </SelectPrimitive.Content>
-                  </SelectPrimitive.Portal>
-                </SelectPrimitive.Root> */}
 
                 {/* Ako user izabere broj paleta */}
                 {extraOption === "pallets" && (

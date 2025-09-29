@@ -11,6 +11,9 @@ import {
 import { geocodeText, haversineDistance } from "../utils/geo.js";
 import { findBestRoutes } from "../services/aiAgent.js";
 import Tour from "../models/Tour.js";
+import * as turf from "@turf/turf";
+import { geocode } from "../utils/geo.js";
+
 import Vehicle from "../models/Vehicle.js";
 
 dotenv.config();
@@ -19,6 +22,12 @@ const aiagentRouter = express.Router();
 const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
 
 const escapeRegex = (s = "") => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+function isPointOnRoute(line, point, toleranceKm = 5) {
+  const pt = turf.point([point.lon, point.lat]);
+  const dist = turf.pointToLineDistance(pt, line, { units: "kilometers" });
+  return dist <= toleranceKm;
+}
 
 // mala pomoć za dan
 function dayRange(dateStr) {
@@ -133,155 +142,6 @@ function parseDateString(str) {
   return null;
 }
 
-// aiagentRouter.post("/message", async (req, res) => {
-//   try {
-//     const userText = req.body?.text || "";
-
-//     // 1) LLM parsing
-//     const { data } = await axios.post(`${OLLAMA_URL}/api/chat`, {
-//       model: "mistral:7b",
-//       messages: [
-//         { role: "system", content: SYSTEM_PROMPT },
-//         { role: "user", content: userText },
-//       ],
-//       stream: false,
-//     });
-
-//     const raw = data?.message?.content || "";
-//     const parsed = extractFirstJson(raw) || {};
-//     const {
-//       from = null,
-//       to = null,
-//       date = null,
-//       cargo = null,
-//       pallets = null,
-//       length_m = null,
-//       width_m = null,
-//       height_m = null,
-//       weight_kg = null,
-//     } = parsed;
-
-//     if (!from || !to) {
-//       return res.json({
-//         ok: true,
-//         parsed,
-//         reply:
-//           "Razumeo sam. Molim te reci i polazište i odredište (npr. 'Niš do Beograda').",
-//         results: [],
-//       });
-//     }
-
-//     // 2) Geokodifikacija (precizno)
-//     const start = await geocodeText(from);
-//     const end = await geocodeText(to);
-//     if (!start || !end) {
-//       return res.json({
-//         ok: true,
-//         parsed,
-//         reply:
-//           "Razumeo sam. Možeš li da preciziraš tačnija imena mesta (npr. 'Niš', 'Beograd')? Trenutno ih ne mogu geokodirati.",
-//         results: [],
-//       });
-//     }
-
-//     console.log("📍 Start geocode result:", start);
-//     console.log("📍 End geocode result:", end);
-
-//     // 3) Ruta (OSRM)
-//     const route = await getRouteGeojson(
-//       { lat: start.lat, lng: start.lng },
-//       { lat: end.lat, lng: end.lng }
-//     );
-//     console.log("🛣️ Route geometry:", route);
-
-//     // 4) Pretraga iz baze (prefilter oko 200km od polazišta i odredišta)
-//     // const dateFilter = dayRange(date);
-//     const parsedDate = parseDateString(date);
-//     const dateFilter = parsedDate ? dayRange(parsedDate) : null;
-//     console.log("🕒 Parsed date:", parsedDate, "from raw:", date);
-
-//     let preCandidates = await Tour.find({
-//       ...(dateFilter ? { date: dateFilter } : {}),
-//       startPoint: {
-//         $nearSphere: {
-//           $geometry: { type: "Point", coordinates: [start.lng, start.lat] },
-//           $maxDistance: 30_000, // 200 km od polazišta
-//         },
-//       },
-//     })
-//       .limit(1000) // uzmi više jer ćemo kasnije suziti
-//       .lean();
-
-//     // 4b) Ručna provera da li je endPoint u krugu od 200 km od odredišta
-//     preCandidates = preCandidates.filter((t) => {
-//       if (!t.endPoint?.coordinates) return false;
-//       const [lng, lat] = t.endPoint.coordinates;
-//       const distance = haversineDistance(end.lat, end.lng, lat, lng);
-//       return distance <= 30_000;
-//     });
-
-//     // 5) Rangiraj po ruti + kapacitetu
-//     let results = preCandidates.map((t) => {
-//       const tStart = {
-//         lat: t.startLocation?.lat,
-//         lng: t.startLocation?.lng,
-//       };
-//       const tEnd = {
-//         lat: t.endLocation?.lat,
-//         lng: t.endLocation?.lng,
-//       };
-
-//       const nearStart = route?.geometry
-//         ? isPointNearRoute(tStart, route.geometry, 15)
-//         : false;
-//       const nearEnd = route?.geometry
-//         ? isPointNearRoute(tEnd, route.geometry, 15)
-//         : false;
-
-//       let score = 0;
-//       if (nearStart) score += 1;
-//       if (nearEnd) score += 1;
-//       if (pallets && t.capacity?.pallets && t.capacity.pallets >= pallets)
-//         score += 0.5;
-//       if (date && t.date) score += 0.25; // blaga prednost istog dana
-
-//       return { ...t, score };
-//     });
-
-//     results = results.sort((a, b) => b.score - a.score);
-//     console.log("🔍 Found results:", results);
-
-//     const reply = route
-//       ? `Razumeo sam: ${start.name} → ${end.name}${
-//           date ? `, datum: ${date}` : ""
-//         }. Ruta je oko ${route.distance_km.toFixed(
-//           0
-//         )} km. Vreme prevoza je oko ${route.duration_min.toFixed(
-//           0
-//         )} Pronašao sam ${
-//           results.length
-//         } prevoza. Da li želiš da im pošaljem poruku umesto tebe?`
-//       : `Razumeo sam: ${start.name} → ${end.name}${
-//           date ? `, datum: ${date}` : ""
-//         }. Pronašao sam ${results.length} prevoza.`;
-
-//     res.json({
-//       ok: true,
-//       parsed,
-//       route: route
-//         ? {
-//             distance_km: route.distance_km,
-//             duration_min: route.duration_min,
-//           }
-//         : null,
-//       results,
-//       reply,
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).json({ ok: false, error: "Agent error" });
-//   }
-// });
 aiagentRouter.post("/message", async (req, res) => {
   try {
     const userText = req.body?.text || "";
@@ -457,94 +317,46 @@ aiagentRouter.post("/message", async (req, res) => {
 
 aiagentRouter.post("/find-routes", async (req, res) => {
   try {
-    const {
-      date,
-      startLocation,
-      endLocation,
-      vehicleType,
-      cargoWeight,
-      pallets,
-      dimensions,
-    } = req.body;
-
-    console.log("🟢 Upit za pronalazak tura:", req.body);
-
-    if (!date) {
-      return res.status(400).json({ error: "Nedostaje datum" });
-    }
+    const { date, startLocation, endLocation, vehicleType, cargoWeight } =
+      req.body;
 
     const dayStart = new Date(date);
     dayStart.setHours(0, 0, 0, 0);
     const dayEnd = new Date(date);
     dayEnd.setHours(23, 59, 59, 999);
 
-    // konsoliduj vrednosti
-    const startText = (startLocation ?? start ?? "").trim();
-    const endText = (endLocation ?? end ?? "").trim();
-    const vehicleWanted = (vehicleType ?? vehicle ?? "").trim().toLowerCase();
-    const weightWanted = cargoWeight ?? weightKg ?? null;
-
-    // OBAVEZNO filtriramo start (mora da odgovara)
-    const query = {
-      date: { $gte: dayStart, $lte: dayEnd },
-      ...(startText && {
-        startLocation: {
-          $regex: new RegExp("^" + escapeRegex(startText), "i"),
-        },
-      }),
-    };
-
-    // Ako korisnik unese end → želimo *ili* taj end *ili* prazan end (bilo gde)
-    if (endText) {
-      query.$or = [
-        {
-          endLocation: { $regex: new RegExp("^" + escapeRegex(endText), "i") },
-        },
-        { endLocation: { $exists: false } },
-        { endLocation: "" },
-        { endLocation: null },
-      ];
-    }
-    // Ako korisnik ne unese end → ne ograničavamo end uopšte.
-
-    const tours = await Tour.find(query)
+    let tours = await Tour.find({ date: { $gte: dayStart, $lte: dayEnd } })
       .populate("vehicle")
       .populate("createdBy");
 
-    // Filtriranje po tipu vozila i nosivosti
-    let filtered = tours.filter((t) => {
-      const typeOk =
-        !vehicleWanted || t.vehicle?.type?.toLowerCase() === vehicleWanted;
-      const capOk =
-        weightWanted == null ||
-        (t.vehicle?.capacity ?? 0) >= Number(weightWanted);
-      return typeOk && capOk;
-    });
-    console.log("main filtered", filtered);
+    let geoStart = startLocation ? await geocode(startLocation) : null;
+    let geoEnd = endLocation ? await geocode(endLocation) : null;
 
-    if (pallets) {
-      filtered = filtered.filter(
-        (t) => (t.vehicle?.pallets ?? 0) >= Number(pallets)
+    tours = tours.filter((t) => {
+      const routeLine = turf.lineString([
+        [t.startPoint.coordinates[0], t.startPoint.coordinates[1]],
+        [t.endPoint.coordinates[0], t.endPoint.coordinates[1]],
+      ]);
+
+      let startOk = geoStart ? isPointOnRoute(routeLine, geoStart, 5) : true;
+      let endOk = geoEnd ? isPointOnRoute(routeLine, geoEnd, 5) : true;
+      return startOk && endOk;
+    });
+
+    if (vehicleType) {
+      tours = tours.filter(
+        (t) => t.vehicle?.type?.toLowerCase() === vehicleType.toLowerCase()
       );
     }
-    console.log("main filtered+pallets", filtered);
 
-    if (dimensions?.length && dimensions?.width && dimensions?.height) {
-      filtered = filtered.filter((t) => {
-        const vd = t.vehicle?.dimensions || {};
-        return (
-          (vd.length ?? 0) >= Number(dimensions.length) &&
-          (vd.width ?? 0) >= Number(dimensions.width) &&
-          (vd.height ?? 0) >= Number(dimensions.height)
-        );
-      });
+    if (cargoWeight) {
+      tours = tours.filter((t) => (t.vehicle?.capacity ?? 0) >= cargoWeight);
     }
-    console.log("main filtered+dimensions", filtered);
 
-    return res.json({ routes: filtered });
+    res.json({ routes: tours });
   } catch (err) {
     console.error("❌ Greška u /find-routes:", err);
-    return res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "Server error" });
   }
 });
 //     // Nađi ture po kriterijumima

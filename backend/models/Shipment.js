@@ -22,6 +22,10 @@ const shipmentSchema = new mongoose.Schema(
     contactPhone: { type: String }, // opciono
     distanceMeters: { type: Number },
     durationSec: { type: Number },
+    isPremium: {
+      type: Boolean,
+      default: false, // po defaultu nije premium
+    },
   },
   { timestamps: true }
 );

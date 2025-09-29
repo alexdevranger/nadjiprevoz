@@ -6,6 +6,53 @@ import { adminAuthMiddleware } from "../middleware/adminAuthMiddleware.js";
 const tourRouter = express.Router();
 
 // Kreiranje nove ture
+// tourRouter.post("/", authMiddleware, async (req, res) => {
+//   try {
+//     const {
+//       date,
+//       startLocation,
+//       endLocation,
+//       note,
+//       vehicle,
+//       contactPerson,
+//       contactPhone,
+//       startLocationLat,
+//       startLocationLng,
+//       endLocationLat,
+//       endLocationLng,
+//       startPoint,
+//       endPoint,
+//     } = req.body;
+//     const newTour = new Tour({
+//       date,
+//       startLocation,
+//       endLocation,
+//       note,
+//       vehicle,
+//       contactPerson,
+//       contactPhone,
+//       startLocationLat: startLocationLat || null,
+//       startLocationLng: startLocationLng || null,
+//       endLocationLat: endLocationLat || null,
+//       endLocationLng: endLocationLng || null,
+//       startPoint: startPoint || {
+//         type: "Point",
+//         coordinates: [0, 0],
+//       },
+//       endPoint: endPoint || {
+//         type: "Point",
+//         coordinates: [0, 0],
+//       },
+//       createdBy: req.user.id,
+//     });
+//     await newTour.save();
+//     res.json(newTour);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Greška pri kreiranju ture" });
+//   }
+// });
+// tourRouter.post("/", authMiddleware, async (req, res) => {
 tourRouter.post("/", authMiddleware, async (req, res) => {
   try {
     const {
@@ -20,35 +67,64 @@ tourRouter.post("/", authMiddleware, async (req, res) => {
       startLocationLng,
       endLocationLat,
       endLocationLng,
-      startPoint,
-      endPoint,
     } = req.body;
+
+    // ✅ Pravi start i end geo tačke samo ako imamo koordinate
+    const startPoint =
+      startLocationLat != null && startLocationLng != null
+        ? {
+            type: "Point",
+            coordinates: [Number(startLocationLng), Number(startLocationLat)],
+          }
+        : undefined;
+
+    const endPoint =
+      endLocationLat != null && endLocationLng != null
+        ? {
+            type: "Point",
+            coordinates: [Number(endLocationLng), Number(endLocationLat)],
+          }
+        : undefined;
+
     const newTour = new Tour({
       date,
       startLocation,
-      endLocation,
+      endLocation: endLocation || undefined, // optional
       note,
       vehicle,
       contactPerson,
       contactPhone,
-      startLocationLat: startLocationLat || null,
-      startLocationLng: startLocationLng || null,
-      endLocationLat: endLocationLat || null,
-      endLocationLng: endLocationLng || null,
-      startPoint: startPoint || {
-        type: "Point",
-        coordinates: [0, 0],
-      },
-      endPoint: endPoint || {
-        type: "Point",
-        coordinates: [0, 0],
-      },
+      startLocationLat: startLocationLat ?? undefined,
+      startLocationLng: startLocationLng ?? undefined,
+      endLocationLat: endLocationLat ?? undefined,
+      endLocationLng: endLocationLng ?? undefined,
+      startPoint,
+      endPoint,
       createdBy: req.user.id,
     });
+
+    // 🔹 Ako imamo obe tačke, možemo pozvati OSRM (ili neki router) i sačuvati geometry
+    if (startPoint && endPoint) {
+      try {
+        const osrmUrl = `${
+          process.env.OSRM_URL
+        }/route/v1/driving/${startPoint.coordinates.join(
+          ","
+        )};${endPoint.coordinates.join(",")}?overview=full&geometries=geojson`;
+        const r = await axios.get(osrmUrl);
+        const route = r.data.routes && r.data.routes[0];
+        if (route) {
+          newTour.geometry = route.geometry; // sačuvaj LineString
+        }
+      } catch (err) {
+        console.warn("⚠️ OSRM ruta nije mogla biti izračunata:", err.message);
+      }
+    }
+
     await newTour.save();
     res.json(newTour);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ error: "Greška pri kreiranju ture" });
   }
 });
@@ -154,6 +230,54 @@ tourRouter.get("/:id", async (req, res) => {
 // Izmena ture po ID-u
 tourRouter.put("/:id", authMiddleware, async (req, res) => {
   try {
+    const updateData = { ...req.body };
+
+    // ✅ Ako stižu lat/lng, automatski generiši geo tačke
+    if (
+      updateData.startLocationLat != null &&
+      updateData.startLocationLng != null
+    ) {
+      updateData.startPoint = {
+        type: "Point",
+        coordinates: [
+          Number(updateData.startLocationLng),
+          Number(updateData.startLocationLat),
+        ],
+      };
+    }
+
+    if (
+      updateData.endLocationLat != null &&
+      updateData.endLocationLng != null
+    ) {
+      updateData.endPoint = {
+        type: "Point",
+        coordinates: [
+          Number(updateData.endLocationLng),
+          Number(updateData.endLocationLat),
+        ],
+      };
+    }
+
+    // 🔹 Opcionalno: izračunavanje geometry ako imamo obe tačke
+    if (updateData.startPoint && updateData.endPoint) {
+      try {
+        const osrmUrl = `${
+          process.env.OSRM_URL
+        }/route/v1/driving/${updateData.startPoint.coordinates.join(
+          ","
+        )};${updateData.endPoint.coordinates.join(
+          ","
+        )}?overview=full&geometries=geojson`;
+        const r = await axios.get(osrmUrl);
+        const route = r.data.routes && r.data.routes[0];
+        if (route) {
+          updateData.geometry = route.geometry;
+        }
+      } catch (err) {
+        console.warn("⚠️ OSRM ruta nije mogla biti izračunata:", err.message);
+      }
+    }
     const tour = await Tour.findOneAndUpdate(
       { _id: req.params.id, createdBy: req.user.id },
       req.body,
@@ -183,7 +307,14 @@ tourRouter.delete("/:id", authMiddleware, async (req, res) => {
 // tourRouter.js (ili gde ti je tour router)
 tourRouter.get("/", async (req, res) => {
   try {
-    const { date, vehicleType, minCapacity, startLocation } = req.query;
+    const {
+      date,
+      vehicleType,
+      minCapacity,
+      startLocation,
+      page = 1,
+      limit = 20,
+    } = req.query;
     let filter = {};
 
     if (date) {
@@ -197,14 +328,24 @@ tourRouter.get("/", async (req, res) => {
       filter.startLocation = { $regex: startLocation, $options: "i" };
     }
 
-    // Nađi sve ture i onda filtriraj po tipu vozila u memoriji
-    let tours = await Tour.find(filter)
+    let query = Tour.find(filter)
       .sort({ date: 1 })
-      .populate("vehicle", "type licensePlate capacity")
+      .populate("vehicle", "type licensePlate capacity pallets dimensions")
       .populate("createdBy", "username name");
 
+    // Brojanje svih (pre paginacije)
+    let total = await Tour.countDocuments(filter);
+
+    let tours = await query.skip((page - 1) * limit).limit(Number(limit));
+
+    // Filtriranje po vozilu u memoriji
     if (vehicleType) {
-      tours = tours.filter((t) => t.vehicle && t.vehicle.type === vehicleType);
+      // tours = tours.filter((t) => t.vehicle && t.vehicle.type === vehicleType);
+      tours = tours.filter(
+        (t) =>
+          t.vehicle &&
+          t.vehicle.type.toLowerCase() === vehicleType.toLowerCase()
+      );
     }
 
     if (minCapacity) {
@@ -213,8 +354,14 @@ tourRouter.get("/", async (req, res) => {
       );
     }
 
-    res.json(tours);
+    res.json({
+      tours,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+    });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Greška pri dobavljanju tura" });
   }
 });

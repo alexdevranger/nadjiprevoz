@@ -14,7 +14,7 @@ osmrRouter.get("/", async (req, res) => {
       return res.status(400).json({ error: "start and end required" });
 
     const osrmUrl = `${process.env.OSRM_URL}/route/v1/driving/${start};${end}?overview=full&geometries=geojson&overview=full`;
-    console.log("osrmUrl", osrmUrl);
+    console.log("osrmUrl-1", osrmUrl);
     const r = await axios.get(osrmUrl);
     const route = r.data.routes && r.data.routes[0];
     if (!route) return res.status(404).json({ error: "No route" });

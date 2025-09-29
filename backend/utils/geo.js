@@ -1,100 +1,3 @@
-// // // backend/utils/geo.js
-// import axios from "axios";
-// import dotenv from "dotenv";
-// dotenv.config();
-
-// export async function geocodeText(q) {
-//   const GOOGLE_KEY = process.env.GOOGLE_KEY || "";
-//   const REGION = (process.env.COUNTRY_HINT || "rs").toLowerCase();
-
-//   try {
-//     if (GOOGLE_KEY) {
-//       const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-//         q
-//       )}&region=${REGION}&key=${GOOGLE_KEY}`;
-//       const { data } = await axios.get(url);
-//       console.log("geocodeText", data?.results?.length);
-
-//       if (data.results?.length) {
-//         const loc = data.results[0].geometry.location;
-//         return {
-//           lat: loc.lat,
-//           lng: loc.lng,
-//           address: data.results[0].formatted_address,
-//         };
-//       }
-//     } else {
-//       console.warn("⚠️ Nema GOOGLE_GEOCODE_KEY, geokodiranje neće raditi.");
-//       return null;
-//     }
-
-//     //Fallback na OSMR server
-//     const osmUrl = `${NOMINATIM_URL}/search?format=json&q=${encodeURIComponent(q)}&accept-language=sr&countrycodes=${REGION}`;
-//     const { data: osmData } = await axios.get(osmUrl);
-
-//     if (osmData?.length) {
-//       return {
-//         lat: parseFloat(osmData[0].lat),
-//         lng: parseFloat(osmData[0].lon),
-//         address: osmData[0].display_name,
-//       };
-//     }
-
-//     return null;
-//   } catch (err) {
-//     console.error("Greška u geocodeText:", err);
-//     return null;
-//   }
-// }
-// // backend/utils/geo.js
-// import axios from "axios";
-// import dotenv from "dotenv";
-
-// dotenv.config();
-
-// export async function geocodeText(q) {
-//   const REGION = (process.env.COUNTRY_HINT || "rs").toLowerCase();
-//   const NOMINATIM_URL =
-//     process.env.NOMINATIM_URL || "https://nominatim.openstreetmap.org";
-
-//   try {
-//     const url = `${NOMINATIM_URL}/search?format=json&q=${encodeURIComponent(
-//       q
-//     )}&accept-language=sr&countrycodes=${REGION}`;
-
-//     const { data } = await axios.get(url, {
-//       headers: { "User-Agent": "TransportApp" },
-//     });
-
-//     if (data?.length) {
-//       return {
-//         lat: parseFloat(data[0].lat),
-//         lng: parseFloat(data[0].lon),
-//         address: data[0].display_name,
-//       };
-//     }
-
-//     return null;
-//   } catch (err) {
-//     console.error("Greška u geocodeText:", err.message);
-//     return null;
-//   }
-// }
-// export function haversineDistance(lat1, lng1, lat2, lng2) {
-//   const R = 6371e3; // poluprečnik Zemlje u metrima
-//   const φ1 = (lat1 * Math.PI) / 180;
-//   const φ2 = (lat2 * Math.PI) / 180;
-//   const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-//   const Δλ = ((lng2 - lng1) * Math.PI) / 180;
-
-//   const a =
-//     Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-//     Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-
-//   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-//   return R * c;
-// }
 // backend/utils/geo.js
 import axios from "axios";
 import dotenv from "dotenv";
@@ -228,6 +131,27 @@ export async function geocodeText(q) {
     console.error("❌ Greška u geocodeText:", err.message);
     return null;
   }
+}
+
+export async function geocode(query) {
+  if (!query) return null;
+
+  const url = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=rs&accept-language=sr&limit=1&q=${encodeURIComponent(
+    query
+  )}`;
+
+  const res = await axios.get(url, {
+    headers: { "User-Agent": "TransportApp" },
+  });
+
+  if (!res.data.length) return null;
+
+  const place = res.data[0];
+  return {
+    lat: parseFloat(place.lat),
+    lon: parseFloat(place.lon),
+    display_name: place.display_name,
+  };
 }
 
 export function haversineDistance(lat1, lng1, lat2, lng2) {
