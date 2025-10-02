@@ -644,6 +644,7 @@ import { Typewriter } from "react-simple-typewriter";
 import FeaturesSectionMain from "@/components/FeaturesSectionMain";
 import Oglasi from "@/components/Oglasi";
 import Kontakt from "./Kontakt";
+import Pricing from "../components/Pricing";
 
 // Demo podaci za prikaz turi i zahteva
 const demoTure = [
@@ -1166,6 +1167,7 @@ const Pocetna = () => {
           </div>
         </div>
       </section>
+      <Pricing />
 
       {/* Call to Action */}
       <section className="py-20 bg-blue-600 text-white">

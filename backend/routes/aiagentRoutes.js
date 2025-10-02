@@ -315,6 +315,50 @@ aiagentRouter.post("/message", async (req, res) => {
   }
 });
 
+// aiagentRouter.post("/find-routes", async (req, res) => {
+//   try {
+//     const { date, startLocation, endLocation, vehicleType, cargoWeight } =
+//       req.body;
+
+//     const dayStart = new Date(date);
+//     dayStart.setHours(0, 0, 0, 0);
+//     const dayEnd = new Date(date);
+//     dayEnd.setHours(23, 59, 59, 999);
+
+//     let tours = await Tour.find({ date: { $gte: dayStart, $lte: dayEnd } })
+//       .populate("vehicle")
+//       .populate("createdBy");
+
+//     let geoStart = startLocation ? await geocode(startLocation) : null;
+//     let geoEnd = endLocation ? await geocode(endLocation) : null;
+
+//     tours = tours.filter((t) => {
+//       const routeLine = turf.lineString([
+//         [t.startPoint.coordinates[0], t.startPoint.coordinates[1]],
+//         [t.endPoint.coordinates[0], t.endPoint.coordinates[1]],
+//       ]);
+
+//       let startOk = geoStart ? isPointOnRoute(routeLine, geoStart, 5) : true;
+//       let endOk = geoEnd ? isPointOnRoute(routeLine, geoEnd, 5) : true;
+//       return startOk && endOk;
+//     });
+
+//     if (vehicleType) {
+//       tours = tours.filter(
+//         (t) => t.vehicle?.type?.toLowerCase() === vehicleType.toLowerCase()
+//       );
+//     }
+
+//     if (cargoWeight) {
+//       tours = tours.filter((t) => (t.vehicle?.capacity ?? 0) >= cargoWeight);
+//     }
+
+//     res.json({ routes: tours });
+//   } catch (err) {
+//     console.error("❌ Greška u /find-routes:", err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// });
 aiagentRouter.post("/find-routes", async (req, res) => {
   try {
     const { date, startLocation, endLocation, vehicleType, cargoWeight } =
@@ -332,15 +376,66 @@ aiagentRouter.post("/find-routes", async (req, res) => {
     let geoStart = startLocation ? await geocode(startLocation) : null;
     let geoEnd = endLocation ? await geocode(endLocation) : null;
 
-    tours = tours.filter((t) => {
-      const routeLine = turf.lineString([
-        [t.startPoint.coordinates[0], t.startPoint.coordinates[1]],
-        [t.endPoint.coordinates[0], t.endPoint.coordinates[1]],
-      ]);
+    const TOLERANCE_KM = 30;
 
-      let startOk = geoStart ? isPointOnRoute(routeLine, geoStart, 5) : true;
-      let endOk = geoEnd ? isPointOnRoute(routeLine, geoEnd, 5) : true;
-      return startOk && endOk;
+    tours = tours.filter((t) => {
+      const endIsWildcard =
+        !t.endLocation ||
+        t.endLocation === "" ||
+        String(t.endLocation).toLowerCase().includes("bilo");
+
+      const sp = (t.startPoint && t.startPoint.coordinates) || [];
+      const ep = (t.endPoint && t.endPoint.coordinates) || [];
+
+      const startValid = sp.length === 2 && !(sp[0] === 0 && sp[1] === 0);
+      const endValid = ep.length === 2 && !(ep[0] === 0 && ep[1] === 0);
+
+      let routeLine = null;
+      if (startValid && endValid) {
+        routeLine = turf.lineString([
+          [sp[0], sp[1]],
+          [ep[0], ep[1]],
+        ]);
+      }
+
+      // START CHECK
+      if (geoStart) {
+        if (routeLine) {
+          if (!isPointOnRoute(routeLine, geoStart, TOLERANCE_KM)) return false;
+        } else if (startValid) {
+          const dStart = turf.distance(
+            turf.point([sp[0], sp[1]]),
+            turf.point([geoStart.lon, geoStart.lat]),
+            { units: "kilometers" }
+          );
+          if (dStart > TOLERANCE_KM) return false;
+        } else {
+          return false;
+        }
+      }
+
+      // END CHECK
+      if (geoEnd) {
+        if (endIsWildcard) {
+          // tura je "bilo gde" — prihvatamo bilo koji unos krajnje destinacije
+          return true;
+        }
+
+        if (routeLine) {
+          if (!isPointOnRoute(routeLine, geoEnd, TOLERANCE_KM)) return false;
+        } else if (endValid) {
+          const dEnd = turf.distance(
+            turf.point([ep[0], ep[1]]),
+            turf.point([geoEnd.lon, geoEnd.lat]),
+            { units: "kilometers" }
+          );
+          if (dEnd > TOLERANCE_KM) return false;
+        } else {
+          return false;
+        }
+      }
+
+      return true;
     });
 
     if (vehicleType) {
@@ -359,6 +454,7 @@ aiagentRouter.post("/find-routes", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
 //     // Nađi ture po kriterijumima
 
 //     const query = {
