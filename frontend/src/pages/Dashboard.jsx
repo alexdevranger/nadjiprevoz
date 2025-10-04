@@ -144,51 +144,6 @@ export default function Dashboard() {
       </div>
     );
   };
-  // const DashboardCard = ({
-  //   icon,
-  //   title,
-  //   description,
-  //   link,
-  //   count,
-  //   color,
-  //   onClick,
-  // }) => (
-  //   <div
-  //     onClick={onClick}
-  //     className={`block h-full text-gray-800 no-underline ${
-  //       onClick ? "cursor-pointer" : ""
-  //     }`}
-  //   >
-  //     <div
-  //       className={`bg-white rounded-xl shadow-md p-6 h-full transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 border-l-4 ${color}`}
-  //     >
-  //       <div className="flex items-center mb-4">
-  //         <div
-  //           className={`text-2xl mr-3 ${color.replace("border-l-", "text-")}`}
-  //         >
-  //           {icon}
-  //         </div>
-  //         <h3 className="text-lg font-semibold">{title}</h3>
-  //       </div>
-  //       <p className="text-sm text-gray-600 mb-2">{description}</p>
-  //       {count !== undefined && (
-  //         <div className="mt-2 text-right">
-  //           <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-  //             {count} {count === 1 ? "stavka" : "stavke"}
-  //           </span>
-  //         </div>
-  //       )}
-  //       {link && !onClick && (
-  //         <Link
-  //           to={link}
-  //           className="text-blue-500 text-sm font-medium mt-2 inline-block"
-  //         >
-  //           Vidi detalje &rarr;
-  //         </Link>
-  //       )}
-  //     </div>
-  //   </div>
-  // );
 
   // Učitavanje podataka
   useEffect(() => {

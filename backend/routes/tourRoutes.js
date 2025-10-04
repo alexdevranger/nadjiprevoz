@@ -1,5 +1,6 @@
 import express from "express";
 import Tour from "../models/Tour.js";
+import Payment from "../models/Payment.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { adminAuthMiddleware } from "../middleware/adminAuthMiddleware.js";
 
@@ -153,13 +154,78 @@ tourRouter.get("/date", async (req, res) => {
   }
 });
 
-// Dobavljanje tura za ulogovanog korisnika (opciono po datumu i filterima)
+// tourRouter.get("/my-tours", authMiddleware, async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const {
+//       date,
+//       vehicleType,
+//       minCapacity,
+//       startLocation,
+//       page = 1,
+//       limit = 20,
+//     } = req.query;
+
+//     // osnovni filter po vlasniku
+//     let filter = { createdBy: userId };
+
+//     if (date) {
+//       const selectedDate = new Date(date);
+//       const nextDay = new Date(selectedDate);
+//       nextDay.setDate(nextDay.getDate() + 1);
+//       filter.date = { $gte: selectedDate, $lt: nextDay };
+//     }
+
+//     if (startLocation) {
+//       filter.startLocation = { $regex: startLocation, $options: "i" };
+//     }
+
+//     // Brojanje ukupnog broja dokumenata
+//     const total = await Tour.countDocuments(filter);
+
+//     // Dohvatanje tura sa paginacijom
+//     let tours = await Tour.find(filter)
+//       .sort({ date: 1 })
+//       .skip((page - 1) * limit)
+//       .limit(Number(limit))
+//       .populate("vehicle", "type licensePlate capacity")
+//       .populate("createdBy", "username name");
+
+//     // Dodatni filteri koji se lakše rade u memoriji (po tipu vozila i kapacitetu)
+//     if (vehicleType) {
+//       tours = tours.filter((t) => t.vehicle && t.vehicle.type === vehicleType);
+//     }
+//     if (minCapacity) {
+//       tours = tours.filter(
+//         (t) => t.vehicle && Number(t.vehicle.capacity) >= Number(minCapacity)
+//       );
+//     }
+
+//     res.json({
+//       tours,
+//       total,
+//       page: Number(page),
+//       limit: Number(limit),
+//       totalPages: Math.ceil(total / limit),
+//     });
+//   } catch (err) {
+//     console.error("Error GET /my-tours:", err);
+//     res.status(500).json({ error: "Greška pri dobavljanju vaših tura" });
+//   }
+// });
+// tourRouter.js - my-tours endpoint
 tourRouter.get("/my-tours", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { date, vehicleType, minCapacity, startLocation } = req.query;
+    const {
+      date,
+      vehicleType,
+      minCapacity,
+      startLocation,
+      page = 1,
+      limit = 20,
+    } = req.query;
 
-    // osnovni filter po vlasniku
     let filter = { createdBy: userId };
 
     if (date) {
@@ -173,23 +239,67 @@ tourRouter.get("/my-tours", authMiddleware, async (req, res) => {
       filter.startLocation = { $regex: startLocation, $options: "i" };
     }
 
-    // prvo dohvatimo ture koje su CREATED BY userId i (opciono) po datumu/startLocation
+    const total = await Tour.countDocuments(filter);
+
     let tours = await Tour.find(filter)
       .sort({ date: 1 })
-      .populate("vehicle", "type licensePlate capacity") // isto kao u AllTours
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .populate("vehicle", "type licensePlate capacity")
       .populate("createdBy", "username name");
 
-    // dodatni filteri koji se lakše rade u memoriji (po tipu vozila i kapacitetu)
+    // Dohvati payment podatke za svaku turu
+    const tourIds = tours.map((tour) => tour._id);
+
+    // Nađi sve payment-e za ove ture
+    const payments = await Payment.find({
+      tour: { $in: tourIds },
+      status: { $in: ["pending", "rejected"] },
+    })
+      .select("tour adminNotes status")
+      .sort({ createdAt: -1 });
+
+    // Grupiši payment-e po tour ID-u
+    const paymentsByTour = {};
+    payments.forEach((payment) => {
+      if (!paymentsByTour[payment.tour]) {
+        paymentsByTour[payment.tour] = payment;
+      }
+    });
+
+    // Dodaj payment podatke turma
+    const toursWithPayments = tours.map((tour) => {
+      const tourObj = tour.toObject();
+      const payment = paymentsByTour[tour._id];
+      if (payment) {
+        tourObj.payment = {
+          adminNotes: payment.adminNotes,
+          status: payment.status,
+        };
+      }
+      return tourObj;
+    });
+
+    // Dodatni filteri
+    let filteredTours = toursWithPayments;
     if (vehicleType) {
-      tours = tours.filter((t) => t.vehicle && t.vehicle.type === vehicleType);
+      filteredTours = filteredTours.filter(
+        (t) => t.vehicle && t.vehicle.type === vehicleType
+      );
     }
     if (minCapacity) {
-      tours = tours.filter(
+      filteredTours = filteredTours.filter(
         (t) => t.vehicle && Number(t.vehicle.capacity) >= Number(minCapacity)
       );
     }
 
-    res.json(tours);
+    res.json({
+      tours: filteredTours,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (err) {
     console.error("Error GET /my-tours:", err);
     res.status(500).json({ error: "Greška pri dobavljanju vaših tura" });

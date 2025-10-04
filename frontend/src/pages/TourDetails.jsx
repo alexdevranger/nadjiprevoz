@@ -50,6 +50,15 @@ export default function TourDetails() {
         const tourRes = await axios.get(`/api/tours/${id}`);
         const tourData = tourRes.data;
 
+        const token = localStorage.getItem("token");
+
+        // Proveri da li token postoji
+        if (!token) {
+          console.error("Token nije pronađen");
+          // Redirect to login ili pokaži error
+          return;
+        }
+
         const vehiclesRes = await axios.get("/api/vehicles", {
           headers: { Authorization: `Bearer ${token}` },
         });

@@ -47,6 +47,12 @@ export default function AllTours() {
   const [vehicles, setVehicles] = useState([]);
   const [hideMyTours, setHideMyTours] = useState(false);
 
+  // Funkcija za resetovanje stranice kada se promeni filter
+  const handleFilterChange = (setter) => (value) => {
+    setter(value);
+    setPage(1); // Resetuj stranicu na 1 kada se promeni filter
+  };
+
   async function openChat(tour) {
     const otherUserId = tour.createdBy._id;
     const tourId = tour._id;
@@ -232,7 +238,7 @@ export default function AllTours() {
               </label>
               <DatePicker
                 selected={filterDate}
-                onChange={setFilterDate}
+                onChange={handleFilterChange(setFilterDate)}
                 isClearable
                 placeholderText="Svi datumi"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -250,7 +256,9 @@ export default function AllTours() {
               </label>
               <select
                 value={filterVehicleType}
-                onChange={(e) => setFilterVehicleType(e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange(setFilterVehicleType)(e.target.value)
+                }
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Sve vrste</option>
@@ -271,7 +279,9 @@ export default function AllTours() {
               <input
                 type="number"
                 value={filterCapacity}
-                onChange={(e) => setFilterCapacity(e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange(setFilterCapacity)(e.target.value)
+                }
                 placeholder="Min. nosivost"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min={0}
@@ -287,7 +297,9 @@ export default function AllTours() {
               <input
                 type="text"
                 value={filterStartLocation}
-                onChange={(e) => setFilterStartLocation(e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange(setFilterStartLocation)(e.target.value)
+                }
                 placeholder="Unesi lokaciju"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -484,7 +496,7 @@ export default function AllTours() {
                         {isOwner && (
                           <button
                             onClick={() => handleDelete(tour._id)}
-                            className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
+                            className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
                           >
                             <FaTrash className="mr-1" />
                             Obriši

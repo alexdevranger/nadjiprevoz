@@ -47,6 +47,12 @@ export default function AllShipments() {
   const [unreadByShipment, setUnreadByShipment] = useState({});
   const [userConvs, setUserConvs] = useState(new Set());
 
+  // Funkcija za resetovanje stranice kada se promeni filter
+  const handleFilterChange = (setter) => (value) => {
+    setter(value);
+    setPage(1); // Resetuj stranicu na 1 kada se promeni filter
+  };
+
   // Random border colors (same style as tours file)
   const getRandomBorderColor = (index) => {
     const colors = [
@@ -72,6 +78,9 @@ export default function AllShipments() {
     if (minWeight) params.append("minWeight", minWeight);
     if (pickupLocation) params.append("pickupLocation", pickupLocation);
     if (goodsType) params.append("goodsType", goodsType);
+
+    params.append("page", page);
+    params.append("limit", limit);
 
     try {
       const res = await axios.get("/api/shipments?" + params.toString());
@@ -102,19 +111,18 @@ export default function AllShipments() {
       setShipments(futureShipments);
       setTotalShipments(futureShipments);
     } catch (err) {
-      console.error("Greška pri učitavanju pošiljki", err);
+      console.error("Greška pri učitavanju zahteva", err);
       setShipments([]);
       setTotalShipments([]);
     } finally {
       setLoading(false);
-      setPage(1); // when refetching, reset page to 1 to avoid invalid page
     }
   };
 
   useEffect(() => {
     fetchShipments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterDate, minWeight, pickupLocation, goodsType]);
+  }, [filterDate, minWeight, pickupLocation, goodsType, page, limit]);
 
   // load conversations for badges (same approach as you had)
   useEffect(() => {
@@ -243,7 +251,7 @@ export default function AllShipments() {
             </div>
             <div className="flex items-center mt-4 md:mt-0">
               <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mr-3">
-                {total} pošiljki (strana {page})
+                {total} zahteva (strana {page})
               </span>
               <button
                 onClick={handleResetFilters}
@@ -269,7 +277,7 @@ export default function AllShipments() {
               </label>
               <DatePicker
                 selected={filterDate}
-                onChange={setFilterDate}
+                onChange={handleFilterChange(setFilterDate)}
                 isClearable
                 placeholderText="Svi datumi"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -286,7 +294,9 @@ export default function AllShipments() {
               <input
                 type="number"
                 value={minWeight}
-                onChange={(e) => setMinWeight(e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange(setMinWeight)(e.target.value)
+                }
                 placeholder="Min. težina"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min={0}
@@ -301,7 +311,9 @@ export default function AllShipments() {
               <input
                 type="text"
                 value={pickupLocation}
-                onChange={(e) => setPickupLocation(e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange(setPickupLocation)(e.target.value)
+                }
                 placeholder="Unesi lokaciju"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -314,7 +326,9 @@ export default function AllShipments() {
               <input
                 type="text"
                 value={goodsType}
-                onChange={(e) => setGoodsType(e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange(setGoodsType)(e.target.value)
+                }
                 placeholder="Unesi vrstu robe"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -359,15 +373,15 @@ export default function AllShipments() {
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Učitavanje pošiljki...</p>
+              <p className="text-gray-600 mt-4">Učitavanje zahteva...</p>
             </div>
           ) : currentShipments.length === 0 ? (
             <div className="p-8 text-center">
               <FaSearch className="text-4xl text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 text-lg">
                 {filterDate || minWeight || pickupLocation || goodsType
-                  ? "Nema pošiljki za prikaz sa odabranim filterima"
-                  : "Trenutno nema dostupnih pošiljki."}
+                  ? "Nema zahteva za prikaz sa odabranim filterima"
+                  : "Trenutno nema dostupnih zahteva."}
               </p>
             </div>
           ) : (
@@ -517,7 +531,7 @@ export default function AllShipments() {
                       {isOwner && (
                         <button
                           onClick={() => handleDelete(shipment._id)}
-                          className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
+                          className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
                         >
                           <FaTrash className="mr-1" />
                           Obriši
@@ -536,7 +550,7 @@ export default function AllShipments() {
           <div className="bg-white rounded-xl shadow-md p-6">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-600">
-                Prikazano {currentShipments.length} od {total} pošiljki • Strana{" "}
+                Prikazano {currentShipments.length} od {total} zahteva • Strana{" "}
                 {page} od {totalPages}
               </div>
 

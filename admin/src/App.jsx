@@ -7,15 +7,43 @@ import Users from "./pages/Users";
 import Ads from "./pages/Ads";
 import Payments from "./pages/Payments";
 import Settings from "./pages/Settings";
+import { io } from "socket.io-client";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/DashboardLayout";
 import UserDetails from "./pages/UserDetails";
 import SponsorAds from "./pages/SponsorAds";
 
+// Kreirajte socket instancu za admin
+export const socket = io("http://localhost:4000", {
+  auth: {
+    token: localStorage.getItem("token"),
+    isAdmin: true,
+  },
+});
+
 export default function App() {
   const [user] = useGlobalState("user");
   const [token] = useGlobalState("token");
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Konektuj se na socket kada se komponenta mount-uje
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("Admin socket connected:", socket.id);
+      // Join admin payments room
+      socket.emit("joinAdminPayments");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Admin socket disconnected");
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   // Učitavanje usera i tokena iz localStorage pri startu
   useEffect(() => {

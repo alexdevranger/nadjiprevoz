@@ -1,16 +1,48 @@
 import express from "express";
 import Payment from "../models/Payment.js";
+import ShipmentPayment from "../models/ShipmentPayment.js";
 import Tour from "../models/Tour.js";
+import Shipment from "../models/Shipment.js";
+import Ad from "../models/Ad.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { adminAuthMiddleware } from "../middleware/adminAuthMiddleware.js";
 
 const router = express.Router();
 
+// Helper funkcija za emitovanje događaja
+const emitPaymentEvent = (eventName, data) => {
+  // Koristimo globalni io objekat
+  if (typeof global.io !== "undefined") {
+    global.io.emit(eventName, data);
+    console.log(`Emitovan event: ${eventName}`, data);
+  } else {
+    console.log("IO nije dostupan za emitovanje eventa:", eventName);
+  }
+};
+
 // POST /api/payments/initiate
-router.post("/initiate", authMiddleware, async (req, res) => {
+router.post("/initiateTourPremium", authMiddleware, async (req, res) => {
   try {
     const { tourId } = req.body;
     const userId = req.user.id; // iz auth middleware-a
+
+    // Proveri da li turu već ima pending premium zahtev
+    const existingPayment = await Payment.findOne({
+      tour: tourId,
+      user: userId,
+      status: "pending",
+    });
+
+    if (existingPayment) {
+      return res.status(400).json({
+        error: "Već postoji zahtev za premium koji čeka odobrenje",
+      });
+    }
+
+    // Ažuriraj status ture
+    await Tour.findByIdAndUpdate(tourId, {
+      premiumStatus: "pending",
+    });
 
     // Generišemo jedinstveni poziv na broj
     const referenceNumber = `PREM-${tourId}-${Math.floor(
@@ -22,9 +54,20 @@ router.post("/initiate", authMiddleware, async (req, res) => {
       tour: tourId,
       amount: 2000, // definisana cena premijuma
       referenceNumber,
+      status: "pending",
     });
 
     await payment.save();
+
+    // Populate za slanje podataka
+    await payment.populate("user", "name email");
+    await payment.populate("tour", "startLocation endLocation date");
+
+    // EMITUJ DOGADJAJ ZA NOVI PAYMENT
+    emitPaymentEvent("newPaymentRequest", {
+      type: "tour",
+      payment: payment,
+    });
 
     res.json({
       message: "Uputstvo za uplatu generisano",
@@ -38,19 +81,111 @@ router.post("/initiate", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Greška pri generisanju uplate" });
   }
 });
+router.post("/initiateShipmentPremium", authMiddleware, async (req, res) => {
+  try {
+    const { shipmentId } = req.body;
+    const userId = req.user.id; // iz auth middleware-a
+
+    // Proveri da li shipment već ima pending premium zahtev
+    const existingPayment = await ShipmentPayment.findOne({
+      shipment: shipmentId,
+      user: userId,
+      status: "pending",
+    });
+
+    if (existingPayment) {
+      return res.status(400).json({
+        error: "Već postoji zahtev za premium koji čeka odobrenje",
+      });
+    }
+
+    // Ažuriraj status shipmenta
+    await Shipment.findByIdAndUpdate(shipmentId, {
+      premiumStatus: "pending",
+    });
+
+    // Generišemo jedinstveni poziv na broj
+    const referenceNumber = `PREM-${shipmentId}-${Math.floor(
+      Math.random() * 10000
+    )}`;
+
+    const payment = new ShipmentPayment({
+      user: userId,
+      shipment: shipmentId,
+      amount: 2000, // definisana cena premijuma
+      referenceNumber,
+      status: "pending",
+    });
+
+    await payment.save();
+
+    // Populate za slanje podataka
+    await payment.populate("user", "name email");
+    await payment.populate("shipment", "pickupLocation dropoffLocation date");
+
+    // EMITUJ DOGADJAJ ZA NOVI PAYMENT
+    emitPaymentEvent("newPaymentRequest", {
+      type: "shipment",
+      payment: payment,
+    });
+
+    res.json({
+      message: "Uputstvo za uplatu generisano",
+      accountNumber: "160-123456789-12", // tvoj broj računa
+      amount: payment.amount,
+      referenceNumber: payment.referenceNumber,
+      shipmentId,
+    });
+  } catch (err) {
+    console.error("Greška pri generisanju uplate:", err);
+    res.status(500).json({ error: "Greška pri generisanju uplate" });
+  }
+});
+
+// GET /api/payments/my-pending-payments (provera pending paymenta za korisnika)
+router.get("/my-pending-payments", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const tourPayments = await Payment.find({
+      user: userId,
+      status: "pending",
+    }).populate("tour", "_id");
+
+    const shipmentPayments = await ShipmentPayment.find({
+      user: userId,
+      status: "pending",
+    }).populate("shipment", "_id");
+
+    res.json({
+      tourPayments,
+      shipmentPayments,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Greška pri učitavanju uplata" });
+  }
+});
 
 // 📌 GET /api/payments (admin gleda sve uplate)
 router.get("/", adminAuthMiddleware, async (req, res) => {
   try {
-    const payments = await Payment.find()
+    const tourPayments = await Payment.find()
       .populate("user", "name email") // ime i email korisnika
       .populate(
         "tour",
         "startLocation endLocation date isPremium premiumExpiresAt"
       ) // detalji ture
       .sort({ createdAt: -1 });
+    const shipmentPayments = await ShipmentPayment.find()
+      .populate("user", "name email") // ime i email korisnika
+      .populate(
+        "shipment",
+        "pickupLocation dropoffLocation date weightKg goodsType isPremium premiumExpiresAt "
+      ) // detalji ture
+      .sort({ createdAt: -1 });
 
-    res.json(payments);
+    res.json({ tourPayments, shipmentPayments });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Greška pri učitavanju uplata" });
@@ -58,9 +193,9 @@ router.get("/", adminAuthMiddleware, async (req, res) => {
 });
 
 // ✅ Admin potvrđuje uplatu
-router.put("/:id/confirm", adminAuthMiddleware, async (req, res) => {
+router.put("/:id/confirmTourPayment", adminAuthMiddleware, async (req, res) => {
   try {
-    // Nađi uplatu i populate tour i user
+    const { status, adminNotes } = req.body;
     const payment = await Payment.findById(req.params.id)
       .populate("tour")
       .populate("user");
@@ -75,41 +210,162 @@ router.put("/:id/confirm", adminAuthMiddleware, async (req, res) => {
 
     console.log("payment", payment);
 
-    // ✅ Update status uplate
-    payment.status = "paid";
-    payment.updatedAt = new Date();
+    // Ažuriraj payment
+    payment.status = status || "paid"; // može da se prosledi status, inače je "paid"
+    if (adminNotes) payment.adminNotes = adminNotes;
+    payment.paymentDate = new Date();
+    payment.premiumExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 dana
+
     const pay = await payment.save();
     console.log("pay", pay);
 
-    // ✅ Ako uplata ima vezanu turu/oglas, postavi kao premium
-    let premiumExpiresAt = null;
+    // ✅ Ako uplata ima vezanu turu, ažuriraj tour status
+    let updatedTour = null;
     if (payment.tour) {
-      const adTour = await Tour.findById(payment.tour);
-      if (adTour) {
-        console.log("ad tour", adTour);
-        adTour.isPremium = true;
-        premiumExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 dana
-        adTour.premiumExpiresAt = premiumExpiresAt;
-        const savedAd = await adTour.save();
-        console.log("savedAd", savedAd);
+      console.log("payment.tour", payment.tour);
+      const tour = await Tour.findById(payment.tour._id || payment.tour);
+      if (tour) {
+        console.log("tour pre ažuriranja", tour);
+
+        if (status === "paid" || !status) {
+          // Ako je uplata potvrđena
+          tour.isPremium = true;
+          tour.premiumStatus = "approved";
+          tour.premiumExpiresAt = payment.premiumExpiresAt;
+        } else if (status === "rejected") {
+          // Ako je uplata odbijena
+          tour.premiumStatus = "rejected";
+          tour.isPremium = false;
+          tour.premiumExpiresAt = null;
+        }
+
+        updatedTour = await tour.save();
+        console.log("tour posle ažuriranja", updatedTour);
       }
+    }
+
+    // EMITUJ DOGADJAJ ZA AŽURIRANJE PAYMENTA
+    emitPaymentEvent("paymentUpdated", {
+      paymentId: payment._id,
+      type: "tour",
+      status: payment.status,
+      adminNotes: payment.adminNotes,
+    });
+
+    // EMITUJ DOGADJAJ SPECIFIČNOM KORISNIKU
+    if (payment.user && payment.user._id) {
+      emitPaymentEvent("myPaymentUpdated", {
+        paymentId: payment._id,
+        type: "tour",
+        status: payment.status,
+        adminNotes: payment.adminNotes,
+        tourId: payment.tour?._id || payment.tour,
+        userId: payment.user._id,
+      });
     }
 
     // Pošalji response sa porukom i premium datumom
     res.json({
-      message: "Uplata potvrđena",
-      payment: {
-        ...payment.toObject(),
-        tour: payment.tour
-          ? { ...payment.tour.toObject(), premiumExpiresAt }
-          : null,
-      },
+      message: status === "rejected" ? "Uplata odbijena" : "Uplata potvrđena",
+      payment: pay,
+      tour: updatedTour,
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Greška na serveru" });
   }
 });
+
+router.put(
+  "/:id/confirmShipmentPayment",
+  adminAuthMiddleware,
+  async (req, res) => {
+    try {
+      const { status, adminNotes } = req.body;
+      // Nađi uplatu i populate tour i user
+      const payment = await ShipmentPayment.findById(req.params.id)
+        .populate("shipment")
+        .populate("user");
+
+      if (!payment) {
+        return res.status(404).json({ message: "Uplata nije pronađena" });
+      }
+
+      if (payment.status === "paid") {
+        return res.status(400).json({ message: "Uplata je već potvrđena" });
+      }
+
+      console.log("payment", payment);
+
+      // ✅ Update status uplate
+      payment.status = status || "paid";
+      if (adminNotes) payment.adminNotes = adminNotes;
+      payment.paymentDate = new Date();
+      payment.premiumExpiresAt = new Date(
+        Date.now() + 30 * 24 * 60 * 60 * 1000
+      ); // 30 dana
+
+      const pay = await payment.save();
+      console.log("pay", pay);
+
+      // ✅ Ako uplata ima vezanu turu/oglas, postavi kao premium
+
+      let updatedShipment = null;
+      if (payment.shipment) {
+        console.log("payment.shipment", payment.shipment);
+        const shipment = await Shipment.findById(
+          payment.shipment._id || payment.shipment
+        );
+        if (shipment) {
+          console.log("shipment pre ažuriranja", shipment);
+
+          if (status === "paid" || !status) {
+            shipment.isPremium = true;
+            shipment.premiumStatus = "approved";
+            shipment.premiumExpiresAt = payment.premiumExpiresAt;
+          } else if (status === "rejected") {
+            shipment.premiumStatus = "rejected";
+            shipment.isPremium = false;
+            shipment.premiumExpiresAt = null;
+          }
+
+          updatedShipment = await shipment.save();
+          console.log("shipment posle ažuriranja", updatedShipment);
+        }
+      }
+
+      // EMITUJ DOGADJAJ ZA AŽURIRANJE PAYMENTA
+      emitPaymentEvent("paymentUpdated", {
+        paymentId: payment._id,
+        type: "shipment",
+        status: payment.status,
+        adminNotes: payment.adminNotes,
+      });
+
+      // EMITUJ DOGADJAJ SPECIFIČNOM KORISNIKU
+      if (payment.user && payment.user._id) {
+        emitPaymentEvent("myPaymentUpdated", {
+          paymentId: payment._id,
+          type: "shipment",
+          status: payment.status,
+          adminNotes: payment.adminNotes,
+          shipmentId: payment.shipment?._id || payment.shipment,
+          userId: payment.user._id,
+        });
+      }
+
+      // Pošalji response sa porukom i premium datumom
+      res.json({
+        message: status === "rejected" ? "Uplata odbijena" : "Uplata potvrđena",
+        payment: pay,
+        shipment: updatedShipment,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Greška na serveru" });
+    }
+  }
+);
 
 // Promote oglas/turu na premium
 router.post("/admin/:id/promote", adminAuthMiddleware, async (req, res) => {
@@ -130,43 +386,5 @@ router.post("/admin/:id/promote", adminAuthMiddleware, async (req, res) => {
     res.status(500).json({ message: "Greška na serveru" });
   }
 });
-
-// // ✅ Admin potvrđuje uplatu
-// router.put("/:id/confirm", adminAuthMiddleware, async (req, res) => {
-//   try {
-//     const payment = await Payment.findById(req.params.id).populate("tour")
-//       .populate("user");
-//     if (!payment) {
-//       return res.status(404).json({ message: "Uplata nije pronađena" });
-//     }
-
-//     if (payment.status === "paid") {
-//       return res.status(400).json({ message: "Uplata je već potvrđena" });
-//     }
-
-//     // ✅ Update status
-//     payment.status = "paid";
-//     payment.updatedAt = new Date();
-//     await payment.save();
-
-//     // nadji oglas
-//     const ad = await Ad.findById(payment.tour);
-//     if (ad) {
-//       ad.isPremium = true;
-//       ad.premiumExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-//       await ad.save();
-//     }
-
-//     // ✅ Ako se odnosi na oglas/turu, postavi ga kao premium
-//     if (payment.tour) {
-//       await Ad.findByIdAndUpdate(payment.tour, { isPremium: true });
-//     }
-
-//     res.json({ message: "Uplata potvrđena", payment });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Greška na serveru" });
-//   }
-// });
 
 export default router;

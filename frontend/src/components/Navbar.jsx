@@ -64,6 +64,14 @@ export default function Navbar() {
   useEffect(() => {
     const checkShop = async () => {
       try {
+        const token = localStorage.getItem("token");
+
+        // Proveri da li token postoji
+        if (!token) {
+          console.error("Token nije pronađen");
+          // Redirect to login ili pokaži error
+          return;
+        }
         const shopRes = await axios.get("/api/shop", {
           headers: { Authorization: `Bearer ${token}` },
         });

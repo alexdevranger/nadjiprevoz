@@ -57,7 +57,14 @@ shipmentRouter.get("/myshipments", authMiddleware, async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Unauthorized" });
 
     const userId = req.user.id || req.user._id || req.user;
-    const { date, pickupLocation } = req.query;
+    const {
+      date,
+      pickupLocation,
+      minWeight,
+      goodsType,
+      page = 1,
+      limit = 20,
+    } = req.query;
 
     const filter = { createdBy: userId };
 
@@ -72,11 +79,30 @@ shipmentRouter.get("/myshipments", authMiddleware, async (req, res) => {
       filter.pickupLocation = { $regex: pickupLocation, $options: "i" };
     }
 
+    if (minWeight) {
+      filter.weightKg = { $gte: Number(minWeight) };
+    }
+
+    if (goodsType) {
+      filter.goodsType = { $regex: goodsType, $options: "i" };
+    }
+
+    // Brojanje ukupnog broja dokumenata
+    const total = await Shipment.countDocuments(filter);
+
     const shipments = await Shipment.find(filter)
       .sort({ date: 1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
       .populate("createdBy", "name company email");
 
-    return res.json(shipments);
+    return res.json({
+      shipments,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (err) {
     console.error("Error /myshipments:", err);
     return res

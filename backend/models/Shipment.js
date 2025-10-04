@@ -26,6 +26,15 @@ const shipmentSchema = new mongoose.Schema(
       type: Boolean,
       default: false, // po defaultu nije premium
     },
+    premiumStatus: {
+      type: String,
+      enum: ["none", "pending", "approved", "rejected"],
+      default: "none",
+    },
+    premiumExpiresAt: {
+      type: Date,
+      default: null, // nema isteka dok se ne kupi
+    },
   },
   { timestamps: true }
 );

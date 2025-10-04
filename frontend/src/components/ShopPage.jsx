@@ -958,7 +958,7 @@ const ShopPage = () => {
                         {isOwner && (
                           <button
                             onClick={() => handleDelete(tour._id)}
-                            className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
+                            className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
                           >
                             <FaTrash className="mr-1" />
                             Obriši
@@ -1190,7 +1190,7 @@ const ShopPage = () => {
                         {isOwner && (
                           <button
                             onClick={() => handleDeleteShipment(shipment._id)}
-                            className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
+                            className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
                           >
                             <FaTrash className="mr-1" />
                             Obriši

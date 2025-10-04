@@ -43,6 +43,14 @@ export default function MyVehicles() {
 
   const fetchVehicles = async () => {
     try {
+      const token = localStorage.getItem("token");
+
+      // Proveri da li token postoji
+      if (!token) {
+        console.error("Token nije pronađen");
+        // Redirect to login ili pokaži error
+        return;
+      }
       const res = await axios.get("/api/vehicles", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -58,6 +66,14 @@ export default function MyVehicles() {
   const deleteVehicle = async (id) => {
     if (window.confirm("Da li ste sigurni da želite da obrišete ovo vozilo?")) {
       try {
+        const token = localStorage.getItem("token");
+
+        // Proveri da li token postoji
+        if (!token) {
+          console.error("Token nije pronađen");
+          // Redirect to login ili pokaži error
+          return;
+        }
         await axios.delete(`/api/vehicles/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -122,6 +138,14 @@ export default function MyVehicles() {
 
   const removeImage = async (imageField, vehicleId) => {
     try {
+      const token = localStorage.getItem("token");
+
+      // Proveri da li token postoji
+      if (!token) {
+        console.error("Token nije pronađen");
+        // Redirect to login ili pokaži error
+        return;
+      }
       // Šalji zahtev backendu da obriše sliku
       await axios.delete(`/api/vehicles/${vehicleId}/image`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -149,6 +173,14 @@ export default function MyVehicles() {
     formData.append(imageField, file);
 
     try {
+      const token = localStorage.getItem("token");
+
+      // Proveri da li token postoji
+      if (!token) {
+        console.error("Token nije pronađen");
+        // Redirect to login ili pokaži error
+        return;
+      }
       await axios.put(`/api/vehicles/${vehicleId}/image`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -232,6 +264,15 @@ export default function MyVehicles() {
       }
       if (editForm.image2 instanceof File) {
         formData.append("image2", editForm.image2);
+      }
+
+      const token = localStorage.getItem("token");
+
+      // Proveri da li token postoji
+      if (!token) {
+        console.error("Token nije pronađen");
+        // Redirect to login ili pokaži error
+        return;
       }
 
       await axios.put(`/api/vehicles/${id}`, formData, {

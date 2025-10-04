@@ -276,29 +276,68 @@ export default function DashboardChat() {
   }, [token, state]); // može ostati token + state
 
   // --- openConversation: postavi activeConv i REF, pridruži sobi, markRead, load poruka
+  // const openConversation = async (conv) => {
+  //   setActiveConv(conv);
+  //   activeConvRef.current = conv; // VAŽNO: ažuriramo ref
+
+  //   // Odmah lokalno setujemo unread na 0 (optimistic update)
+  //   setConversations((prev) =>
+  //     prev.map((c) =>
+  //       c._id === conv._id ? { ...c, unread: { ...c.unread, [user.id]: 0 } } : c
+  //     )
+  //   );
+
+  //   // mark read preko socket-a (server će emit-ovati conversationUpdated)
+  //   console.log("user.id", user.id);
+  //   console.log("conv._id", conv._id);
+  //   socket?.emit("markRead", {
+  //     conversationId: conv._id,
+  //     userId: user.id,
+  //   });
+
+  //   // join socket room
+  //   socket?.emit("joinRoom", conv._id);
+
+  //   // load poruke
+  //   try {
+  //     const res = await axios.get(`/api/messages/${conv._id}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     setMessages(Array.isArray(res.data) ? res.data : []);
+  //   } catch (err) {
+  //     console.error("Greška pri učitavanju poruka:", err);
+  //     setMessages([]);
+  //   }
+  // };
   const openConversation = async (conv) => {
     setActiveConv(conv);
-    activeConvRef.current = conv; // VAŽNO: ažuriramo ref
+    activeConvRef.current = conv;
 
-    // Odmah lokalno setujemo unread na 0 (optimistic update)
+    // Optimističko ažuriranje lokalnog state-a
     setConversations((prev) =>
       prev.map((c) =>
         c._id === conv._id ? { ...c, unread: { ...c.unread, [user.id]: 0 } } : c
       )
     );
 
-    // mark read preko socket-a (server će emit-ovati conversationUpdated)
-    console.log("user.id", user.id);
-    console.log("conv._id", conv._id);
+    // Ažuriraj GLOBALNI broj nepročitanih
+    const newTotalUnread = conversations.reduce((total, c) => {
+      if (c._id === conv._id) {
+        return total; // Ova konverzacija će biti 0
+      }
+      return total + (c.unread?.[user.id] || 0);
+    }, 0);
+
+    setGlobalState("totalUnread", newTotalUnread);
+
+    // Ostali kod ostaje isti...
     socket?.emit("markRead", {
       conversationId: conv._id,
       userId: user.id,
     });
 
-    // join socket room
     socket?.emit("joinRoom", conv._id);
 
-    // load poruke
     try {
       const res = await axios.get(`/api/messages/${conv._id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -337,6 +376,16 @@ export default function DashboardChat() {
 
     setText("");
   };
+
+  useEffect(() => {
+    // Kada se konverzacije učitaju, ažuriraj globalni broj nepročitanih
+    if (conversations.length > 0) {
+      const totalUnread = conversations.reduce((total, conv) => {
+        return total + (conv.unread?.[user.id] || 0);
+      }, 0);
+      setGlobalState("totalUnread", totalUnread);
+    }
+  }, [conversations]);
 
   return (
     <div className="max-w-6xl mx-auto p-4 flex gap-6">
@@ -451,7 +500,7 @@ export default function DashboardChat() {
         {activeConv ? (
           <>
             {/* Lista poruka */}
-            <div
+            {/* <div
               className="flex-1 overflow-auto mb-3"
               ref={(el) => {
                 if (el) {
@@ -479,6 +528,49 @@ export default function DashboardChat() {
                       {format(new Date(m.createdAt), "d. MMM yyyy HH:mm", {
                         locale: srLatin,
                       })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div> */}
+            <div
+              className="flex-1 overflow-auto mb-3 space-y-3 p-4"
+              ref={(el) => {
+                if (el) {
+                  el.scrollTop = el.scrollHeight; // Auto-scroll na dno
+                }
+              }}
+            >
+              {messages.map((m, i) => {
+                const mine =
+                  m.senderId === user.id ||
+                  m.senderId === (user._id || user.id);
+                return (
+                  <div
+                    key={i}
+                    className={`flex ${mine ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[70%] ${mine ? "ml-auto" : "mr-auto"}`}
+                    >
+                      <div
+                        className={`inline-block p-3 rounded-2xl ${
+                          mine
+                            ? "bg-blue-500 text-white rounded-br-none"
+                            : "bg-gray-200 text-gray-800 rounded-bl-none"
+                        }`}
+                      >
+                        {m.text}
+                      </div>
+                      <div
+                        className={`text-xs text-gray-400 mt-1 ${
+                          mine ? "text-right" : "text-left"
+                        }`}
+                      >
+                        {format(new Date(m.createdAt), "HH:mm", {
+                          locale: srLatin,
+                        })}
+                      </div>
                     </div>
                   </div>
                 );

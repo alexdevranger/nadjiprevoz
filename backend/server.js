@@ -44,6 +44,9 @@ export const io = new Server(server, {
   cors: { origin: "*", credentials: true },
 });
 
+// POSTAVLJAMO GLOBALNI IO OBJEKAT ZA PRISTUP IZ RUTA
+global.io = io;
+
 io.on("connection", (socket) => {
   console.log("socket connected:", socket.id);
 
@@ -65,6 +68,11 @@ io.on("connection", (socket) => {
   socket.on("offerNotification", (payload) => {
     // npr. prikaži toast, badge, ili otvori modal
     console.log("Nova obaveštenja:", payload);
+  });
+
+  socket.on("joinAdminPayments", () => {
+    socket.join("admin_payments");
+    console.log(`Admin joined payments room: ${socket.id}`);
   });
 
   socket.on("sendMessage", async (data) => {
@@ -113,9 +121,10 @@ io.on("connection", (socket) => {
       });
 
       // emituj conversationUpdated u PERSONALNE sobe svakog učesnika
-      conversation.participants.forEach((pId) => {
-        io.to(pId.toString()).emit("conversationUpdated", convObj);
-      });
+      // conversation.participants.forEach((pId) => {
+      //   io.to(pId.toString()).emit("conversationUpdated", convObj);
+      // });
+      io.to(conversationId.toString()).emit("conversationUpdated", convObj);
     } catch (err) {
       console.error("Greška u sendMessage:", err);
     }
@@ -138,15 +147,22 @@ io.on("connection", (socket) => {
       await conversation.save();
 
       await conversation.populate("participants", "name company");
+      await conversation.populate("tourId", "startLocation endLocation");
+      await conversation.populate(
+        "shipmentId",
+        "pickupLocation dropoffLocation"
+      );
+
       const convObj = conversation.toObject();
       convObj.unread = {};
       conversation.unread.forEach((val, key) => {
         convObj.unread[key] = val;
       });
 
-      conversation.participants.forEach((pId) => {
-        io.to(pId.toString()).emit("conversationUpdated", convObj);
-      });
+      // conversation.participants.forEach((pId) => {
+      //   io.to(pId.toString()).emit("conversationUpdated", convObj);
+      // });
+      io.to(conversationId.toString()).emit("conversationUpdated", convObj);
     } catch (err) {
       console.error("Greška u markRead:", err);
     }

@@ -15,6 +15,13 @@ export default function Users() {
     console.log("Fetching users...");
     try {
       const token = localStorage.getItem("token");
+
+      // Proveri da li token postoji
+      if (!token) {
+        console.error("Token nije pronađen");
+        // Redirect to login ili pokaži error
+        return;
+      }
       const res = await axios.get("/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -33,6 +40,13 @@ export default function Users() {
 
     try {
       const token = localStorage.getItem("token");
+
+      // Proveri da li token postoji
+      if (!token) {
+        console.error("Token nije pronađen");
+        // Redirect to login ili pokaži error
+        return;
+      }
       const res = await axios.post(
         `/api/admin/ban/${id}`,
         {},
@@ -50,6 +64,13 @@ export default function Users() {
 
     try {
       const token = localStorage.getItem("token");
+
+      // Proveri da li token postoji
+      if (!token) {
+        console.error("Token nije pronađen");
+        // Redirect to login ili pokaži error
+        return;
+      }
       await axios.post(
         `/api/admin/unban/${id}`,
         {},

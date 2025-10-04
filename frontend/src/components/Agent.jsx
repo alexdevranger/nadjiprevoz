@@ -644,6 +644,14 @@ export default function Agent() {
     if (!startLocation || !endLocation || !date || !vehicle) return;
 
     try {
+      const token = localStorage.getItem("token");
+
+      // Proveri da li token postoji
+      if (!token) {
+        console.error("Token nije pronađen");
+        // Redirect to login ili pokaži error
+        return;
+      }
       const { data } = await axios.post("/api/agent/find-routes", {
         date,
         startLocation,
@@ -874,6 +882,14 @@ export default function Agent() {
                               <button
                                 onClick={async () => {
                                   try {
+                                    const token = localStorage.getItem("token");
+
+                                    // Proveri da li token postoji
+                                    if (!token) {
+                                      console.error("Token nije pronađen");
+                                      // Redirect to login ili pokaži error
+                                      return;
+                                    }
                                     await axios.post(
                                       "/api/messages/bulk",
                                       {
@@ -914,6 +930,14 @@ export default function Agent() {
                         className="bg-blue-600 text-white px-4 py-2 rounded"
                         onClick={async () => {
                           try {
+                            const token = localStorage.getItem("token");
+
+                            // Proveri da li token postoji
+                            if (!token) {
+                              console.error("Token nije pronađen");
+                              // Redirect to login ili pokaži error
+                              return;
+                            }
                             const recipients = m.results.map((r) => {
                               return {
                                 recipientId: r.createdBy._id,
