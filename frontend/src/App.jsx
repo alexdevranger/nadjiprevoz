@@ -30,6 +30,7 @@ import ScrollToTopButton from "./components/ScrollToTopButton";
 import Intro from "./pages/Intro";
 import ShopPage from "./components/ShopPage";
 import ShopDashboard from "./components/ShopDashboard";
+import { ToastProvider } from "./components/ToastContext";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -71,95 +72,97 @@ export default function App() {
 
   return (
     <HashRouter>
-      <div className="app min-h-screen bg-gray-100">
-        <ServiceWorkerCleanup />
-        <Navbar />
-        <Agent />
-        <main>
-          <Routes>
-            <Route path="/" element={<Pocetna />} />
-            <Route path="/intro" element={<Intro />} />
-            <Route path="/alltours" element={<AllTours />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/map" element={<MapPage />} />
-            <Route path="/add-vehicle" element={<AddVehicle />} />
-            <Route path="/my-vehicles" element={<MyVehicles />} />
-            <Route path="/allshipments" element={<AllShipments />} />
-            <Route path="/add-shipment" element={<AddShipment />} />
-            <Route path="/moja-vozila" element={<VozilaUser />} />
-            <Route path="/kontakt" element={<Kontakt />} />
-            <Route path="/moje-ture" element={<MojeTureUser />} />
-            <Route path="/shop/:slug" element={<ShopPage />} />
+      <ToastProvider>
+        <div className="app min-h-screen bg-gray-100">
+          <ServiceWorkerCleanup />
+          <Navbar />
+          <Agent />
+          <main>
+            <Routes>
+              <Route path="/" element={<Pocetna />} />
+              <Route path="/intro" element={<Intro />} />
+              <Route path="/alltours" element={<AllTours />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/map" element={<MapPage />} />
+              <Route path="/add-vehicle" element={<AddVehicle />} />
+              <Route path="/my-vehicles" element={<MyVehicles />} />
+              <Route path="/allshipments" element={<AllShipments />} />
+              <Route path="/add-shipment" element={<AddShipment />} />
+              <Route path="/moja-vozila" element={<VozilaUser />} />
+              <Route path="/kontakt" element={<Kontakt />} />
+              <Route path="/moje-ture" element={<MojeTureUser />} />
+              <Route path="/shop/:slug" element={<ShopPage />} />
 
-            <Route
-              path="/my-tours"
-              element={
-                <ProtectedRoute>
-                  <MyTours />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/my-shop"
-              element={
-                <ProtectedRoute>
-                  <ShopDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/my-tours/:id"
-              element={
-                <ProtectedRoute>
-                  <TourDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/chat"
-              element={
-                <ProtectedRoute>
-                  <DashboardChat />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/add-tour"
-              element={
-                <ProtectedRoute>
-                  <AddTour />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/my-shipments"
-              element={
-                <ProtectedRoute>
-                  <MyShipments />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/my-shipments/edit/:id"
-              element={
-                <ProtectedRoute>
-                  <EditShipment />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </main>
-      </div>
-      <ScrollToTopButton />
+              <Route
+                path="/my-tours"
+                element={
+                  <ProtectedRoute>
+                    <MyTours />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-shop"
+                element={
+                  <ProtectedRoute>
+                    <ShopDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-tours/:id"
+                element={
+                  <ProtectedRoute>
+                    <TourDetails />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/chat"
+                element={
+                  <ProtectedRoute>
+                    <DashboardChat />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/add-tour"
+                element={
+                  <ProtectedRoute>
+                    <AddTour />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-shipments"
+                element={
+                  <ProtectedRoute>
+                    <MyShipments />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-shipments/edit/:id"
+                element={
+                  <ProtectedRoute>
+                    <EditShipment />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </main>
+        </div>
+        <ScrollToTopButton />
+      </ToastProvider>
     </HashRouter>
   );
 }

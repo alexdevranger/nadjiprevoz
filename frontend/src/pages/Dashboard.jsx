@@ -542,6 +542,7 @@ export default function Dashboard() {
         return (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* ----------- Profilna slika ----------- */}
+
             <div className="bg-white rounded-xl shadow-md p-6">
               {/* Header */}
               <div className="flex items-center mb-6">
@@ -553,85 +554,47 @@ export default function Dashboard() {
                 </h2>
               </div>
 
-              {/* Slika ili placeholder */}
-              <div className="flex justify-center mb-4">
+              {/* Jedinstveni prikaz - ili slika ili upload area */}
+              <div className="flex flex-col items-center">
                 {user?.profileImage ? (
-                  <img
-                    src={user.profileImage}
-                    alt="Profilna"
-                    className="w-32 h-32 rounded-full object-cover border-4 border-blue-100"
-                  />
-                ) : (
-                  <div className="w-32 h-32 rounded-full bg-blue-400 flex items-center justify-center text-white text-4xl font-bold">
-                    {user?.name?.charAt(0) || user?.company?.charAt(0) || "K"}
-                  </div>
-                )}
-              </div>
-
-              {/* Dugmad */}
-              {/* <div className="flex flex-col items-center space-y-2">
-                <label className="w-full">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    disabled={uploading}
-                    className="hidden"
-                  />
-                  <div className="w-full flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm cursor-pointer">
-                    <FaUpload className="mr-2 text-sm" />
-                    Izaberi sliku
-                  </div>
-                </label>
-
-                {user?.profileImage && (
-                  <button
-                    type="button"
-                    onClick={handleDeleteProfileImage}
-                    className="w-full flex items-center justify-center px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm"
-                  >
-                    <FaTimes className="mr-2 text-sm" /> Obriši sliku
-                  </button>
-                )}
-              </div> */}
-              {/* IZABERI SLIKU */}
-              <div className="mt-4 w-full">
-                {/* <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
-                  Izaberite sliku
-                </label> */}
-
-                <div className="flex space-x-2 justify-center">
-                  {/* Dugme za izbor slike */}
-                  <div className="relative flex-1">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      disabled={uploading}
-                      ref={fileInputRef}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      id="file-input"
+                  // Prikaz postojeće profilne slike sa "x" za brisanje
+                  <div className="relative">
+                    <img
+                      src={user.profileImage}
+                      alt="Profilna"
+                      className="w-32 h-32 rounded-full object-cover border-4 border-blue-100"
                     />
-                    <div className="flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm cursor-pointer">
-                      <FaUpload className="mr-2 text-sm" />
-                      Izaberi sliku
-                    </div>
-                  </div>
-
-                  {/* Dugme za brisanje slike */}
-                  {user?.profileImage && (
                     <button
                       type="button"
                       onClick={handleDeleteProfileImage}
-                      className="flex-1 flex items-center justify-center px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 transition-colors duration-300 hover:bg-red-600"
+                      title="Obriši profilnu sliku"
                     >
-                      <FaTimes className="mr-2 text-sm" /> Obriši sliku
+                      <FaTimes size={14} />
                     </button>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  // SAMO UPLOAD AREA - bez placeholder-a
+                  <div className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-full p-4 w-32 h-32 transition-colors duration-300 hover:border-blue-400">
+                    <label className="cursor-pointer text-center">
+                      <FaImage className="mx-auto text-gray-400 text-2xl mb-2 transition-colors duration-300 hover:text-blue-500" />
+                      <span className="text-sm text-gray-600 transition-colors duration-300 hover:text-blue-500">
+                        Dodaj sliku
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploading}
+                        className="hidden"
+                        ref={fileInputRef}
+                      />
+                    </label>
+                  </div>
+                )}
               </div>
 
-              {/* Status */}
+              {/* Status poruke */}
               {uploading && (
                 <div className="flex items-center justify-center text-blue-600 mt-4 text-sm">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>

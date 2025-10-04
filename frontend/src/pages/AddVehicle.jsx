@@ -336,20 +336,6 @@ export default function AddVehicle() {
               />
             </div>
 
-            {/* <button
-              type="submit"
-              disabled={uploading}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center w-full disabled:opacity-50 transition-colors duration-300"
-            >
-              {uploading ? (
-                <>Dodavanje...</>
-              ) : (
-                <>
-                  <FaPlus className="mr-2" />
-                  Dodaj vozilo
-                </>
-              )}
-            </button> */}
             <div className="flex justify-between gap-4 pt-4">
               <button
                 type="button"

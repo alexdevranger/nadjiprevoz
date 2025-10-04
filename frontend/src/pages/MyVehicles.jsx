@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
+import { useToast } from "../components/ToastContext";
+import ConfirmModal from "../components/ConfirmModal";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaCar,
@@ -39,7 +41,56 @@ export default function MyVehicles() {
 
   const [filterType, setFilterType] = useState("");
   const [saving, setSaving] = useState(false);
+  const { success, error, warning, info } = useToast();
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+    type: "warning",
+    isLoading: false,
+  });
   const navigate = useNavigate();
+
+  const showConfirmModal = ({
+    title,
+    message,
+    onConfirm,
+    type = "warning",
+  }) => {
+    setConfirmModal({
+      open: true,
+      title,
+      message,
+      onConfirm,
+      type,
+      isLoading: false,
+    });
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal({
+      open: false,
+      title: "",
+      message: "",
+      onConfirm: null,
+      type: "warning",
+      isLoading: false,
+    });
+  };
+
+  const handleConfirm = async () => {
+    if (confirmModal.onConfirm) {
+      setConfirmModal((prev) => ({ ...prev, isLoading: true }));
+      try {
+        await confirmModal.onConfirm();
+        closeConfirmModal();
+      } catch (error) {
+        console.error("Greška pri potvrdi:", error);
+        setConfirmModal((prev) => ({ ...prev, isLoading: false }));
+      }
+    }
+  };
 
   const fetchVehicles = async () => {
     try {
@@ -57,32 +108,40 @@ export default function MyVehicles() {
       setVehicles(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Greška pri učitavanju vozila:", err);
-      setVehicles([]);
+      error("Greška pri učitavanju vozila");
+      // setVehicles([]);
     } finally {
       setLoading(false);
     }
   };
 
   const deleteVehicle = async (id) => {
-    if (window.confirm("Da li ste sigurni da želite da obrišete ovo vozilo?")) {
-      try {
-        const token = localStorage.getItem("token");
+    showConfirmModal({
+      title: "Obriši vozilo",
+      message:
+        "Da li ste sigurni da želite da obrišete ovo vozilo? Ova akcija je nepovratna.",
+      type: "danger",
+      onConfirm: async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            error("Sesija je istekla. Molimo prijavite se ponovo.");
+            return;
+          }
 
-        // Proveri da li token postoji
-        if (!token) {
-          console.error("Token nije pronađen");
-          // Redirect to login ili pokaži error
-          return;
+          await axios.delete(`/api/vehicles/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          success("Vozilo uspešno obrisano!");
+          fetchVehicles();
+        } catch (err) {
+          console.error("Greška pri brisanju vozila:", err);
+          error("Greška pri brisanju vozila");
+          throw err; // Ovo će zaustaviti isLoading state
         }
-        await axios.delete(`/api/vehicles/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        fetchVehicles();
-      } catch (err) {
-        console.error("Greška pri brisanju vozila:", err);
-        alert("Greška pri brisanju vozila");
-      }
-    }
+      },
+    });
   };
 
   const startEditing = (vehicle) => {
@@ -159,12 +218,12 @@ export default function MyVehicles() {
         [`existing${imageField.charAt(0).toUpperCase() + imageField.slice(1)}`]:
           "",
       });
-
+      success("Slika uspešno obrisana!");
       // Osveži podatke
       fetchVehicles();
     } catch (err) {
       console.error("Greška pri brisanju slike:", err);
-      alert("Greška pri brisanju slike");
+      error("Greška pri brisanju slike");
     }
   };
 
@@ -281,12 +340,12 @@ export default function MyVehicles() {
           "Content-Type": "multipart/form-data",
         },
       });
-
+      success("Vozilo uspešno ažurirano!");
       setEditingVehicle(null);
       fetchVehicles();
     } catch (err) {
       console.error("Greška pri izmeni vozila:", err);
-      alert("Greška pri izmeni vozila");
+      error("Greška pri izmeni vozila");
     } finally {
       setSaving(false);
     }
@@ -740,7 +799,7 @@ export default function MyVehicles() {
                         </button>
                         <button
                           onClick={() => deleteVehicle(vehicle._id)}
-                          className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-base"
+                          className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-base"
                         >
                           <FaTrash className="mr-1" />
                           Obriši
@@ -754,6 +813,18 @@ export default function MyVehicles() {
           )}
         </div>
       </div>
+      {/* Confirm Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.open}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        type={confirmModal.type}
+        isLoading={confirmModal.isLoading}
+        confirmText="Da, obriši"
+        cancelText="Otkaži"
+      />
     </div>
   );
 }
