@@ -3,6 +3,7 @@ import axios from "axios";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { format, isAfter, isToday, parseISO } from "date-fns";
 import srLatin from "../helper/sr-latin";
+import { useToast } from "../components/ToastContext";
 import { useGlobalState } from "../helper/globalState";
 import { useNavigate } from "react-router-dom";
 import {
@@ -46,13 +47,15 @@ export default function AllShipments() {
 
   const [unreadByShipment, setUnreadByShipment] = useState({});
   const [userConvs, setUserConvs] = useState(new Set());
+  const { success, error, warning, info } = useToast();
 
   // Funkcija za resetovanje stranice kada se promeni filter
   const handleFilterChange = (setter) => (value) => {
     setter(value);
     setPage(1); // Resetuj stranicu na 1 kada se promeni filter
   };
-
+  const [expandedNotes, setExpandedNotes] = useState(false); // stanje za sve napomene
+  const [expandedShipmentGoods, setExpandedShipmentGoods] = useState(false); // stanje za sve napomene
   // Random border colors (same style as tours file)
   const getRandomBorderColor = (index) => {
     const colors = [
@@ -176,11 +179,11 @@ export default function AllShipments() {
       await axios.delete(`/api/shipments/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert("Zahtev obrisan");
+      success("Zahtev obrisan");
       setShipments((prev) => prev.filter((s) => s._id !== id));
     } catch (err) {
       console.error("Greška pri brisanju:", err);
-      alert("Greška pri brisanju zahteva");
+      error("Greška pri brisanju zahteva");
     }
   };
 
@@ -217,7 +220,7 @@ export default function AllShipments() {
       String(otherUserId) === String(user?.id) ||
       String(otherUserId) === String(user?._id)
     ) {
-      alert("Ne možete poslati poruku sami sebi.");
+      warning("Ne možete poslati poruku sami sebi.");
       return;
     }
 
@@ -231,10 +234,16 @@ export default function AllShipments() {
       navigate("/chat", { state: { conversationId: conv._id } });
     } catch (err) {
       console.error(err);
-      alert("Greška pri otvaranju konverzacije");
+      error("Greška pri otvaranju konverzacije");
     }
   }
-
+  const toggleNote = (id) => {
+    setExpandedNotes((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+  const truncate = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
+  };
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -272,7 +281,7 @@ export default function AllShipments() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" /> Datum
               </label>
               <DatePicker
@@ -288,7 +297,7 @@ export default function AllShipments() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaWeightHanging className="text-green-500 mr-2" /> Težina (kg)
               </label>
               <input
@@ -304,7 +313,7 @@ export default function AllShipments() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaMapMarkerAlt className="text-purple-500 mr-2" /> Početna
                 lokacija
               </label>
@@ -320,7 +329,7 @@ export default function AllShipments() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaBox className="text-red-500 mr-2" /> Vrsta robe
               </label>
               <input
@@ -434,9 +443,28 @@ export default function AllShipments() {
                       </div>
 
                       {shipment.goodsType && (
-                        <div className="flex items-center">
-                          <FaBox className="text-purple-500 mr-2" />
-                          {shipment.goodsType}
+                        <div className="text-gray-600 italic flex items-start">
+                          <FaBox className="text-purple-500 mr-2 mt-1" />
+                          <div>
+                            {expandedShipmentGoods
+                              ? shipment.goodsType
+                              : truncate(shipment.goodsType, 60)}
+
+                            {shipment.goodsType.length > 60 && (
+                              <button
+                                onClick={() =>
+                                  setExpandedShipmentGoods(
+                                    !expandedShipmentGoods
+                                  )
+                                }
+                                className="ml-2 text-blue-600 hover:underline focus:outline-none text-sm"
+                              >
+                                {expandedShipmentGoods
+                                  ? "Prikaži manje"
+                                  : "Prikaži više"}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       )}
 
@@ -450,9 +478,19 @@ export default function AllShipments() {
                           </div>
                         )}
                       {shipment.note && (
-                        <div className="flex items-center">
-                          <FaComment className="text-gray-500 mr-2" />
-                          {shipment.note}
+                        <div className="text-gray-600 italic">
+                          {expandedNotes
+                            ? shipment.note
+                            : truncate(shipment.note, 60)}
+
+                          {shipment.note.length > 60 && (
+                            <button
+                              onClick={() => setExpandedNotes(!expandedNotes)}
+                              className="ml-2 text-blue-600 hover:underline focus:outline-none"
+                            >
+                              {expandedNotes ? "Prikaži manje" : "Prikaži više"}
+                            </button>
+                          )}
                         </div>
                       )}
 

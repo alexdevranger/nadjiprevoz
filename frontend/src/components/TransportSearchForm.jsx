@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useToast } from "../components/ToastContext";
 
 export default function TransportSearchForm() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export default function TransportSearchForm() {
     date: "",
     goodsDescription: "",
   });
+  const { success, error, warning, info } = useToast();
 
   const handleSendToOfferers = () => {
     // Ovde ide logika slanja AI-u
@@ -30,11 +32,11 @@ export default function TransportSearchForm() {
     })
       .then((res) => res.json())
       .then((data) => {
-        alert("Poruka uspešno poslata ponuđačima!");
+        success("Poruka uspešno poslata ponuđačima!");
       })
       .catch((err) => {
         console.error("Greška:", err);
-        alert("Došlo je do greške pri slanju poruke.");
+        error("Došlo je do greške pri slanju poruke.");
       });
   };
 

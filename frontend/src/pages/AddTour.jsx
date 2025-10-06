@@ -15,6 +15,7 @@ import {
 
 import LocationAutocomplete from "../components/LocationAutocomplete";
 import DatePicker, { registerLocale } from "react-datepicker";
+import { useToast } from "../components/ToastContext";
 import srLatin from "../helper/sr-latin";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -38,6 +39,7 @@ export default function AddTour() {
     note: "",
   });
   const [loading, setLoading] = useState(false);
+  const { success, error, warning, info } = useToast();
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -104,7 +106,7 @@ export default function AddTour() {
         console.log(res.data);
       }
 
-      alert("Tura uspešno dodata");
+      success("Tura uspešno dodata");
       setFormData({
         date: new Date(),
         vehicle: "",
@@ -120,8 +122,8 @@ export default function AddTour() {
       });
       setTimeout(() => navigate("/my-tours"), 800);
     } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.error || "Greška prilikom dodavanja ture");
+      console.error(err, err.response?.data?.error);
+      error("Greška prilikom dodavanja ture");
     } finally {
       setLoading(false);
     }

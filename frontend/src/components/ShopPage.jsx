@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
+import { useToast } from "../components/ToastContext";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { format, parseISO, isAfter, isToday } from "date-fns";
 import srLatin from "../helper/sr-latin";
@@ -70,17 +71,18 @@ const ShopPage = () => {
   const [filterVehicleType, setFilterVehicleType] = useState("");
   const [filterCapacity, setFilterCapacity] = useState("");
   const [filterStartLocation, setFilterStartLocation] = useState("");
-
   const [userConvs, setUserConvs] = useState(new Set());
   const [unreadByTour, setUnreadByTour] = useState({});
   const [unreadByShipment, setUnreadByShipment] = useState({});
+  const [expandedNotes, setExpandedNotes] = useState({}); // stanje za sve napomene
+  const { success, error, warning, info } = useToast();
 
   async function openChat(tour) {
     const otherUserId = tour.createdBy._id;
     const tourId = tour._id;
 
     if (String(otherUserId) === String(user._id)) {
-      alert("Ne možete poslati poruku sami sebi.");
+      warning("Ne možete poslati poruku sami sebi.");
       return;
     }
     try {
@@ -95,7 +97,7 @@ const ShopPage = () => {
       navigate("/chat", { state: { conversationId: conv._id } });
     } catch (err) {
       console.error(err);
-      alert("Greška pri otvaranju konverzacije");
+      error("Greška pri otvaranju konverzacije");
     }
   }
 
@@ -286,21 +288,31 @@ const ShopPage = () => {
         await axios.delete(`/api/shipments/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        alert("Zahtev obrisan");
+        success("Zahtev obrisan");
         fetchShipments();
       } catch (err) {
         console.log(err);
-        alert("Greška prilikom brisanja zahteva");
+        error("Greška prilikom brisanja zahteva");
       }
     }
   };
+  const toggleNote = (id) => {
+    setExpandedNotes((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
+  const truncate = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
+  };
   async function openShipmentChat(shipment) {
     const otherUserId = shipment.createdBy._id;
     const shipmentId = shipment._id;
 
     if (String(otherUserId) === String(user._id)) {
-      alert("Ne možete poslati poruku sami sebi.");
+      warning("Ne možete poslati poruku sami sebi.");
       return;
     }
     try {
@@ -315,7 +327,7 @@ const ShopPage = () => {
       navigate("/chat", { state: { conversationId: conv._id } });
     } catch (err) {
       console.error(err);
-      alert("Greška pri otvaranju konverzacije");
+      error("Greška pri otvaranju konverzacije");
     }
   }
 
@@ -336,11 +348,11 @@ const ShopPage = () => {
         await axios.delete(`/api/tours/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        alert("Tura obrisana");
+        success("Tura obrisana");
         fetchTours();
       } catch (err) {
         console.log(err);
-        alert("Greška prilikom brisanja ture");
+        error("Greška prilikom brisanja ture");
       }
     }
   };
@@ -916,8 +928,20 @@ const ShopPage = () => {
 
                         {/* Napomena */}
                         {tour.note && (
-                          <div className="text-gray-600 italic">
-                            {tour.note}
+                          <div className="text-gray-600 italic mt-2">
+                            {expandedNotes[tour._id]
+                              ? tour.note
+                              : truncate(tour.note, 150)}{" "}
+                            {tour.note.length > 150 && (
+                              <button
+                                onClick={() => toggleNote(tour._id)}
+                                className="text-blue-600 hover:underline ml-1"
+                              >
+                                {expandedNotes[tour._id]
+                                  ? "Prikaži manje"
+                                  : "Prikaži više"}
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>
@@ -1107,11 +1131,26 @@ const ShopPage = () => {
                           {shipment.weightKg} kg • {shipment.pallets} paleta
                         </div>
 
-                        {/* Vrsta robe */}
                         {shipment.goodsType && (
                           <div className="flex items-center">
                             <FaBox className="text-blue-500 mr-2" />
-                            {shipment.goodsType}
+                            <span>
+                              {expandedNotes[`goods-${shipment._id}`]
+                                ? shipment.goodsType
+                                : truncate(shipment.goodsType, 20)}{" "}
+                              {shipment.goodsType.length > 50 && (
+                                <button
+                                  onClick={() =>
+                                    toggleNote(`goods-${shipment._id}`)
+                                  }
+                                  className="text-blue-600 hover:underline ml-1"
+                                >
+                                  {expandedNotes[`goods-${shipment._id}`]
+                                    ? "Prikaži manje"
+                                    : "Prikaži više"}
+                                </button>
+                              )}
+                            </span>
                           </div>
                         )}
 
@@ -1144,11 +1183,22 @@ const ShopPage = () => {
                             )}
                           </div>
                         )}
-
                         {/* Napomena */}
                         {shipment.note && (
                           <div className="text-gray-600 italic text-sm mt-2">
-                            {shipment.note}
+                            {expandedNotes[shipment._id]
+                              ? shipment.note
+                              : truncate(shipment.note, 150)}{" "}
+                            {shipment.note.length > 150 && (
+                              <button
+                                onClick={() => toggleNote(shipment._id)}
+                                className="text-blue-600 hover:underline ml-1"
+                              >
+                                {expandedNotes[shipment._id]
+                                  ? "Prikaži manje"
+                                  : "Prikaži više"}
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>

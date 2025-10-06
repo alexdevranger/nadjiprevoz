@@ -52,6 +52,7 @@ export default function MyShipments() {
   const [goodsType, setGoodsType] = useState("");
   const { success, error, warning, info } = useToast();
   const navigate = useNavigate();
+  const [expanded, setExpanded] = useState({});
 
   // WebSocket efekti za real-time ažuriranja
   useEffect(() => {
@@ -326,9 +327,28 @@ export default function MyShipments() {
   };
 
   // Helper funkcija za skraćivanje teksta
-  const truncateText = (text, maxLength = 60) => {
+  const truncateText = (text, maxLength = 60, key) => {
     if (!text) return "";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+    const isExpanded = expanded[key];
+    const shouldTruncate = text.length > maxLength;
+
+    return (
+      <>
+        {isExpanded || !shouldTruncate
+          ? text
+          : text.slice(0, maxLength) + "..."}{" "}
+        {shouldTruncate && (
+          <button
+            onClick={() =>
+              setExpanded((prev) => ({ ...prev, [key]: !prev[key] }))
+            }
+            className="text-blue-600 hover:underline ml-1 text-sm"
+          >
+            {isExpanded ? "Prikaži manje" : "Prikaži više"}
+          </button>
+        )}
+      </>
+    );
   };
 
   // Funkcija za renderovanje status badge-a
@@ -502,7 +522,7 @@ export default function MyShipments() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Datum filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" />
                 Datum
               </label>
@@ -519,7 +539,7 @@ export default function MyShipments() {
 
             {/* Težina filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaWeightHanging className="text-green-500 mr-2" />
                 Težina (kg)
               </label>
@@ -537,7 +557,7 @@ export default function MyShipments() {
 
             {/* Lokacija filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" />
                 Početna lokacija
               </label>
@@ -554,7 +574,7 @@ export default function MyShipments() {
 
             {/* Vrsta robe filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaBox className="text-purple-500 mr-2" />
                 Vrsta robe
               </label>
@@ -682,7 +702,7 @@ export default function MyShipments() {
                       {req.goodsType && (
                         <div className="flex items-center">
                           <FaBox className="text-yellow-500 mr-2" />
-                          {truncateText(req.goodsType, 60)}
+                          {truncateText(req.goodsType, 30, `goods-${req._id}`)}
                         </div>
                       )}
 
@@ -695,10 +715,11 @@ export default function MyShipments() {
                         </div>
                       )}
                       {/* Napomena */}
+                      {/* Napomena */}
                       {req.note && (
-                        <div className="flex items-center">
+                        <div className="flex items-center mt-1">
                           <FaComment className="text-gray-500 mr-2" />
-                          {truncateText(req.note, 60)}
+                          {truncateText(req.note, 30, `note-${req._id}`)}
                         </div>
                       )}
                     </div>

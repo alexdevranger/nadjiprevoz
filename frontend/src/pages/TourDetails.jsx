@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { useToast } from "../components/ToastContext";
 import srLatin from "../helper/sr-latin";
 import LocationAutocomplete from "../components/LocationAutocomplete";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -40,9 +41,10 @@ export default function TourDetails() {
     date: null,
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [errorV, setErrorV] = useState(null);
   const [saving, setSaving] = useState(false);
   const token = localStorage.getItem("token");
+  const { success, error, warning, info } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,7 +91,7 @@ export default function TourDetails() {
         });
       } catch (err) {
         console.error("Greška pri učitavanju podataka:", err);
-        setError("Greška pri učitavanju podataka");
+        error("Greška pri učitavanju podataka");
       } finally {
         setLoading(false);
       }
@@ -105,11 +107,11 @@ export default function TourDetails() {
     );
   }
 
-  if (error) {
+  if (errorV) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
+          {errorV}
         </div>
       </div>
     );
@@ -163,11 +165,15 @@ export default function TourDetails() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert("Tura uspešno ažurirana!");
+      success("Tura uspešno ažurirana!");
       setTimeout(() => navigate("/my-tours"), 800);
     } catch (err) {
-      console.error("Greška pri ažuriranju ture:", err);
-      alert(err.response?.data?.message || "Greška prilikom ažuriranja ture");
+      console.error(
+        "Greška pri ažuriranju ture:",
+        err,
+        err.response?.data?.message
+      );
+      error("Greška prilikom ažuriranja ture");
     } finally {
       setSaving(false);
     }

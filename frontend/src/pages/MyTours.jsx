@@ -57,6 +57,7 @@ export default function MyTours() {
     data: null,
   });
   const { success, error, warning, info } = useToast();
+  const [expandedNotes, setExpandedNotes] = useState({}); // stanje za sve napomene
   const navigate = useNavigate();
 
   // WebSocket efekti za real-time ažuriranja
@@ -387,9 +388,16 @@ export default function MyTours() {
     ];
     return colors[index % colors.length];
   };
-  const truncateText = (text, maxLength = 60) => {
+  const toggleNote = (id) => {
+    setExpandedNotes((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const truncate = (text, maxLength) => {
     if (!text) return "";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+    return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
   };
 
   // Funkcija za renderovanje status badge-a
@@ -989,7 +997,20 @@ export default function MyTours() {
                       {/* Napomena */}
                       {tour.note && (
                         <div className="text-gray-600 italic">
-                          {truncateText(tour.note, 60)}
+                          {expandedNotes[tour._id]
+                            ? tour.note
+                            : truncate(tour.note, 60)}
+
+                          {tour.note.length > 60 && (
+                            <button
+                              onClick={() => toggleNote(tour._id)}
+                              className="ml-2 text-blue-600 hover:underline focus:outline-none"
+                            >
+                              {expandedNotes[tour._id]
+                                ? "Prikaži manje"
+                                : "Prikaži više"}
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>

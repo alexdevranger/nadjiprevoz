@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../components/ToastContext";
 
 import {
   FaCar,
@@ -32,6 +33,7 @@ export default function AddVehicle() {
     image2: null,
   });
   const [uploading, setUploading] = useState(false);
+  const { success, error, warning, info } = useToast();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,11 +92,11 @@ export default function AddVehicle() {
       });
 
       console.log("Dodato vozilo:", res.data);
-      alert("Vozilo uspešno dodato!");
+      success("Vozilo uspešno dodato!");
       navigate("/my-vehicles");
     } catch (err) {
       console.error(err);
-      alert("Greška pri dodavanju vozila");
+      error("Greška pri dodavanju vozila");
     } finally {
       setUploading(false);
     }

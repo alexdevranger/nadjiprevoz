@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setGlobalState, useGlobalState } from "../helper/globalState";
+import { useToast } from "../components/ToastContext";
 import axios from "axios";
 
 import {
@@ -52,6 +53,7 @@ export default function Dashboard() {
     name: "",
     company: "",
   });
+  const { success, error, warning, info } = useToast();
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
@@ -852,12 +854,12 @@ export default function Dashboard() {
     // }
 
     if (!shopName.trim()) {
-      alert("Unesite naziv shopa!");
+      success("Unesite naziv shopa!");
       return;
     }
 
     if (slugAvailable === false) {
-      alert("Izaberite drugi naziv, ovaj je već zauzet!");
+      success("Izaberite drugi naziv, ovaj je već zauzet!");
       return;
     }
 
@@ -875,11 +877,15 @@ export default function Dashboard() {
       setShop(res.data);
       setShowCreateShop(false);
       setShopName("");
-      alert("Shop uspešno kreiran!");
+      success("Shop uspešno kreiran!");
       navigate("/my-shop");
     } catch (err) {
-      console.error("Greška pri kreiranju shopa:", err);
-      alert(err.response?.data?.message || "Greška pri kreiranju shopa");
+      console.error(
+        "Greška pri kreiranju shopa:",
+        err,
+        err.response?.data?.message
+      );
+      error("Greška pri kreiranju shopa");
     }
   };
 
@@ -894,11 +900,15 @@ export default function Dashboard() {
         setHasShop(false);
         setShop(null);
         setShowDeleteConfirm(false);
-        alert("Shop uspešno obrisan!");
+        success("Shop uspešno obrisan!");
       }
     } catch (err) {
-      console.error("Greška pri brisanju shopa:", err);
-      alert(err.response?.data?.message || "Greška pri brisanju shopa");
+      console.error(
+        "Greška pri brisanju shopa:",
+        err,
+        err.response?.data?.message
+      );
+      error("Greška pri brisanju shopa");
     }
   };
 

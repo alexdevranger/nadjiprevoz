@@ -251,7 +251,7 @@ export default function MyVehicles() {
       fetchVehicles();
     } catch (err) {
       console.error("Greška pri čuvanju slike:", err);
-      alert("Greška pri čuvanju slike");
+      error("Greška pri čuvanju slike");
     }
   };
 

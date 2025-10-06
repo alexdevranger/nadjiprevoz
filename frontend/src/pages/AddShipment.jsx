@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import srLatin from "../helper/sr-latin";
 import "react-datepicker/dist/react-datepicker.css";
 import { useGlobalState } from "../helper/globalState";
+import { useToast } from "../components/ToastContext";
 import LocationAutocomplete from "../components/LocationAutocomplete";
 import {
   FaPlus,
@@ -40,6 +41,7 @@ export default function AddShipment() {
     isPremium: false,
   });
   const [loading, setLoading] = useState(false);
+  const { success, error, warning, info } = useToast();
   const [startCoords, setStartCoords] = useState("");
   const [endCoords, setEndCoords] = useState("");
   const [distanceInfo, setDistanceInfo] = useState(null);
@@ -143,7 +145,7 @@ export default function AddShipment() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert("Zahtev uspešno poslat!");
+      success("Zahtev uspešno poslat!");
 
       // Resetuj formu
       setForm({
@@ -164,8 +166,8 @@ export default function AddShipment() {
         navigate("/my-shipments");
       }, 1000);
     } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.error || "Greška pri slanju zahteva");
+      console.error(err, err.response?.data?.error);
+      error("Greška pri slanju zahteva");
     } finally {
       setLoading(false);
     }

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobalState } from "../helper/globalState";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { format } from "date-fns";
+import { useToast } from "../components/ToastContext";
 import srLatin from "../helper/sr-latin";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -46,7 +47,8 @@ export default function AllTours() {
   const [userConvs, setUserConvs] = useState(new Set());
   const [vehicles, setVehicles] = useState([]);
   const [hideMyTours, setHideMyTours] = useState(false);
-
+  const [expandedNotes, setExpandedNotes] = useState(false);
+  const { success, error, warning, info } = useToast();
   // Funkcija za resetovanje stranice kada se promeni filter
   const handleFilterChange = (setter) => (value) => {
     setter(value);
@@ -58,7 +60,7 @@ export default function AllTours() {
     const tourId = tour._id;
 
     if (String(otherUserId) === String(user._id)) {
-      alert("Ne možete poslati poruku sami sebi.");
+      warning("Ne možete poslati poruku sami sebi.");
       return;
     }
     try {
@@ -73,7 +75,7 @@ export default function AllTours() {
       navigate("/chat", { state: { conversationId: conv._id } });
     } catch (err) {
       console.error(err);
-      alert("Greška pri otvaranju konverzacije");
+      error("Greška pri otvaranju konverzacije");
     }
   }
 
@@ -155,10 +157,10 @@ export default function AllTours() {
         await axios.delete(`/api/tours/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        alert("Tura obrisana");
+        success("Tura obrisana");
         fetchTours();
       } catch (err) {
-        alert("Greška prilikom brisanja ture");
+        error("Greška prilikom brisanja ture");
       }
     }
   };
@@ -190,7 +192,13 @@ export default function AllTours() {
   const uniqueVehicleTypes = [
     ...new Set((totalTours || []).map((t) => t.vehicle?.type).filter(Boolean)),
   ];
-
+  const toggleNote = (id) => {
+    setExpandedNotes((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+  const truncate = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
+  };
   const totalPages = Math.ceil(total / limit);
 
   return (
@@ -232,7 +240,7 @@ export default function AllTours() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Datum */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" />
                 Datum
               </label>
@@ -250,7 +258,7 @@ export default function AllTours() {
 
             {/* Vrsta vozila */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaTruck className="text-green-500 mr-2" />
                 Vrsta vozila
               </label>
@@ -272,7 +280,7 @@ export default function AllTours() {
 
             {/* Nosivost */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaWeightHanging className="text-purple-500 mr-2" />
                 Nosivost (kg)
               </label>
@@ -290,7 +298,7 @@ export default function AllTours() {
 
             {/* Lokacija */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" />
                 Početna lokacija
               </label>
@@ -452,12 +460,33 @@ export default function AllTours() {
                             )}
                           </div>
                         )}
-
                         {tour.note && (
+                          <div className="text-gray-600 italic flex items-start">
+                            <div>
+                              {expandedNotes
+                                ? tour.note
+                                : truncate(tour.note, 60)}
+
+                              {tour.note.length > 60 && (
+                                <button
+                                  onClick={() =>
+                                    setExpandedNotes(!expandedNotes)
+                                  }
+                                  className="ml-2 text-blue-600 hover:underline focus:outline-none text-sm"
+                                >
+                                  {expandedNotes
+                                    ? "Prikaži manje"
+                                    : "Prikaži više"}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        {/* {tour.note && (
                           <div className="text-gray-600 italic">
                             {tour.note}
                           </div>
-                        )}
+                        )} */}
                       </div>
 
                       {/* Dugmad */}

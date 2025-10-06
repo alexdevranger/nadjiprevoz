@@ -1007,6 +1007,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
+import { useToast } from "../components/ToastContext";
 import { Link } from "react-router-dom";
 import {
   FaPlus,
@@ -1050,6 +1051,7 @@ const ShopDashboard = () => {
   const [uploading, setUploading] = useState(false);
   const [slugAvailable, setSlugAvailable] = useState(null);
   const [helpText, setHelpText] = useState(null);
+  const { success, error, warning, info } = useToast();
 
   useEffect(() => {
     fetchShopData();
@@ -1107,16 +1109,16 @@ const ShopDashboard = () => {
       });
       setShop(res.data);
       setEditing(false);
-      alert("Podaci uspešno sačuvani!");
+      success("Podaci uspešno sačuvani!");
     } catch (err) {
       console.error("Greška pri čuvanju podataka:", err);
-      alert("Greška pri čuvanju podataka");
+      error("Greška pri čuvanju podataka");
     }
   };
 
   const handleAddService = async () => {
     if (!newService.name.trim()) {
-      alert("Unesite naziv usluge!");
+      success("Unesite naziv usluge!");
       return;
     }
 
@@ -1137,7 +1139,7 @@ const ShopDashboard = () => {
       setNewService({ name: "", description: "" });
     } catch (err) {
       console.error("Greška pri dodavanju usluge:", err);
-      alert("Greška pri dodavanju usluge");
+      error("Greška pri dodavanju usluge");
     }
   };
 
@@ -1163,7 +1165,7 @@ const ShopDashboard = () => {
       });
     } catch (err) {
       console.error("Greška pri brisanju usluge:", err);
-      alert("Greška pri brisanju usluge");
+      error("Greška pri brisanju usluge");
     }
   };
 
@@ -1203,11 +1205,11 @@ const ShopDashboard = () => {
           contact: updateResponse.data.contact || {},
           socialMedia: updateResponse.data.socialMedia || {},
         });
-        alert("Logo uspešno uploadovan i sačuvan!");
+        success("Logo uspešno uploadovan i sačuvan!");
       }
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Greška pri uploadu logoa");
+      error("Greška pri uploadu logoa");
     } finally {
       setUploading(false);
     }
@@ -1238,11 +1240,11 @@ const ShopDashboard = () => {
           contact: updateResponse.data.contact || {},
           socialMedia: updateResponse.data.socialMedia || {},
         });
-        alert("Logo uspešno obrisan!");
+        success("Logo uspešno obrisan!");
       }
     } catch (error) {
       console.error("Delete error:", error);
-      alert("Greška pri brisanju logoa");
+      error("Greška pri brisanju logoa");
     }
   };
 
