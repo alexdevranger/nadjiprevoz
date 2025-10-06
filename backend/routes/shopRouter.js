@@ -39,11 +39,11 @@ shopRouter.post("/", authMiddleware, async (req, res) => {
 
     // Proveri da li korisnik ima vozila
     const userVehicles = await Vehicle.find({ userId: req.user.id });
-    if (userVehicles.length === 0) {
-      return res.status(400).json({
-        message: "Morate imati bar jedno vozilo da biste kreirali shop",
-      });
-    }
+    // if (userVehicles.length === 0) {
+    //   return res.status(400).json({
+    //     message: "Morate imati bar jedno vozilo da biste kreirali shop",
+    //   });
+    // }
 
     // Automatski generiši slug
     let slug = name

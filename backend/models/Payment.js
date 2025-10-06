@@ -8,7 +8,7 @@ const paymentSchema = new mongoose.Schema(
     referenceNumber: { type: String, required: true, unique: true }, // poziv na broj
     status: {
       type: String,
-      enum: ["pending", "paid", "rejected"],
+      enum: ["none", "pending", "paid", "rejected", "expired"],
       default: "pending",
     },
     paymentDate: { type: Date }, // dodato - datum kada je uplata potvrđena

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../components/Header";
+import { useToast } from "../components/ToastContext";
 import moment from "moment";
 import { socket } from "../App";
 
@@ -15,6 +16,7 @@ export default function Payments() {
     paymentType: null, // 'tour' ili 'shipment'
     adminNotes: "",
   });
+  const { success, error, warning, info } = useToast();
 
   // WebSocket efekti za real-time ažuriranja
   useEffect(() => {
@@ -29,8 +31,8 @@ export default function Payments() {
       }
 
       // Prikaži notifikaciju
-      alert(
-        `📨 Novi payment zahtev za ${data.type === "tour" ? "tur" : "zahtev"}`
+      success(
+        `📨 Novi payment zahtev za ${data.type === "tour" ? "turu" : "zahtev"}`
       );
     });
 
@@ -129,6 +131,32 @@ export default function Payments() {
     }
   };
 
+  const handleResetTourPremium = async (id) => {
+    if (
+      !window.confirm(
+        "Da li ste sigurni da želite da vratite status na 'none'?"
+      )
+    )
+      return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `/api/payments/${id}/resetTourPremium`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      success(res.data.message);
+      await fetchPayments(); // osveži tabelu
+    } catch (err) {
+      console.error("Greška prilikom resetovanja statusa:", err);
+      error(
+        err.response?.data?.message || "Došlo je do greške pri resetovanju."
+      );
+    }
+  };
+
   const openRejectModal = (paymentId, paymentType = "tour") => {
     setRejectModal({
       open: true,
@@ -151,7 +179,7 @@ export default function Payments() {
     if (!rejectModal.paymentId) return;
 
     if (!rejectModal.adminNotes.trim()) {
-      alert("Molimo unesite razlog odbijanja.");
+      info("Molimo unesite razlog odbijanja.");
       return;
     }
 
@@ -173,10 +201,10 @@ export default function Payments() {
 
       await fetchPayments();
       closeRejectModal();
-      alert("Uplata je odbijena.");
+      error("Uplata je odbijena.");
     } catch (err) {
       console.error("Greška prilikom odbijanja uplate", err);
-      alert("Došlo je do greške prilikom odbijanja uplate.");
+      error("Došlo je do greške prilikom odbijanja uplate.");
     }
   };
 
@@ -319,7 +347,28 @@ export default function Payments() {
                     {p.amount} RSD
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
+                    {p.status === "none" ? (
+                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
+                        —
+                      </span>
+                    ) : (
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          p.status === "paid"
+                            ? "bg-green-100 text-green-800"
+                            : p.status === "rejected"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {p.status === "paid"
+                          ? "Potvrđena"
+                          : p.status === "rejected"
+                          ? "Odbijena"
+                          : "Na čekanju"}
+                      </span>
+                    )}
+                    {/* <span
                       className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         p.status === "paid"
                           ? "bg-green-100 text-green-800"
@@ -333,7 +382,7 @@ export default function Payments() {
                         : p.status === "rejected"
                         ? "Odbijena"
                         : "Na čekanju"}
-                    </span>
+                    </span> */}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {p.tour?.premiumExpiresAt
@@ -345,24 +394,38 @@ export default function Payments() {
                     {p.adminNotes || "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    {p.status === "pending" && (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleConfirm(p._id)}
-                          className="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded text-sm font-medium transition-colors"
-                        >
-                          Potvrdi
-                        </button>
-                        <button
-                          onClick={() => openRejectModal(p._id, "tour")}
-                          className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded text-sm font-medium transition-colors"
-                        >
-                          Odbij
-                        </button>
-                      </div>
-                    )}
-                    {p.status !== "pending" && (
+                    {p.status === "none" ? (
                       <span className="text-gray-400">Nema akcija</span>
+                    ) : (
+                      <div className="flex gap-2 flex-wrap">
+                        {/* Dugmad za pending */}
+                        {p.status === "pending" && (
+                          <>
+                            <button
+                              onClick={() => handleConfirm(p._id)}
+                              className="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded text-sm font-medium transition-colors"
+                            >
+                              Potvrdi
+                            </button>
+                            <button
+                              onClick={() => openRejectModal(p._id, "tour")}
+                              className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded text-sm font-medium transition-colors"
+                            >
+                              Odbij
+                            </button>
+                          </>
+                        )}
+
+                        {/* Dugme Reset za sve osim none */}
+                        {p.status !== "none" && (
+                          <button
+                            onClick={() => handleResetTourPremium(p._id)}
+                            className="text-yellow-600 hover:text-yellow-900 bg-yellow-50 hover:bg-yellow-100 px-3 py-1 rounded text-sm font-medium transition-colors"
+                          >
+                            Reset
+                          </button>
+                        )}
+                      </div>
                     )}
                   </td>
                 </tr>

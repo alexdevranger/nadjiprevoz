@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalState } from "../helper/globalState";
 import { useToast } from "../components/ToastContext";
+import PaymentModal from "../components/PaymentModal";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import srLatin from "../helper/sr-latin";
@@ -106,7 +107,13 @@ export default function MyTours() {
               ? {
                   ...tour,
                   premiumStatus:
-                    data.status === "paid" ? "approved" : "rejected",
+                    data.status === "paid"
+                      ? "approved"
+                      : data.status === "none"
+                      ? "none"
+                      : data.status === "expired"
+                      ? "expired"
+                      : "rejected",
                   isPremium: data.status === "paid",
                   payment: {
                     ...tour.payment,
@@ -125,7 +132,13 @@ export default function MyTours() {
               ? {
                   ...tour,
                   premiumStatus:
-                    data.status === "paid" ? "approved" : "rejected",
+                    data.status === "paid"
+                      ? "approved"
+                      : data.status === "none"
+                      ? "none"
+                      : data.status === "expired"
+                      ? "expired"
+                      : "rejected",
                   isPremium: data.status === "paid",
                   payment: {
                     ...tour.payment,
@@ -137,13 +150,17 @@ export default function MyTours() {
           )
         );
 
-        // Prikaži notifikaciju
+        // 🔔 Notifikacije prema statusu
         if (data.status === "paid") {
           success("🎉 Vaš premium zahtev je odobren! Tura je sada premium.");
         } else if (data.status === "rejected") {
           warning(
             "❌ Vaš premium zahtev je odbijen. Proverite razlog odbijanja."
           );
+        } else if (data.status === "none") {
+          info("🔄 Vaša tura je resetovana na početno stanje.");
+        } else if (data.status === "expired") {
+          warning("⌛ Vaš premium status je istekao.");
         }
       }
     });
@@ -506,231 +523,239 @@ export default function MyTours() {
 
         {/* Payment Modal */}
         {paymentModal.open && paymentModal.data && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl max-w-md w-full mx-auto">
-              {/* Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="bg-white bg-opacity-20 p-2 rounded-lg mr-3">
-                      <FaCrown className="text-xl" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold">Premium Uplata</h3>
-                      <p className="text-blue-100 text-sm mt-1">
-                        Podaci za uplatu premium paketa
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={closePaymentModal}
-                    className="text-white hover:text-blue-200 transition-colors"
-                  >
-                    <FaTimes className="text-xl" />
-                  </button>
-                </div>
-              </div>
+          // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          //   <div className="bg-white rounded-xl max-w-md w-full mx-auto">
+          //     {/* Header */}
+          //     <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl">
+          //       <div className="flex items-center justify-between">
+          //         <div className="flex items-center">
+          //           <div className="bg-white bg-opacity-20 p-2 rounded-lg mr-3">
+          //             <FaCrown className="text-xl" />
+          //           </div>
+          //           <div>
+          //             <h3 className="text-xl font-bold">Premium Uplata</h3>
+          //             <p className="text-blue-100 text-sm mt-1">
+          //               Podaci za uplatu premium paketa
+          //             </p>
+          //           </div>
+          //         </div>
+          //         <button
+          //           onClick={closePaymentModal}
+          //           className="text-white hover:text-blue-200 transition-colors"
+          //         >
+          //           <FaTimes className="text-xl" />
+          //         </button>
+          //       </div>
+          //     </div>
 
-              {/* Content */}
-              <div className="p-6">
-                {/* IPS Banner */}
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 mb-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="bg-green-600 text-white p-2 rounded-lg mr-3">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 10V3L4 14h7v7l9-11h-7z"
-                          />
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-green-800">
-                          Instant Payments Serbia
-                        </h4>
-                        <p className="text-green-600 text-sm">
-                          NBS IPS QR Code
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-gray-500">Supported by</div>
-                      <div className="font-semibold text-blue-700">
-                        National Bank of Serbia
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          //     {/* Content */}
+          //     <div className="p-6">
+          //       {/* IPS Banner */}
+          //       <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 mb-6">
+          //         <div className="flex items-center justify-between">
+          //           <div className="flex items-center">
+          //             <div className="bg-green-600 text-white p-2 rounded-lg mr-3">
+          //               <svg
+          //                 className="w-6 h-6"
+          //                 fill="none"
+          //                 stroke="currentColor"
+          //                 viewBox="0 0 24 24"
+          //               >
+          //                 <path
+          //                   strokeLinecap="round"
+          //                   strokeLinejoin="round"
+          //                   strokeWidth={2}
+          //                   d="M13 10V3L4 14h7v7l9-11h-7z"
+          //                 />
+          //               </svg>
+          //             </div>
+          //             <div>
+          //               <h4 className="font-semibold text-green-800">
+          //                 Instant Payments Serbia
+          //               </h4>
+          //               <p className="text-green-600 text-sm">
+          //                 NBS IPS QR Code
+          //               </p>
+          //             </div>
+          //           </div>
+          //           <div className="text-right">
+          //             <div className="text-xs text-gray-500">Supported by</div>
+          //             <div className="font-semibold text-blue-700">
+          //               National Bank of Serbia
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
 
-                {/* Payment Details */}
-                <div className="space-y-4">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-600">
-                        Iznos:
-                      </span>
-                      <button
-                        onClick={() =>
-                          copyToClipboard(paymentModal.data.amount.toString())
-                        }
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
-                        title="Kopiraj iznos"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    <p className="text-2xl font-bold text-gray-800">
-                      {paymentModal.data.amount} RSD
-                    </p>
-                  </div>
+          //       {/* Payment Details */}
+          //       <div className="space-y-4">
+          //         <div className="bg-gray-50 rounded-lg p-4">
+          //           <div className="flex justify-between items-center mb-2">
+          //             <span className="text-sm font-medium text-gray-600">
+          //               Iznos:
+          //             </span>
+          //             <button
+          //               onClick={() =>
+          //                 copyToClipboard(paymentModal.data.amount.toString())
+          //               }
+          //               className="text-blue-600 hover:text-blue-800 transition-colors"
+          //               title="Kopiraj iznos"
+          //             >
+          //               <svg
+          //                 className="w-4 h-4"
+          //                 fill="none"
+          //                 stroke="currentColor"
+          //                 viewBox="0 0 24 24"
+          //               >
+          //                 <path
+          //                   strokeLinecap="round"
+          //                   strokeLinejoin="round"
+          //                   strokeWidth={2}
+          //                   d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+          //                 />
+          //               </svg>
+          //             </button>
+          //           </div>
+          //           <p className="text-2xl font-bold text-gray-800">
+          //             {paymentModal.data.amount} RSD
+          //           </p>
+          //         </div>
 
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-600">
-                        Broj računa:
-                      </span>
-                      <button
-                        onClick={() =>
-                          copyToClipboard(paymentModal.data.accountNumber)
-                        }
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
-                        title="Kopiraj broj računa"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    <p className="text-lg font-mono text-gray-800">
-                      {paymentModal.data.accountNumber}
-                    </p>
-                  </div>
+          //         <div className="bg-gray-50 rounded-lg p-4">
+          //           <div className="flex justify-between items-center mb-2">
+          //             <span className="text-sm font-medium text-gray-600">
+          //               Broj računa:
+          //             </span>
+          //             <button
+          //               onClick={() =>
+          //                 copyToClipboard(paymentModal.data.accountNumber)
+          //               }
+          //               className="text-blue-600 hover:text-blue-800 transition-colors"
+          //               title="Kopiraj broj računa"
+          //             >
+          //               <svg
+          //                 className="w-4 h-4"
+          //                 fill="none"
+          //                 stroke="currentColor"
+          //                 viewBox="0 0 24 24"
+          //               >
+          //                 <path
+          //                   strokeLinecap="round"
+          //                   strokeLinejoin="round"
+          //                   strokeWidth={2}
+          //                   d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+          //                 />
+          //               </svg>
+          //             </button>
+          //           </div>
+          //           <p className="text-lg font-mono text-gray-800">
+          //             {paymentModal.data.accountNumber}
+          //           </p>
+          //         </div>
 
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-600">
-                        Poziv na broj:
-                      </span>
-                      <button
-                        onClick={() =>
-                          copyToClipboard(paymentModal.data.referenceNumber)
-                        }
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
-                        title="Kopiraj poziv na broj"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    <p className="text-lg font-mono text-gray-800">
-                      {paymentModal.data.referenceNumber}
-                    </p>
-                  </div>
-                </div>
+          //         <div className="bg-gray-50 rounded-lg p-4">
+          //           <div className="flex justify-between items-center mb-2">
+          //             <span className="text-sm font-medium text-gray-600">
+          //               Poziv na broj:
+          //             </span>
+          //             <button
+          //               onClick={() =>
+          //                 copyToClipboard(paymentModal.data.referenceNumber)
+          //               }
+          //               className="text-blue-600 hover:text-blue-800 transition-colors"
+          //               title="Kopiraj poziv na broj"
+          //             >
+          //               <svg
+          //                 className="w-4 h-4"
+          //                 fill="none"
+          //                 stroke="currentColor"
+          //                 viewBox="0 0 24 24"
+          //               >
+          //                 <path
+          //                   strokeLinecap="round"
+          //                   strokeLinejoin="round"
+          //                   strokeWidth={2}
+          //                   d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+          //                 />
+          //               </svg>
+          //             </button>
+          //           </div>
+          //           <p className="text-lg font-mono text-gray-800">
+          //             {paymentModal.data.referenceNumber}
+          //           </p>
+          //         </div>
+          //       </div>
 
-                {/* QR Code Placeholder - možeš dodati pravi QR kasnije */}
-                <div className="mt-6 p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center">
-                  <div className="text-gray-500 mb-2">
-                    <svg
-                      className="w-12 h-12 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1}
-                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
-                      />
-                    </svg>
-                  </div>
-                  <p className="text-sm text-gray-600">IPS QR Code</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Skenirajte za brzu uplatu
-                  </p>
-                </div>
+          //       {/* QR Code Placeholder - možeš dodati pravi QR kasnije */}
+          //       <div className="mt-6 p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center">
+          //         <div className="text-gray-500 mb-2">
+          //           <svg
+          //             className="w-12 h-12 mx-auto"
+          //             fill="none"
+          //             stroke="currentColor"
+          //             viewBox="0 0 24 24"
+          //           >
+          //             <path
+          //               strokeLinecap="round"
+          //               strokeLinejoin="round"
+          //               strokeWidth={1}
+          //               d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+          //             />
+          //           </svg>
+          //         </div>
+          //         <p className="text-sm text-gray-600">IPS QR Code</p>
+          //         <p className="text-xs text-gray-500 mt-1">
+          //           Skenirajte za brzu uplatu
+          //         </p>
+          //       </div>
 
-                {/* Action Buttons */}
-                <div className="flex gap-3 mt-6">
-                  <button
-                    onClick={copyAllPaymentData}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors flex items-center justify-center font-medium"
-                  >
-                    <svg
-                      className="w-5 h-5 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                    Kopiraj sve
-                  </button>
-                  <button
-                    onClick={closePaymentModal}
-                    className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg transition-colors font-medium"
-                  >
-                    Zatvori
-                  </button>
-                </div>
+          //       {/* Action Buttons */}
+          //       <div className="flex gap-3 mt-6">
+          //         <button
+          //           onClick={copyAllPaymentData}
+          //           className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors flex items-center justify-center font-medium"
+          //         >
+          //           <svg
+          //             className="w-5 h-5 mr-2"
+          //             fill="none"
+          //             stroke="currentColor"
+          //             viewBox="0 0 24 24"
+          //           >
+          //             <path
+          //               strokeLinecap="round"
+          //               strokeLinejoin="round"
+          //               strokeWidth={2}
+          //               d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+          //             />
+          //           </svg>
+          //           Kopiraj sve
+          //         </button>
+          //         <button
+          //           onClick={closePaymentModal}
+          //           className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg transition-colors font-medium"
+          //         >
+          //           Zatvori
+          //         </button>
+          //       </div>
 
-                {/* Instructions */}
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-sm text-yellow-800 text-center">
-                    📋 Nakon uplate, premium status će biti aktiviran u roku od
-                    24h
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          //       {/* Instructions */}
+          //       <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          //         <p className="text-sm text-yellow-800 text-center">
+          //           📋 Nakon uplate, premium status će biti aktiviran u roku od
+          //           24h
+          //         </p>
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+          <PaymentModal
+            open={paymentModal.open}
+            data={paymentModal.data}
+            onClose={closePaymentModal}
+            copyToClipboard={copyToClipboard}
+            copyAllPaymentData={copyAllPaymentData}
+            user={user}
+          />
         )}
 
         {/* Header */}

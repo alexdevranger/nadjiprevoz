@@ -119,9 +119,9 @@ export default function MyShipments() {
 
         // Prikaži notifikaciju
         if (data.status === "paid") {
-          alert("🎉 Vaš premium zahtev je odobren! Zahtev je sada premium.");
+          success("🎉 Vaš premium zahtev je odobren! Zahtev je sada premium.");
         } else if (data.status === "rejected") {
-          alert(
+          error(
             "❌ Vaš premium zahtev je odbijen. Proverite razlog odbijanja."
           );
         }
@@ -218,7 +218,7 @@ export default function MyShipments() {
       );
 
       if (hasPendingPayment) {
-        alert("Zahtev je već poslat. Sačekajte odobrenje admina.");
+        info("Zahtev je već poslat. Sačekajte odobrenje admina.");
         return;
       }
 
@@ -232,7 +232,7 @@ export default function MyShipments() {
       console.log(
         `Uplatite ${data.amount} RSD na račun ${data.accountNumber}, poziv na broj: ${data.referenceNumber}`
       );
-      alert(
+      success(
         `Uplatite ${data.amount} RSD na račun ${data.accountNumber}, poziv na broj: ${data.referenceNumber}`
       );
 
@@ -255,9 +255,9 @@ export default function MyShipments() {
     } catch (err) {
       console.log(err);
       if (err.response?.status === 400) {
-        alert("Zahtev je već poslat. Sačekajte odobrenje admina.");
+        info("Zahtev je već poslat. Sačekajte odobrenje admina.");
       } else {
-        alert("Greška pri generisanju uplate");
+        error("Greška pri generisanju uplate");
       }
     }
   };
@@ -280,8 +280,9 @@ export default function MyShipments() {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchRequests();
-    } catch {
-      alert("Greška prilikom brisanja zahteva.");
+    } catch (err) {
+      console.log(err);
+      error("Greška prilikom brisanja zahteva.");
     }
   };
 

@@ -22,6 +22,7 @@ import adminSettingsRoutes from "./routes/adminSettings.js";
 import paymentsRoutes from "./routes/payments.js";
 import imagesRoutes from "./routes/imagesRoutes.js";
 import shopRouter from "./routes/shopRouter.js";
+import ipsRouter from "./routes/ips.js";
 import Message from "./models/Message.js";
 import Conversation from "./models/Conversation.js";
 import webpush from "web-push";
@@ -220,5 +221,6 @@ app.use("/api/sponsor-ads", adminSponsorAds);
 app.use("/api/payments", paymentsRoutes);
 app.use("/api/images", imagesRoutes);
 app.use("/api/shop", shopRouter);
+app.use("/api/ips", ipsRouter);
 
 server.listen(port, () => console.log(`Backend listening on ${port}`));

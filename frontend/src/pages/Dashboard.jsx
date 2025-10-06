@@ -500,12 +500,12 @@ export default function Dashboard() {
               ) : (
                 <div
                   onClick={() => {
-                    if (vehicles.length === 0) {
-                      alert(
-                        "Morate imati bar jedno vozilo da biste kreirali shop!"
-                      );
-                      return;
-                    }
+                    // if (vehicles.length === 0) {
+                    //   alert(
+                    //     "Morate imati bar jedno vozilo da biste kreirali shop!"
+                    //   );
+                    //   return;
+                    // }
                     setShowCreateShop(true);
                   }}
                 >
@@ -515,12 +515,12 @@ export default function Dashboard() {
                     description="Kreirajte svoj shop/portfolio"
                     color="border-l-green-500"
                     onClick={() => {
-                      if (vehicles.length === 0) {
-                        alert(
-                          "Morate imati bar jedno vozilo da biste kreirali shop!"
-                        );
-                        return;
-                      }
+                      // if (vehicles.length === 0) {
+                      //   alert(
+                      //     "Morate imati bar jedno vozilo da biste kreirali shop!"
+                      //   );
+                      //   return;
+                      // }
                       setShowCreateShop(true);
                     }}
                   />
@@ -846,10 +846,10 @@ export default function Dashboard() {
 
   // Kreiranje shopa
   const handleCreateShop = async () => {
-    if (vehicles.length === 0) {
-      alert("Morate imati bar jedno vozilo da biste kreirali shop!");
-      return;
-    }
+    // if (vehicles.length === 0) {
+    //   alert("Morate imati bar jedno vozilo da biste kreirali shop!");
+    //   return;
+    // }
 
     if (!shopName.trim()) {
       alert("Unesite naziv shopa!");

@@ -45,9 +45,8 @@ router.post("/initiateTourPremium", authMiddleware, async (req, res) => {
     });
 
     // Generišemo jedinstveni poziv na broj
-    const referenceNumber = `PREM-${tourId}-${Math.floor(
-      Math.random() * 10000
-    )}`;
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-cifreni broj
+    const referenceNumber = `00${randomNum}PREM${tourId}`.slice(0, 20);
 
     const payment = new Payment({
       user: userId,
@@ -71,7 +70,7 @@ router.post("/initiateTourPremium", authMiddleware, async (req, res) => {
 
     res.json({
       message: "Uputstvo za uplatu generisano",
-      accountNumber: "160-123456789-12", // tvoj broj računa
+      accountNumber: "265110031008170359", // tvoj broj računa
       amount: payment.amount,
       referenceNumber: payment.referenceNumber,
       tourId,
@@ -366,6 +365,116 @@ router.put(
     }
   }
 );
+
+// ✅ RESETUJ Tour premium status i Payment status na "none"
+// router.put("/:id/resetTourPremium", adminAuthMiddleware, async (req, res) => {
+//   try {
+//     const payment = await Payment.findById(req.params.id).populate("tour");
+
+//     if (!payment) {
+//       return res.status(404).json({ message: "Uplata nije pronađena" });
+//     }
+
+//     if (!payment.tour) {
+//       return res
+//         .status(400)
+//         .json({ message: "Nema povezane ture sa ovom uplatom" });
+//     }
+
+//     // Resetuj Payment
+//     payment.status = "none";
+//     await payment.save();
+
+//     // Resetuj Tour
+//     const tour = await Tour.findById(payment.tour._id);
+//     if (tour) {
+//       tour.isPremium = false;
+//       tour.premiumStatus = "none";
+//       payment.paymentDate = null;
+//       tour.premiumExpiresAt = null;
+//       await tour.save();
+//     }
+
+//     // Emituj event za osveženje
+//     emitPaymentEvent("paymentUpdated", {
+//       paymentId: payment._id,
+//       type: "tour",
+//       status: "none",
+//     });
+
+//     res.json({
+//       message: "Tour premium status i uplata vraćeni na 'none'.",
+//       payment,
+//       tour,
+//     });
+//   } catch (err) {
+//     console.error("Greška pri resetovanju:", err);
+//     res.status(500).json({ message: "Greška na serveru" });
+//   }
+// });
+router.put("/:id/resetTourPremium", adminAuthMiddleware, async (req, res) => {
+  try {
+    const payment = await Payment.findById(req.params.id)
+      .populate("tour")
+      .populate("user");
+
+    if (!payment) {
+      return res.status(404).json({ message: "Uplata nije pronađena" });
+    }
+
+    if (!payment.tour) {
+      return res
+        .status(400)
+        .json({ message: "Nema povezane ture sa ovom uplatom" });
+    }
+
+    // Resetuj Payment
+    payment.status = "none";
+    payment.adminNotes = ""; // opcionalno - brišemo admin napomene ako želiš čist reset
+    payment.paymentDate = null;
+    payment.premiumExpiresAt = null;
+    await payment.save();
+
+    // Resetuj Tour
+    const tour = await Tour.findById(payment.tour._id);
+    let updatedTour = null;
+    if (tour) {
+      tour.isPremium = false;
+      tour.premiumStatus = "none";
+      tour.premiumExpiresAt = null;
+      updatedTour = await tour.save();
+    }
+
+    // ✅ Emituj event za ADMIN dashboard
+    emitPaymentEvent("paymentUpdated", {
+      paymentId: payment._id,
+      type: "tour",
+      status: "none",
+      adminNotes: "",
+    });
+
+    // ✅ Emituj event SPECIFIČNOM KORISNIKU
+    if (payment.user && payment.user._id) {
+      emitPaymentEvent("myPaymentUpdated", {
+        paymentId: payment._id,
+        type: "tour",
+        status: "none",
+        adminNotes: "",
+        tourId: payment.tour?._id || payment.tour,
+        userId: payment.user._id,
+      });
+    }
+
+    res.json({
+      message: "Tour premium status i uplata vraćeni na 'none'.",
+      payment,
+      tour: updatedTour,
+    });
+  } catch (err) {
+    console.error("Greška pri resetovanju:", err);
+    res.status(500).json({ message: "Greška na serveru" });
+  }
+});
 
 // Promote oglas/turu na premium
 router.post("/admin/:id/promote", adminAuthMiddleware, async (req, res) => {

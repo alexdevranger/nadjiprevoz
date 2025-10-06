@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/DashboardLayout";
 import UserDetails from "./pages/UserDetails";
 import SponsorAds from "./pages/SponsorAds";
+import { ToastProvider } from "./components/ToastContext";
 
 // Kreirajte socket instancu za admin
 export const socket = io("http://localhost:4000", {
@@ -60,27 +61,29 @@ export default function App() {
 
   return (
     <HashRouter>
-      <Routes>
-        {/* Public */}
-        <Route path="/login" element={<Login />} />
+      <ToastProvider>
+        <Routes>
+          {/* Public */}
+          <Route path="/login" element={<Login />} />
 
-        {/* Protected (samo admin/moderator) */}
-        <Route element={<ProtectedRoute roles={["admin", "moderator"]} />}>
-          <Route element={<DashboardLayout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/users/:id" element={<UserDetails />} />
-            <Route path="/ads" element={<Ads />} />
-            <Route path="/sponsor-ads" element={<SponsorAds />} />
-            <Route path="/payments" element={<Payments />} />
-            <Route path="/settings" element={<Settings />} />
+          {/* Protected (samo admin/moderator) */}
+          <Route element={<ProtectedRoute roles={["admin", "moderator"]} />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/users/:id" element={<UserDetails />} />
+              <Route path="/ads" element={<Ads />} />
+              <Route path="/sponsor-ads" element={<SponsorAds />} />
+              <Route path="/payments" element={<Payments />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
           </Route>
-        </Route>
 
-        {/* Default redirect ako nije ništa od gore navedenog */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          {/* Default redirect ako nije ništa od gore navedenog */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </ToastProvider>
     </HashRouter>
   );
 }
