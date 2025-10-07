@@ -31,6 +31,7 @@ import Intro from "./pages/Intro";
 import ShopPage from "./components/ShopPage";
 import ShopDashboard from "./components/ShopDashboard";
 import { ToastProvider } from "./components/ToastContext";
+import Faq from "./pages/FAQ";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -87,6 +88,7 @@ export default function App() {
               <Route path="/map" element={<MapPage />} />
               <Route path="/add-vehicle" element={<AddVehicle />} />
               <Route path="/my-vehicles" element={<MyVehicles />} />
+              <Route path="/pitanja-i-odgovori" element={<Faq />} />
               <Route path="/allshipments" element={<AllShipments />} />
               <Route path="/add-shipment" element={<AddShipment />} />
               <Route path="/moja-vozila" element={<VozilaUser />} />

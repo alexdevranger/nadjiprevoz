@@ -133,6 +133,16 @@ export default function Navbar() {
           >
             <FaMap className="mr-1" /> Mapa
           </NavLink>
+          <NavLink
+            to="/pitanja-i-odgovori"
+            className={({ isActive }) =>
+              `flex items-center px-3 py-2 rounded-md transition-colors ${
+                isActive ? "bg-blue-700" : "hover:bg-blue-700"
+              }`
+            }
+          >
+            <FaMap className="mr-1" /> Pitanja i odgovori
+          </NavLink>
 
           <NavLink
             to="/alltours"
