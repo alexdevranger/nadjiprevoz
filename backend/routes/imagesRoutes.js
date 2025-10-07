@@ -82,6 +82,25 @@ router.post(
           .json({ message: "Nijedna slika nije uploadovana" });
       }
 
+      // Pronađi shop povezan sa korisnikom
+      const shop = await Shop.findOne({ userId: req.user.id });
+      if (!shop) {
+        return res.status(404).json({ message: "Shop nije pronađen" });
+      }
+
+      // Ako shop već ima logo, obriši ga iz Cloudinary
+      if (shop.logo) {
+        const oldPublicId = extractPublicIdFromUrl(shop.logo);
+        if (oldPublicId) {
+          try {
+            await cloudinary.uploader.destroy(oldPublicId);
+            console.log(`✅ Stari logo obrisan: ${oldPublicId}`);
+          } catch (deleteErr) {
+            console.error("⚠️ Greška pri brisanju starog logoa:", deleteErr);
+          }
+        }
+      }
+
       const b64 = Buffer.from(req.file.buffer).toString("base64");
       const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
 

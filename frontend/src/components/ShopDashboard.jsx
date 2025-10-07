@@ -1059,6 +1059,7 @@ const ShopDashboard = () => {
 
   const fetchShopData = async () => {
     try {
+      const token = localStorage.getItem("token");
       const shopRes = await axios.get("/api/shop", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1104,6 +1105,7 @@ const ShopDashboard = () => {
 
   const handleSave = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.put(`/api/shop/${shop._id}`, editData, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1123,6 +1125,7 @@ const ShopDashboard = () => {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.post(
         `/api/shop/${shop._id}/services`,
         newService,
@@ -1149,6 +1152,7 @@ const ShopDashboard = () => {
     ) {
       return;
     }
+    const token = localStorage.getItem("token");
 
     try {
       const res = await axios.delete(
@@ -1176,6 +1180,7 @@ const ShopDashboard = () => {
     setUploading(true);
     const formData = new FormData();
     formData.append("image", file);
+    const token = localStorage.getItem("token");
 
     try {
       const response = await axios.post(
@@ -1191,6 +1196,7 @@ const ShopDashboard = () => {
 
       if (response.data.success) {
         const newLogoUrl = response.data.imageUrl;
+        console.log("Uploaded image URL:", newLogoUrl);
         const updateResponse = await axios.put(
           `/api/shop/${shop._id}`,
           { ...editData, logo: newLogoUrl },
@@ -1198,7 +1204,7 @@ const ShopDashboard = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
+        console.log("Shop update response:", updateResponse.data);
         setShop(updateResponse.data);
         setEditData({
           ...updateResponse.data,
@@ -1219,6 +1225,7 @@ const ShopDashboard = () => {
     if (!window.confirm("Da li ste sigurni da želite da obrišete logo?")) {
       return;
     }
+    const token = localStorage.getItem("token");
 
     try {
       const response = await axios.delete("/api/images/delete-shop-logo", {
@@ -1578,6 +1585,8 @@ const ShopDashboard = () => {
                   <div className="text-sm text-gray-500">
                     {uploading
                       ? "📤 Uploaduje se..."
+                      : editData.logo || shop.logo
+                      ? "✅ Slika je odabrana"
                       : "📷 Nijedna slika nije odabrana"}
                   </div>
 

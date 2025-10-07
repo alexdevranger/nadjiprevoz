@@ -459,7 +459,45 @@ const ShopPage = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
             {/* Leva strana - Logo i osnovne informacije */}
             <div className="flex flex-col items-start gap-6">
-              {shop.logo ? (
+              <div className="flex items-center gap-6">
+                <div className="flex-shrink-0">
+                  {shop.logo ? (
+                    <img
+                      src={shop.logo}
+                      alt={shop.name}
+                      className="h-24 w-24 object-contain rounded-lg bg-white/10 p-2"
+                    />
+                  ) : (
+                    <div className="h-24 w-24 bg-blue-500 rounded-lg flex items-center justify-center text-white text-3xl font-bold">
+                      {shop.companyName?.charAt(0) ||
+                        shop.name?.charAt(0) ||
+                        "S"}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                    {shop.companyName || shop.name}
+                  </h1>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 bg-green-500/20 px-3 py-1 rounded-full border border-green-400/30">
+                      <FaCheckCircle className="text-green-400 text-sm" />
+                      <span className="text-green-300 text-sm font-medium">
+                        Verifikovano
+                      </span>
+                    </div>
+                    {shop.isActive === false && (
+                      <div className="flex items-center gap-1 bg-red-500/20 px-3 py-1 rounded-full border border-red-400/30">
+                        <span className="text-red-300 text-sm font-medium">
+                          Neaktivno
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* {shop.logo ? (
                 <div className="flex items-center gap-6">
                   <div className="flex-shrink-0">
                     <img
@@ -493,7 +531,7 @@ const ShopPage = () => {
                 <div className="h-24 w-24 bg-blue-500 rounded-lg flex items-center justify-center text-white text-3xl font-bold">
                   {shop.companyName?.charAt(0) || shop.name?.charAt(0) || "S"}
                 </div>
-              )}
+              )} */}
 
               <div className="flex-1">
                 {specialization && (
@@ -509,7 +547,7 @@ const ShopPage = () => {
                   </p>
                 )}
                 {/* Website */}
-                {shop.contact.website && (
+                {shop.contact && shop.contact.website && (
                   <a
                     href={shop.contact.website}
                     target="_blank"
