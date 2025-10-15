@@ -465,9 +465,9 @@ export default function AllTours() {
                             <div>
                               {expandedNotes
                                 ? tour.note
-                                : truncate(tour.note, 60)}
+                                : truncate(tour.note, 120)}
 
-                              {tour.note.length > 60 && (
+                              {tour.note.length > 120 && (
                                 <button
                                   onClick={() =>
                                     setExpandedNotes(!expandedNotes)

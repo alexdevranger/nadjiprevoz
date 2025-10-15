@@ -26,6 +26,21 @@ export const adminAuthMiddleware = async (req, res, next) => {
     next();
   } catch (err) {
     console.error(err);
+    // Specifična poruka za expired token
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({
+        message: "Token je istekao, molimo prijavite se ponovo",
+        code: "TOKEN_EXPIRED",
+      });
+    }
+
+    // Specifična poruka za invalid token
+    if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        message: "Neispravan token",
+        code: "INVALID_TOKEN",
+      });
+    }
     res.status(401).json({ message: "Neispravan token" });
   }
 };

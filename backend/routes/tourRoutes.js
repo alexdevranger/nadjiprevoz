@@ -1,6 +1,7 @@
 import express from "express";
 import Tour from "../models/Tour.js";
 import Payment from "../models/Payment.js";
+import axios from "axios";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { adminAuthMiddleware } from "../middleware/adminAuthMiddleware.js";
 

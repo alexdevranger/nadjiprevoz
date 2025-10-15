@@ -30,6 +30,7 @@ import {
   FaImage,
   FaUpload,
   FaAdjust,
+  FaUserTie,
 } from "react-icons/fa";
 
 export default function Dashboard() {
@@ -408,10 +409,10 @@ export default function Dashboard() {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold">
-                        Vaša radnja je aktivna!
+                        Vaš poslovni profil je aktivan!
                       </h2>
                       <p className="opacity-90">
-                        Podelite svoju radnju sa potencijalnim klijentima
+                        Podelite svoj profil sa potencijalnim klijentima
                       </p>
                     </div>
                   </div>
@@ -420,19 +421,20 @@ export default function Dashboard() {
                       to={`/shop/${shop.slug}`}
                       className="bg-white text-indigo-600 font-semibold px-4 py-2 rounded-lg flex items-center hover:bg-gray-100 transition-colors"
                     >
-                      <FaExternalLinkAlt className="mr-2" /> Poseti svoju radnju
+                      <FaExternalLinkAlt className="mr-2" /> Poseti svoj profil
                     </Link>
                     <Link
                       to="/my-shop"
-                      className="bg-indigo-800 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-900 transition-colors"
+                      className="bg-indigo-800 text-white font-semibold px-4 py-2 rounded-lg flex items-center hover:bg-indigo-900 transition-colors"
                     >
-                      Upravljaj radnjom
+                      <FaEdit className="mr-2" />
+                      Upravljaj profilom
                     </Link>
                     <button
                       onClick={() => setShowDeleteConfirm(true)}
                       className="bg-red-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center"
                     >
-                      <FaTrash className="mr-2" /> Obriši radnju
+                      <FaTrash className="mr-2" /> Obriši profil
                     </button>
                   </div>
                 </div>
@@ -494,7 +496,7 @@ export default function Dashboard() {
               {hasShop ? (
                 <DashboardCard
                   icon={<FaStore className="text-indigo-500" />}
-                  title="Upravljaj Radnjom"
+                  title="Upravljaj poslovnim profilom"
                   description="Upravljajte vašim shopom/portfoliom"
                   link="/my-shop"
                   color="border-l-indigo-500"
@@ -513,7 +515,7 @@ export default function Dashboard() {
                 >
                   <DashboardCard
                     icon={<FaPlusCircle className="text-green-500" />}
-                    title="Napravi Radnju"
+                    title="Napravi poslovni profil"
                     description="Kreirajte svoj shop/portfolio"
                     color="border-l-green-500"
                     onClick={() => {
@@ -534,6 +536,13 @@ export default function Dashboard() {
                 title="Chat"
                 description="Komunicirajte sa drugim korisnicima"
                 link="/chat"
+                color="border-l-indigo-500"
+              />
+              <DashboardCard
+                icon={<FaUserTie className="text-[#adadad]" />}
+                title="Oglasi za Posao"
+                description="Pronađite idealnog kandidata za vaš tim"
+                link="/add-job"
                 color="border-l-indigo-500"
               />
             </div>
@@ -922,9 +931,9 @@ export default function Dashboard() {
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
                 Dobrodošli, {user?.hasCompany ? user.company : user?.name}!
               </h1>
-              <p className="text-gray-600 mt-2">
+              {/* <p className="text-gray-600 mt-2">
                 {user?.roles?.join(", ") || "Korisnik"}
-              </p>
+              </p> */}
             </div>
 
             <div className="mt-4 md:mt-0">
@@ -1096,12 +1105,12 @@ export default function Dashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4 text-red-600">
-              Obriši radnju
+              Obriši profil
             </h2>
 
             <div className="mb-4">
               <p className="text-gray-700">
-                Da li ste sigurni da želite da obrišete svoju radnju "
+                Da li ste sigurni da želite da obrišete svoj profil"
                 {shop.name}"? Ova akcija je nepovratna i biće trajno izbrisana.
               </p>
             </div>
@@ -1117,7 +1126,7 @@ export default function Dashboard() {
                 onClick={handleDeleteShop}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
               >
-                Da, obriši radnju
+                Da, obriši profil
               </button>
             </div>
           </div>

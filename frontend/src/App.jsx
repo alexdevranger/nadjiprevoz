@@ -32,6 +32,7 @@ import ShopPage from "./components/ShopPage";
 import ShopDashboard from "./components/ShopDashboard";
 import { ToastProvider } from "./components/ToastContext";
 import Faq from "./pages/FAQ";
+import AddJob from "./pages/AddJob";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -133,6 +134,14 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <AddTour />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/add-job"
+                element={
+                  <ProtectedRoute>
+                    <AddJob />
                   </ProtectedRoute>
                 }
               />

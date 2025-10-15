@@ -207,8 +207,8 @@ const Pocetna = () => {
               </h2>
               <p className="text-lg text-gray-600 mb-10 leading-relaxed">
                 Platforma koja revolucionarno povezuje pružaoce transportnih
-                usluga sa klijentima. Bez komplikacija, samo efikasno
-                organizovan transport.
+                usluga sa klijentima. Više povratnih tura, više posla, pomoć AI
+                prijatelja.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link

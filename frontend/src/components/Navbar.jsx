@@ -224,7 +224,7 @@ export default function Navbar() {
                   <img
                     src={user.profileImage}
                     alt="Profil"
-                    className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                    className="w-8 h-8 rounded-full object-cover border-2 border-white bg-white"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold">
