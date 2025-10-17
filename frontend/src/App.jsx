@@ -33,6 +33,8 @@ import ShopDashboard from "./components/ShopDashboard";
 import { ToastProvider } from "./components/ToastContext";
 import Faq from "./pages/FAQ";
 import AddJob from "./pages/AddJob";
+import MyJobs from "./pages/MyJobs";
+import AllJobs from "./pages/AllJobs";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -84,6 +86,7 @@ export default function App() {
               <Route path="/" element={<Pocetna />} />
               <Route path="/intro" element={<Intro />} />
               <Route path="/alltours" element={<AllTours />} />
+              <Route path="/alljobs" element={<AllJobs />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/map" element={<MapPage />} />
@@ -118,6 +121,14 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <TourDetails />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-jobs"
+                element={
+                  <ProtectedRoute>
+                    <MyJobs />
                   </ProtectedRoute>
                 }
               />

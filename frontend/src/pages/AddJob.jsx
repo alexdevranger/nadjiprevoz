@@ -21,7 +21,7 @@ export default function AddJob() {
   const navigate = useNavigate();
   const [token] = useGlobalState("token");
   const [user] = useGlobalState("user");
-  const [shops, setShops] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const { success, error } = useToast();
 
@@ -40,22 +40,6 @@ export default function AddJob() {
     requirements: [""],
     company: "",
   });
-
-  useEffect(() => {
-    const fetchShops = async () => {
-      try {
-        const res = await axios.get("/api/shop/my-shop", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setShops(Array.isArray(res.data) ? res.data : [res.data]);
-      } catch (err) {
-        console.error("Greška pri učitavanju radnji:", err);
-        setShops([]);
-      }
-    };
-
-    fetchShops();
-  }, [token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -348,28 +332,6 @@ export default function AddJob() {
                 />
               </div>
             </div>
-
-            {/* Kompanija */}
-            {shops.length > 0 && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Kompanija
-                </label>
-                <select
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
-                >
-                  <option value="">-- Izaberi kompaniju --</option>
-                  {shops.map((shop) => (
-                    <option key={shop._id} value={shop._id}>
-                      {shop.companyName || shop.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
 
             {/* Opis posla */}
             <div>

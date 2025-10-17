@@ -165,6 +165,16 @@ export default function Navbar() {
           >
             <FaClipboardList className="mr-1" /> Zahtevi
           </NavLink>
+          <NavLink
+            to="/alljobs"
+            className={({ isActive }) =>
+              `flex items-center px-3 py-2 rounded-md transition-colors ${
+                isActive ? "bg-blue-700" : "hover:bg-blue-700"
+              }`
+            }
+          >
+            <FaClipboardList className="mr-1" /> Poslovi
+          </NavLink>
 
           {/* Chat - vidljiv svima ali funkcionalan samo za ulogovane */}
           <NavLink
@@ -325,6 +335,19 @@ export default function Navbar() {
                   >
                     <FaClipboardList className="mr-2 text-blue-600" /> Moji
                     zahtevi
+                  </Link>
+                  <Link
+                    to="/add-job"
+                    className="flex items-center px-4 py-2 hover:bg-blue-50 transition-colors"
+                  >
+                    <FaPlusCircle className="mr-2 text-blue-600" /> Dodaj posao
+                  </Link>
+                  <Link
+                    to="/my-jobs"
+                    className="flex items-center px-4 py-2 hover:bg-blue-50 transition-colors"
+                  >
+                    <FaClipboardList className="mr-2 text-blue-600" /> Moji
+                    poslovi
                   </Link>
 
                   {/* Ostalo */}

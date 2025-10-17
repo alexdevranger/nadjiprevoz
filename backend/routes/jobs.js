@@ -8,7 +8,7 @@ const router = express.Router();
 // Get all jobs
 router.get("/", async (req, res) => {
   try {
-    const jobs = await Job.find({ isActive: true, status: "active" })
+    const jobs = await Job.find({ isActive: true, status: "aktivan" })
       .populate("createdBy", "name email profileImage")
       .populate("company", "companyName logo")
       .sort({ createdAt: -1 });
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 // Get jobs by user
 router.get("/my-jobs", authMiddleware, async (req, res) => {
   try {
-    const jobs = await Job.find({ createdBy: req.user._id })
+    const jobs = await Job.find({ createdBy: req.user.id })
       .populate("company", "companyName logo")
       .sort({ createdAt: -1 });
     res.json(jobs);
@@ -101,7 +101,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
     }
 
     // Provera da li je korisnik vlasnik oglasa
-    if (job.createdBy.toString() !== req.user._id.toString()) {
+    if (job.createdBy.toString() !== req.user.id.toString()) {
       return res
         .status(403)
         .json({ error: "Nemate dozvolu za izmenu ovog oglasa" });
@@ -128,7 +128,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
       return res.status(404).json({ error: "Oglas nije pronađen" });
     }
 
-    if (job.createdBy.toString() !== req.user._id.toString()) {
+    if (job.createdBy.toString() !== req.user.id.toString()) {
       return res
         .status(403)
         .json({ error: "Nemate dozvolu za brisanje ovog oglasa" });
