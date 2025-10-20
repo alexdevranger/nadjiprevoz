@@ -618,7 +618,7 @@ export default function Agent() {
   const [messages, setMessages] = useState([
     {
       role: "agent",
-      text: "Zdravo! Da li hoćeš da ti pomognem da nađeš prevoznike?",
+      text: "Zdravo! Kako mogu da ti pomognem?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -758,6 +758,15 @@ export default function Agent() {
                       className="bg-green-600 text-white px-3 py-1 rounded"
                     >
                       Želim da nađem ture
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowWizard("carrier");
+                        setShowInitialButtons(false);
+                      }}
+                      className="bg-[#834fdf] text-white px-3 py-1 rounded"
+                    >
+                      Želim da nađem posao vozača
                     </button>
                     <button
                       onClick={() => {
@@ -996,7 +1005,7 @@ export default function Agent() {
                           setMessages([
                             {
                               role: "agent",
-                              text: "Zdravo! Da li hoćeš da ti pomognem da nađeš prevoznike?",
+                              text: "Zdravo! Kako mogu da ti pomognem?",
                             },
                           ]);
                           setShowWizard(false);
@@ -1117,7 +1126,7 @@ export default function Agent() {
                       setMessages([
                         {
                           role: "agent",
-                          text: "Zdravo! Da li hoćeš da ti pomognem da nađeš prevoznike?",
+                          text: "Zdravo! Kako mogu da ti pomognem?",
                         },
                       ]);
                       setShowWizard(false);
