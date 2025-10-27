@@ -24,6 +24,8 @@ import imagesRoutes from "./routes/imagesRoutes.js";
 import shopRouter from "./routes/shopRouter.js";
 import ipsRouter from "./routes/ips.js";
 import jobRoutes from "./routes/jobs.js";
+import portfolioRoutes from "./routes/portfolioRoutes.js";
+import jobApplications from "./routes/jobApplicationRoutes.js";
 import Message from "./models/Message.js";
 import Conversation from "./models/Conversation.js";
 import webpush from "web-push";
@@ -224,5 +226,7 @@ app.use("/api/images", imagesRoutes);
 app.use("/api/shop", shopRouter);
 app.use("/api/ips", ipsRouter);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/portfolio", portfolioRoutes);
+app.use("/api/job-applications", jobApplications);
 
 server.listen(port, () => console.log(`Backend listening on ${port}`));

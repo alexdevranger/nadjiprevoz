@@ -4,7 +4,7 @@ const jobApplicationSchema = new mongoose.Schema(
   {
     jobId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Job", // ako imaš kolekciju oglasa; ako se zove drugačije, promeni
+      ref: "Job",
       required: true,
     },
     applicantId: {
@@ -23,6 +23,27 @@ const jobApplicationSchema = new mongoose.Schema(
     },
     cvUrl: {
       type: String,
+    },
+    // Novi podaci iz portfolija
+    applicantData: {
+      name: String,
+      email: String,
+      phone: String,
+      yearsOfExperience: Number,
+      hasOwnVehicle: Boolean,
+      vehicleType: String,
+      previousExperience: [
+        {
+          companyName: String,
+          position: String,
+          duration: String,
+        },
+      ],
+      skills: [String],
+      portfolioData: {
+        type: Boolean,
+        default: false,
+      },
     },
     status: {
       type: String,

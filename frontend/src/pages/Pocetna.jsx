@@ -30,6 +30,7 @@ import FeaturesSectionMain from "@/components/FeaturesSectionMain";
 import Oglasi from "@/components/Oglasi";
 import Kontakt from "./Kontakt";
 import Pricing from "../components/Pricing";
+import ViberCommunity from "./ViberCommunity";
 
 // Demo podaci za prikaz turi i zahteva
 const demoTure = [
@@ -580,7 +581,8 @@ const Pocetna = () => {
           </div>
         </div>
       </section>
-
+      {/* Viber */}
+      <ViberCommunity />
       {/* <Oglasi /> */}
       <FeaturesSectionMain />
       <Kontakt />

@@ -31,6 +31,7 @@ import {
   FaUpload,
   FaAdjust,
   FaUserTie,
+  FaPortrait,
 } from "react-icons/fa";
 
 export default function Dashboard() {
@@ -55,6 +56,8 @@ export default function Dashboard() {
     company: "",
   });
   const { success, error, warning, info } = useToast();
+  const [hasPortfolio, setHasPortfolio] = useState(false);
+  const [portfolio, setPortfolio] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
@@ -177,6 +180,7 @@ export default function Dashboard() {
             ? shipmentsRes.data.shipments
             : []
         );
+        await checkPortfolio();
       } catch (err) {
         console.error("Greška pri učitavanju podataka:", err);
       } finally {
@@ -392,6 +396,38 @@ export default function Dashboard() {
     }
   };
 
+  // useEffect za proveru portfolija
+  useEffect(() => {
+    const checkPortfolio = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const portfolioRes = await axios.get("/api/portfolio/my-portfolio", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        console.log("Portfolio response:", portfolioRes.data);
+
+        // Provera da li portfolio postoji
+        setHasPortfolio(
+          portfolioRes.data.success && portfolioRes.data.portfolio !== null
+        );
+        setPortfolio(portfolioRes.data.portfolio || null);
+      } catch (err) {
+        console.error("Greška pri proveri portfolija:", err);
+
+        // Sada ovo neće biti 404 greška, ali ostavljamo za druge greške
+        if (err.response?.status === 500) {
+          error("Greška pri učitavanju portfolija");
+        }
+        setHasPortfolio(false);
+        setPortfolio(null);
+      }
+    };
+
+    if (token) {
+      checkPortfolio();
+    }
+  }, [token]);
   // Sadržaj za pojedinačne tabove
   const renderTabContent = () => {
     switch (activeTab) {
@@ -538,11 +574,38 @@ export default function Dashboard() {
                 link="/chat"
                 color="border-l-indigo-500"
               />
+              {/* PORTFOLIO KARTICA */}
+              {hasPortfolio ? (
+                <DashboardCard
+                  icon={<FaUserTie className="text-teal-500" />}
+                  title="Moj Portfolio"
+                  description="Upravljajte vašim profesionalnim portfolioom"
+                  link="/driver-portfolio"
+                  color="border-l-teal-500"
+                />
+              ) : (
+                <div onClick={() => navigate("/driver-portfolio")}>
+                  <DashboardCard
+                    icon={<FaPlusCircle className="text-teal-500" />}
+                    title="Napravi Portfolio"
+                    description="Kreirajte profesionalni portfolio vozača"
+                    color="border-l-teal-500"
+                    onClick={() => navigate("/driver-portfolio")}
+                  />
+                </div>
+              )}
               <DashboardCard
                 icon={<FaUserTie className="text-[#adadad]" />}
-                title="Oglasi za Posao"
+                title="Dodaj Posao"
                 description="Pronađite idealnog kandidata za vaš tim"
                 link="/add-job"
+                color="border-l-indigo-500"
+              />
+              <DashboardCard
+                icon={<FaUserTie className="text-[#adadad]" />}
+                title="Moji Poslovi"
+                description="Pronađite idealnog kandidata za vaš tim"
+                link="/my-jobs"
                 color="border-l-indigo-500"
               />
             </div>

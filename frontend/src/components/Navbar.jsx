@@ -166,7 +166,7 @@ export default function Navbar() {
             <FaClipboardList className="mr-1" /> Zahtevi
           </NavLink>
           <NavLink
-            to="/alljobs"
+            to="/all-jobs"
             className={({ isActive }) =>
               `flex items-center px-3 py-2 rounded-md transition-colors ${
                 isActive ? "bg-blue-700" : "hover:bg-blue-700"

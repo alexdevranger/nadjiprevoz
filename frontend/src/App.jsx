@@ -35,6 +35,9 @@ import Faq from "./pages/FAQ";
 import AddJob from "./pages/AddJob";
 import MyJobs from "./pages/MyJobs";
 import AllJobs from "./pages/AllJobs";
+import ViberCommunity from "./pages/ViberCommunity";
+import DriverPortfolioPage from "./pages/DriverPortfolioPage";
+import PublicPortfolio from "./pages/PublicPorfolio";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -86,7 +89,7 @@ export default function App() {
               <Route path="/" element={<Pocetna />} />
               <Route path="/intro" element={<Intro />} />
               <Route path="/alltours" element={<AllTours />} />
-              <Route path="/alljobs" element={<AllJobs />} />
+              <Route path="/all-jobs" element={<AllJobs />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/map" element={<MapPage />} />
@@ -99,6 +102,16 @@ export default function App() {
               <Route path="/kontakt" element={<Kontakt />} />
               <Route path="/moje-ture" element={<MojeTureUser />} />
               <Route path="/shop/:slug" element={<ShopPage />} />
+              <Route path="/viber" element={<ViberCommunity />} />
+              <Route path="/driver/:slug" element={<PublicPortfolio />} />
+              <Route
+                path="/driver-portfolio"
+                element={
+                  <ProtectedRoute>
+                    <DriverPortfolioPage />
+                  </ProtectedRoute>
+                }
+              />
 
               <Route
                 path="/my-tours"
