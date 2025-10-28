@@ -23,6 +23,7 @@ import {
   FaPauseCircle,
   FaArchive,
   FaBuilding,
+  FaPaperPlane,
 } from "react-icons/fa";
 
 export default function MyJobs() {
@@ -48,6 +49,7 @@ export default function MyJobs() {
 
   const [filterStatus, setFilterStatus] = useState("");
   const [saving, setSaving] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(false);
   const { success, error, warning, info } = useToast();
   const [confirmModal, setConfirmModal] = useState({
     open: false,
@@ -58,6 +60,8 @@ export default function MyJobs() {
     isLoading: false,
   });
   const navigate = useNavigate();
+  const [applications, setApplications] = useState({});
+  const [showApplications, setShowApplications] = useState({});
 
   const showConfirmModal = ({
     title,
@@ -84,6 +88,96 @@ export default function MyJobs() {
       type: "warning",
       isLoading: false,
     });
+  };
+
+  // Dodaj ovu funkciju za učitavanje aplikacija
+  // const fetchJobApplications = async (jobId) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const res = await axios.get(`/api/job-applications/oglas/${jobId}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     setApplications((prev) => ({
+  //       ...prev,
+  //       [jobId]: res.data,
+  //     }));
+  //   } catch (err) {
+  //     console.error("Greška pri učitavanju aplikacija:", err);
+  //   }
+  // };
+  const fetchJobApplications = async (jobId) => {
+    // Proveri da li su aplikacije već učitane (cache)
+    if (applications[jobId]) {
+      console.log("♻️ Koristim keširane aplikacije za:", jobId);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      console.log("🔍 Učitavam aplikacije za oglas:", jobId);
+
+      // Probajte prvo sa /oglas/:jobId
+      const res = await axios.get(`/api/job-applications/oglas/${jobId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("📨 Aplikacije dobijene:", res.data);
+
+      setApplications((prev) => ({
+        ...prev,
+        [jobId]: res.data,
+      }));
+    } catch (err) {
+      console.error("❌ Greška sa /oglas ruta:", err);
+
+      // Probajte alternativnu rutu
+      try {
+        console.log("🔄 Pokušavam sa /moje-objave rutom...");
+        const allRes = await axios.get(`/api/job-applications/moje-objave`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        // Filtriraj aplikacije samo za ovaj jobId
+        const filteredApplications = allRes.data.filter(
+          (app) => app.jobId && app.jobId._id === jobId
+        );
+
+        console.log("📨 Filtrirane aplikacije:", filteredApplications);
+
+        setApplications((prev) => ({
+          ...prev,
+          [jobId]: filteredApplications,
+        }));
+      } catch (secondErr) {
+        console.error("❌ Greška i sa /moje-objave:", secondErr);
+      }
+    }
+  };
+
+  // Dodaj ovu funkciju za promenu statusa aplikacije
+  const updateApplicationStatus = async (applicationId, newStatus) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.patch(
+        `/api/job-applications/${applicationId}/status`,
+        { status: newStatus },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      success(`Status prijave uspešno promenjen u ${newStatus}`);
+
+      // Osveži sve aplikacije
+      jobs.forEach((job) => {
+        if (applications[job._id]) {
+          fetchJobApplications(job._id);
+        }
+      });
+    } catch (err) {
+      console.error("Greška pri promeni statusa:", err);
+      error("Greška pri promeni statusa prijave");
+    }
   };
 
   const handleConfirm = async () => {
@@ -333,6 +427,20 @@ export default function MyJobs() {
   const handleResetFilters = () => {
     setFilterStatus("");
   };
+
+  // Dodajte ovaj useEffect u MyJobs komponentu
+  useEffect(() => {
+    if (jobs.length > 0 && token && !initialLoad) {
+      console.log("🔄 Automatsko učitavanje aplikacija za sve oglase...");
+
+      // Učitaj aplikacije za svaki oglas
+      jobs.forEach((job) => {
+        fetchJobApplications(job._id);
+      });
+
+      setInitialLoad(true);
+    }
+  }, [jobs, token, initialLoad]);
 
   // Funkcija za generisanje nasumične boje za border
   const getRandomBorderColor = (index) => {
@@ -861,6 +969,168 @@ export default function MyJobs() {
                             <FaTrash className="mr-1" />
                             Obriši
                           </button>
+                        </div>
+                        {/* Sekcija za aplikacije */}
+                        <div className="mt-4 border-t pt-4">
+                          <div className="flex justify-between items-center mb-2">
+                            <button
+                              onClick={() => {
+                                if (!applications[job._id]) {
+                                  fetchJobApplications(job._id);
+                                }
+                                setShowApplications((prev) => ({
+                                  ...prev,
+                                  [job._id]: !prev[job._id],
+                                }));
+                              }}
+                              className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+                            >
+                              <FaUserTie className="mr-1" />
+                              Aplikacije ({applications[job._id]?.length || 0})
+                              <svg
+                                className={`ml-1 h-4 w-4 transition-transform ${
+                                  showApplications[job._id] ? "rotate-180" : ""
+                                }`}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 9l-7 7-7-7"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+
+                          {showApplications[job._id] && (
+                            <div className="mt-3 space-y-3">
+                              {!applications[job._id] ? (
+                                <div className="text-center py-4">
+                                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
+                                  <p className="text-gray-600 text-sm mt-2">
+                                    Učitavanje aplikacija...
+                                  </p>
+                                </div>
+                              ) : applications[job._id].length === 0 ? (
+                                <div className="text-center py-4 text-gray-500 text-sm">
+                                  <FaUserTie className="text-2xl mx-auto mb-2 opacity-50" />
+                                  <p>Još uvek nema aplikacija</p>
+                                </div>
+                              ) : (
+                                applications[job._id].map((application) => (
+                                  <div
+                                    key={application._id}
+                                    className="border rounded-lg p-3 bg-gray-50"
+                                  >
+                                    <div className="flex justify-between items-start mb-2">
+                                      <div>
+                                        <h4 className="font-semibold text-gray-800">
+                                          {application.applicantData?.name ||
+                                            application.applicantId?.name}
+                                        </h4>
+                                        <p className="text-sm text-gray-600">
+                                          {application.applicantData?.email ||
+                                            application.applicantId?.email}
+                                        </p>
+                                        {application.applicantData?.phone && (
+                                          <p className="text-sm text-gray-600">
+                                            {application.applicantData.phone}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <span
+                                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                          application.status === "prihvaćen"
+                                            ? "bg-green-100 text-green-800"
+                                            : application.status ===
+                                              "u užem izboru"
+                                            ? "bg-blue-100 text-blue-800"
+                                            : application.status === "odbijen"
+                                            ? "bg-red-100 text-red-800"
+                                            : "bg-yellow-100 text-yellow-800"
+                                        }`}
+                                      >
+                                        {application.status}
+                                      </span>
+                                    </div>
+
+                                    {application.applicantData && (
+                                      <div className="text-sm text-gray-600 mb-2">
+                                        {application.applicantData
+                                          .yearsOfExperience > 0 && (
+                                          <p>
+                                            {
+                                              application.applicantData
+                                                .yearsOfExperience
+                                            }{" "}
+                                            god. iskustva
+                                          </p>
+                                        )}
+                                        {application.applicantData
+                                          .hasOwnVehicle && (
+                                          <p>
+                                            Ima sopstveno vozilo:{" "}
+                                            {
+                                              application.applicantData
+                                                .vehicleType
+                                            }
+                                          </p>
+                                        )}
+                                        {application.applicantData
+                                          .portfolioData && (
+                                          <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                                            Portfolio
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
+
+                                    {application.message && (
+                                      <p className="text-sm text-gray-700 mb-2">
+                                        {application.message}
+                                      </p>
+                                    )}
+
+                                    <div className="flex gap-2 flex-wrap">
+                                      <select
+                                        value={application.status}
+                                        onChange={(e) =>
+                                          updateApplicationStatus(
+                                            application._id,
+                                            e.target.value
+                                          )
+                                        }
+                                        className="text-xs border border-gray-300 rounded px-2 py-1"
+                                      >
+                                        <option value="na čekanju">
+                                          Na čekanju
+                                        </option>
+                                        <option value="u užem izboru">
+                                          U užem izboru
+                                        </option>
+                                        <option value="prihvaćen">
+                                          Prihvaćen
+                                        </option>
+                                        <option value="odbijen">Odbijen</option>
+                                      </select>
+
+                                      <button
+                                        onClick={() => {
+                                          // TODO: Otvori detaljan pregled aplikacije
+                                        }}
+                                        className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded"
+                                      >
+                                        Detalji
+                                      </button>
+                                    </div>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </>

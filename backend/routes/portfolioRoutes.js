@@ -18,7 +18,7 @@ router.get("/my-portfolio", authMiddleware, async (req, res) => {
       //   ) // DODAJTE OVO
       .populate("userId", "name email phone profileImage");
 
-    console.log("Fetched portfolio:", portfolio);
+    // console.log("Fetched portfolio:", portfolio);
 
     // Uvek vraćaj success, čak i ako portfolio ne postoji
     res.json({

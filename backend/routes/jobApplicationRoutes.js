@@ -1,6 +1,7 @@
 import express from "express";
 import JobApplication from "../models/JobApplication.js";
 import Job from "../models/Job.js";
+import DriverPortfolio from "../models/DriverPortfolio.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -11,8 +12,14 @@ router.post("/", authMiddleware, async (req, res) => {
     const { jobId, message, cvUrl } = req.body;
     const applicantId = req.user.id;
 
+    console.log("📝 Kreiranje aplikacije za oglas:", jobId);
+    console.log("👤 Applicant ID:", applicantId);
+
     const job = await Job.findById(jobId);
-    if (!job) return res.status(404).json({ message: "Oglas nije pronađen" });
+    if (!job) {
+      console.log("❌ Oglas nije pronađen");
+      return res.status(404).json({ message: "Oglas nije pronađen" });
+    }
 
     const postoji = await JobApplication.findOne({ jobId, applicantId });
     if (postoji)
@@ -26,7 +33,11 @@ router.post("/", authMiddleware, async (req, res) => {
       transporterId: job.createdBy,
       message,
       cvUrl,
+      applicantData: {
+        portfolioData: false,
+      },
     });
+    console.log("✅ Aplikacija uspešno kreirana:", prijava._id);
 
     res.status(201).json(prijava);
   } catch (err) {
@@ -49,14 +60,35 @@ router.get("/moje", authMiddleware, async (req, res) => {
 });
 
 // Sve prijave na oglase koje je transporter objavio
+/* 🔹 Sve prijave na oglase koje je transporter objavio - ISPRAVLJENO */
 router.get("/moje-objave", authMiddleware, async (req, res) => {
   try {
-    const prijave = await JobApplication.find({ transporterId: req.user.id })
+    console.log("👤 Učitavanje aplikacija za vlasnika:", req.user.id);
+
+    // Prvo pronađi sve oglase koje je korisnik kreirao
+    const mojiOglasi = await Job.find({ createdBy: req.user.id });
+    const oglasIds = mojiOglasi.map((oglas) => oglas._id);
+
+    console.log("📋 Moji oglasi IDs:", oglasIds);
+
+    if (oglasIds.length === 0) {
+      console.log("ℹ️ Korisnik nema oglasa");
+      return res.json([]);
+    }
+
+    // Sada pronađi sve aplikacije za te oglase
+    const prijave = await JobApplication.find({
+      jobId: { $in: oglasIds },
+    })
       .populate("applicantId", "name email phone")
-      .populate("jobId", "title")
+      .populate("jobId", "title position")
       .sort({ createdAt: -1 });
+
+    console.log("📨 Pronađene aplikacije:", prijave.length);
+
     res.json(prijave);
   } catch (err) {
+    console.error("Greška pri učitavanju prijava:", err);
     res.status(500).json({ message: "Greška prilikom učitavanja prijava" });
   }
 });
@@ -65,15 +97,37 @@ router.get("/moje-objave", authMiddleware, async (req, res) => {
 router.get("/oglas/:jobId", authMiddleware, async (req, res) => {
   try {
     const { jobId } = req.params;
+
+    console.log("🔍 Tražim aplikacije za oglas:", jobId);
+    console.log("👤 Trenutni korisnik ID:", req.user.id);
+
+    // Prvo proveri da li oglas postoji i da li je korisnik vlasnik
+    const job = await Job.findById(jobId);
+    if (!job) {
+      console.log("❌ Oglas nije pronađen");
+      return res.status(404).json({ message: "Oglas nije pronađen" });
+    }
+
+    console.log("🏢 Vlasnik oglasa (createdBy):", job.createdBy.toString());
+
+    // Proveri da li je korisnik vlasnik oglasa
+    if (job.createdBy.toString() !== req.user.id) {
+      console.log("🚫 Korisnik nije vlasnik oglasa");
+      return res.status(403).json({ message: "Niste vlasnik ovog oglasa" });
+    }
+
+    // Sada traži sve aplikacije za ovaj oglas (bez provere transporterId)
     const prijave = await JobApplication.find({
-      jobId,
-      transporterId: req.user.id,
+      jobId: jobId,
     })
       .populate("applicantId", "name email phone")
       .sort({ createdAt: -1 });
 
+    console.log("📨 Pronađene aplikacije:", prijave.length);
+
     res.json(prijave);
   } catch (err) {
+    console.error("Greška pri učitavanju prijava:", err);
     res.status(500).json({ message: "Greška prilikom učitavanja prijava" });
   }
 });
