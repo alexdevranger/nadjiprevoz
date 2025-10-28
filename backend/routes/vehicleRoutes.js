@@ -423,6 +423,12 @@ vehicleRouter.delete("/:id", authMiddleware, async (req, res) => {
         .json({ message: "Nemaš pravo da obrišeš ovo vozilo" });
     }
 
+    const DriverPortfolio = mongoose.model("DriverPortfolio");
+    await DriverPortfolio.updateMany(
+      { vehicles: req.params.id },
+      { $pull: { vehicles: req.params.id } }
+    );
+
     // Obriši slike sa Cloudinary-a pre brisanja vozila
     const imagesToDelete = [];
 

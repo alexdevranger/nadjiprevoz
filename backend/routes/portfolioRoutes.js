@@ -1,6 +1,7 @@
 import express from "express";
 import DriverPortfolio from "../models/DriverPortfolio.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -11,8 +12,11 @@ router.get("/my-portfolio", authMiddleware, async (req, res) => {
     const portfolio = await DriverPortfolio.findOne({
       userId: req.user.id,
     })
-      .populate("userId", "name email phone profileImage")
-      .populate("vehicles");
+      //   .populate(
+      //     "vehicles",
+      //     "brand model year capacity licensePlate type image1 dimensions description"
+      //   ) // DODAJTE OVO
+      .populate("userId", "name email phone profileImage");
 
     console.log("Fetched portfolio:", portfolio);
 
@@ -56,9 +60,7 @@ router.get("/public/:slug", async (req, res) => {
     const portfolio = await DriverPortfolio.findOne({
       slug,
       isActive: true,
-    })
-      .populate("userId", "name email phone profileImage")
-      .populate("vehicles");
+    }).populate("vehicles");
 
     if (!portfolio) {
       return res.status(404).json({
@@ -66,10 +68,6 @@ router.get("/public/:slug", async (req, res) => {
         message: "Portfolio nije pronađen",
       });
     }
-
-    // Povećaj broj pregleda
-    portfolio.viewCount += 1;
-    await portfolio.save();
 
     res.json({
       success: true,
@@ -79,6 +77,40 @@ router.get("/public/:slug", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Greška prilikom učitavanja portfolija",
+      error: err.message,
+    });
+  }
+});
+
+router.patch("/public/:slug/view", async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const portfolio = await DriverPortfolio.findOne({
+      slug,
+      isActive: true,
+    });
+
+    if (!portfolio) {
+      return res.status(404).json({
+        success: false,
+        message: "Portfolio nije pronađen",
+      });
+    }
+
+    // Povećaj viewCount
+    portfolio.viewCount += 1;
+    await portfolio.save();
+
+    res.json({
+      success: true,
+      message: "ViewCount uspešno ažuriran",
+      viewCount: portfolio.viewCount,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Greška prilikom ažuriranja viewCount-a",
       error: err.message,
     });
   }
@@ -111,6 +143,8 @@ router.get("/my-vehicles", authMiddleware, async (req, res) => {
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const {
+      firstName,
+      lastName,
       yearsOfExperience,
       licenseCategories,
       previousExperience,
@@ -127,11 +161,14 @@ router.post("/", authMiddleware, async (req, res) => {
 
     const userId = req.user.id;
 
+    // VALIDACIJA: Ukloni duplikate iz vehicles niza
+    const uniqueVehicles = vehicles ? [...new Set(vehicles)] : [];
+
     // Generiši slug ako nije prosleđen
     let portfolioSlug = slug;
     if (!portfolioSlug) {
-      const user = await mongoose.model("User").findById(userId);
-      portfolioSlug = user.name
+      const fullName = `${firstName} ${lastName}`.trim();
+      portfolioSlug = fullName
         .toLowerCase()
         .replace(/[^a-z0-9 -]/g, "")
         .replace(/\s+/g, "-")
@@ -141,7 +178,12 @@ router.post("/", authMiddleware, async (req, res) => {
       // Proveri jedinstvenost i dodaj broj ako je potrebno
       let uniqueSlug = portfolioSlug;
       let counter = 1;
-      while (await DriverPortfolio.findOne({ slug: uniqueSlug })) {
+      while (
+        await DriverPortfolio.findOne({
+          slug: uniqueSlug,
+          userId: { $ne: userId },
+        })
+      ) {
         uniqueSlug = `${portfolioSlug}-${counter}`;
         counter++;
       }
@@ -151,47 +193,45 @@ router.post("/", authMiddleware, async (req, res) => {
     // Proveri da li portfolio već postoji
     let portfolio = await DriverPortfolio.findOne({ userId });
 
+    const portfolioData = {
+      firstName: firstName || "",
+      lastName: lastName || "",
+      yearsOfExperience: yearsOfExperience || 0,
+      licenseCategories: Array.isArray(licenseCategories)
+        ? licenseCategories
+        : [],
+      previousExperience: Array.isArray(previousExperience)
+        ? previousExperience
+        : [],
+      skills: Array.isArray(skills) ? skills : [],
+      languages: Array.isArray(languages) ? languages : [],
+      availability: availability || "dostupan",
+      preferredJobTypes: Array.isArray(preferredJobTypes)
+        ? preferredJobTypes
+        : [],
+      salaryExpectation: salaryExpectation || "",
+      aboutMe: aboutMe || "",
+      contactInfo: contactInfo || {},
+      vehicles: uniqueVehicles,
+      slug: portfolioSlug,
+    };
+
+    console.log("Podaci za čuvanje:", portfolioData);
+
     if (portfolio) {
       // Ažuriraj postojeći portfolio
       portfolio = await DriverPortfolio.findOneAndUpdate(
         { userId },
-        {
-          yearsOfExperience,
-          licenseCategories,
-          previousExperience,
-          skills,
-          languages,
-          availability,
-          preferredJobTypes,
-          salaryExpectation,
-          aboutMe,
-          contactInfo,
-          vehicles,
-          slug: portfolioSlug,
-        },
-        { new: true }
-      )
-        .populate("userId", "name email phone profileImage")
-        .populate("vehicles");
+        portfolioData,
+        { new: true, runValidators: true }
+      ).populate("vehicles");
     } else {
       // Kreiraj novi portfolio
       portfolio = await DriverPortfolio.create({
         userId,
-        yearsOfExperience,
-        licenseCategories,
-        previousExperience,
-        skills,
-        languages,
-        availability,
-        preferredJobTypes,
-        salaryExpectation,
-        aboutMe,
-        contactInfo,
-        vehicles,
-        slug: portfolioSlug,
+        ...portfolioData,
       });
 
-      await portfolio.populate("userId", "name email phone profileImage");
       await portfolio.populate("vehicles");
     }
 
@@ -209,17 +249,17 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-// 🔹 Dohvati portfolio po ID-u (za javni pristup)
-router.get("/:userId", async (req, res) => {
+// 🔹 Dohvati portfolio po ID-u (za javni pristup) - ISPRAVLJENO
+router.get("/user/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const portfolio = await DriverPortfolio.findOne({ userId }).populate(
-      "userId",
-      "name email phone profileImage company"
-    );
+    const portfolio = await DriverPortfolio.findOne({
+      userId,
+      isActive: true,
+    }).populate("vehicles");
 
-    if (!portfolio || !portfolio.isActive) {
+    if (!portfolio) {
       return res.status(404).json({
         success: false,
         message: "Portfolio nije pronađen",
@@ -239,7 +279,7 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-// 🔹 Ažuriraj status portfolija (plaćeni/besplatni)
+// 🔹 Ažuriraj status portfolija (plaćeni/besplatni) - ISPRAVLJENO
 router.patch("/premium", authMiddleware, async (req, res) => {
   try {
     const { hasPaidPortfolio } = req.body;
@@ -248,7 +288,7 @@ router.patch("/premium", authMiddleware, async (req, res) => {
       { userId: req.user.id },
       { hasPaidPortfolio },
       { new: true }
-    );
+    ).populate("vehicles");
 
     if (!portfolio) {
       return res.status(404).json({
@@ -273,10 +313,19 @@ router.patch("/premium", authMiddleware, async (req, res) => {
   }
 });
 
-// 🔹 Obriši portfolio
+// 🔹 Obriši portfolio - ISPRAVLJENO
 router.delete("/", authMiddleware, async (req, res) => {
   try {
-    await DriverPortfolio.findOneAndDelete({ userId: req.user.id });
+    const result = await DriverPortfolio.findOneAndDelete({
+      userId: req.user.id,
+    });
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Portfolio nije pronađen",
+      });
+    }
 
     res.json({
       success: true,

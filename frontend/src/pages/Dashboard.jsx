@@ -7,6 +7,7 @@ import axios from "axios";
 import {
   FaTruck,
   FaPallet,
+  FaStar,
   FaComments,
   FaBriefcase,
   FaClipboardList,
@@ -396,33 +397,33 @@ export default function Dashboard() {
     }
   };
 
+  const checkPortfolio = async () => {
+    try {
+      const portfolioRes = await axios.get("/api/portfolio/my-portfolio", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Portfolio response:", portfolioRes.data);
+
+      // Provera da li portfolio postoji
+      setHasPortfolio(
+        portfolioRes.data.success && portfolioRes.data.portfolio !== null
+      );
+      setPortfolio(portfolioRes.data.portfolio || null);
+    } catch (err) {
+      console.error("Greška pri proveri portfolija:", err);
+
+      // Sada ovo neće biti 404 greška, ali ostavljamo za druge greške
+      if (err.response?.status === 500) {
+        error("Greška pri učitavanju portfolija");
+      }
+      setHasPortfolio(false);
+      setPortfolio(null);
+    }
+  };
   // useEffect za proveru portfolija
   useEffect(() => {
-    const checkPortfolio = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const portfolioRes = await axios.get("/api/portfolio/my-portfolio", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        console.log("Portfolio response:", portfolioRes.data);
-
-        // Provera da li portfolio postoji
-        setHasPortfolio(
-          portfolioRes.data.success && portfolioRes.data.portfolio !== null
-        );
-        setPortfolio(portfolioRes.data.portfolio || null);
-      } catch (err) {
-        console.error("Greška pri proveri portfolija:", err);
-
-        // Sada ovo neće biti 404 greška, ali ostavljamo za druge greške
-        if (err.response?.status === 500) {
-          error("Greška pri učitavanju portfolija");
-        }
-        setHasPortfolio(false);
-        setPortfolio(null);
-      }
-    };
+    const token = localStorage.getItem("token");
 
     if (token) {
       checkPortfolio();
@@ -472,6 +473,63 @@ export default function Dashboard() {
                     >
                       <FaTrash className="mr-2" /> Obriši profil
                     </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {hasPortfolio && portfolio && (
+              <div className="mb-8 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-xl shadow-lg p-6 text-white">
+                <div className="flex flex-col md:flex-row items-center justify-between">
+                  <div className="flex items-center mb-4 md:mb-0">
+                    <div className="bg-white bg-opacity-20 p-3 rounded-full mr-4">
+                      <FaUserTie className="text-2xl" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold">
+                        Vaš portfolio vozača je aktivan!
+                      </h2>
+                      <p className="opacity-90">
+                        Podelite svoj profesionalni portfolio sa poslodavcima
+                      </p>
+                      <div className="flex items-center mt-2 text-sm opacity-90">
+                        <span className="bg-white bg-opacity-20 px-2 py-1 rounded mr-2">
+                          {portfolio.vehicles?.length || 0} vozila
+                        </span>
+                        <span className="bg-white bg-opacity-20 px-2 py-1 rounded mr-2">
+                          {portfolio.yearsOfExperience || 0} god. iskustva
+                        </span>
+                        {portfolio.hasPaidPortfolio && (
+                          <span className="bg-yellow-500 bg-opacity-80 px-2 py-1 rounded flex items-center">
+                            <FaStar className="mr-1" /> Premium
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      to={`/driver/${portfolio.slug}`}
+                      target="_blank"
+                      className="bg-white text-teal-600 font-semibold px-4 py-2 rounded-lg flex items-center hover:bg-gray-100 transition-colors"
+                    >
+                      <FaExternalLinkAlt className="mr-2" /> Javni pregled
+                    </Link>
+                    <Link
+                      to="/driver-portfolio"
+                      className="bg-teal-800 text-white font-semibold px-4 py-2 rounded-lg flex items-center hover:bg-teal-900 transition-colors"
+                    >
+                      <FaEdit className="mr-2" />
+                      Uredi portfolio
+                    </Link>
+                    {!portfolio.hasPaidPortfolio && (
+                      <button
+                        onClick={() => navigate("/driver-portfolio")}
+                        className="bg-yellow-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors flex items-center"
+                      >
+                        <FaStar className="mr-2" /> Nadogradi na Premium
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1107,6 +1165,26 @@ export default function Dashboard() {
                 <div>
                   <p className="text-sm text-gray-600">Aktivni zahtevi</p>
                   <p className="text-2xl font-bold">{shipments.length}</p>
+                </div>
+              </div>
+            </div>
+            {/* DODATA STATISTIKA ZA PORTFOLIO */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="flex items-center">
+                <div className="p-3 rounded-lg bg-teal-100 text-teal-600 mr-4">
+                  <FaUserTie className="text-2xl" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Portfolio status</p>
+                  <p className="text-2xl font-bold">
+                    {hasPortfolio ? "Aktivan" : "Nije kreiran"}
+                  </p>
+                  {hasPortfolio && portfolio && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {portfolio.vehicles?.length || 0} vozila •{" "}
+                      {portfolio.viewCount || 0} pregleda
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
@@ -24,20 +24,91 @@ const PublicPortfolio = () => {
   const [portfolio, setPortfolio] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const hasIncrementedViewCount = useRef(false);
 
   useEffect(() => {
+    checkCurrentUser();
     fetchPortfolio();
-  }, [slug]);
+  }, [slug, currentUser]);
+
+  useEffect(() => {
+    if (!hasIncrementedViewCount.current) {
+      incrementViewCount();
+      hasIncrementedViewCount.current = true;
+    }
+  }, []);
+
+  // FUNKCIJA ZA POVEĆAVANJE VIEWCOUNT-A
+  const incrementViewCount = async () => {
+    try {
+      const response = await axios.patch(`/api/portfolio/public/${slug}/view`);
+      console.log("ViewCount povećan:", response.data.viewCount);
+
+      // Ažuriraj portfolio sa novim viewCount-om
+      setPortfolio((prev) =>
+        prev ? { ...prev, viewCount: response.data.viewCount } : null
+      );
+    } catch (err) {
+      console.error("Greška pri povećavanju viewCount-a:", err);
+    }
+  };
+
+  // Provera trenutnog korisnika čak i nakon reload-a
+  const checkCurrentUser = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const response = await axios.get("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.data.user) {
+          setCurrentUser(response.data.user);
+          console.log("Trenutni korisnik učitan:", response.data.user);
+          return response.data.user;
+        }
+      }
+      return null;
+    } catch (err) {
+      console.error("Greška pri proveri korisnika:", err);
+      return null;
+    }
+  };
 
   const fetchPortfolio = async () => {
     try {
       const response = await axios.get(`/api/portfolio/public/${slug}`);
       if (response.data.success) {
+        console.log("Učitani portfolio:", response.data.portfolio);
         setPortfolio(response.data.portfolio);
 
+        console.log(currentUser);
+
+        console.log("Vlasnik portfolija:", response.data.portfolio.userId);
+
+        // POVEĆAJ VIEWCOUNT SAMO JEDNOM po učitavanju stranice
+        // if (!hasIncrementedViewCount.current) {
+        //   await incrementViewCount();
+        //   hasIncrementedViewCount.current = true;
+        // }
+
         // Proveri da li je trenutni korisnik vlasnik
-        if (user && user.id === response.data.portfolio.userId._id) {
-          setIsOwner(true);
+        if (currentUser && response.data.portfolio.userId) {
+          // Proveri oba načina - _id ili id
+          const portfolioUserId = response.data.portfolio.userId;
+          const currentUserId = currentUser.id;
+
+          console.log("portfolioUserId:", portfolioUserId);
+          console.log("currentUserId:", currentUserId);
+
+          if (
+            portfolioUserId &&
+            currentUserId &&
+            portfolioUserId.toString() === currentUserId.toString()
+          ) {
+            setIsOwner(true);
+            console.log("Korisnik je vlasnik portfolija");
+          }
         }
       }
     } catch (err) {
@@ -48,7 +119,7 @@ const PublicPortfolio = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate("/dashboard");
   };
 
   const handleEdit = () => {
@@ -85,11 +156,11 @@ const PublicPortfolio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
       {/* Strelica za nazad */}
       <button
         onClick={handleGoBack}
-        className="fixed top-6 left-6 z-50 bg-black/20 hover:bg-black/30 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-110"
+        className="absolute top-6 left-6 z-50 bg-black/20 hover:bg-black/30 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-110"
         title="Nazad na prethodnu stranu"
       >
         <FaArrowLeft className="text-xl" />
@@ -99,7 +170,7 @@ const PublicPortfolio = () => {
       {isOwner && (
         <button
           onClick={handleEdit}
-          className="fixed top-6 right-6 z-50 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors shadow-lg"
+          className="absolute top-6 right-6 z-50 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors shadow-lg"
           title="Izmeni portfolio"
         >
           <FaEdit className="mr-2" />
@@ -115,21 +186,21 @@ const PublicPortfolio = () => {
             <div className="flex flex-col items-start gap-6">
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
-                  {portfolio.userId.profileImage ? (
+                  {portfolio.profileImage ? (
                     <img
-                      src={portfolio.userId.profileImage}
-                      alt={portfolio.userId.name}
+                      src={portfolio.profileImage}
+                      alt={portfolio.firstName}
                       className="h-24 w-24 rounded-full object-cover border-4 border-white/20"
                     />
                   ) : (
                     <div className="h-24 w-24 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-3xl border-4 border-white/20">
-                      {portfolio.userId.name?.charAt(0) || "V"}
+                      {portfolio.firstName?.charAt(0) || "V"}
                     </div>
                   )}
                 </div>
                 <div>
                   <h1 className="text-3xl md:text-4xl font-bold">
-                    {portfolio.userId.name}
+                    {portfolio.firstName} {portfolio.lastName}
                   </h1>
                   <p className="text-gray-300 mt-2">Profesionalni vozač</p>
                 </div>
@@ -404,7 +475,7 @@ const PublicPortfolio = () => {
               <h2 className="text-xl font-semibold">Očekivana Plata</h2>
             </div>
             <p className="text-2xl font-bold text-gray-800">
-              {portfolio.salaryExpectation} €
+              {portfolio.salaryExpectation} RSD
             </p>
           </div>
         )}
