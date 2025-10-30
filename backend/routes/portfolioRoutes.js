@@ -36,6 +36,44 @@ router.get("/my-portfolio", authMiddleware, async (req, res) => {
   }
 });
 
+// ✅ Novi endpoint: dohvati portfolio po userId (bez authMiddleware)
+router.get("/by-user/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Neispravan userId" });
+    }
+
+    const portfolio = await DriverPortfolio.findOne({ userId }).populate(
+      "userId",
+      "name email phone profileImage"
+    );
+
+    if (!portfolio) {
+      return res.json({
+        success: false,
+        message: "Portfolio nije pronađen za ovog korisnika",
+      });
+    }
+
+    res.json({
+      success: true,
+      slug: portfolio.slug,
+      portfolio,
+    });
+  } catch (err) {
+    console.error("Greška u /by-user/:userId:", err);
+    res.status(500).json({
+      success: false,
+      message: "Greška pri dohvatanju portfolija",
+      error: err.message,
+    });
+  }
+});
+
 // 🔹 Provera dostupnosti sluga
 router.get("/check-slug/:slug", async (req, res) => {
   try {

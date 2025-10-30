@@ -553,7 +553,7 @@ export default function MyJobs() {
             </div>
           ) : (
             <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {filteredJobs.map((job, index) => (
+              {/* {filteredJobs.map((job, index) => (
                 <div
                   key={job._id}
                   className={`relative border-l-4 ${getRandomBorderColor(
@@ -567,7 +567,7 @@ export default function MyJobs() {
                       </h3>
 
                       <div className="space-y-4">
-                        {/* Osnovne informacije */}
+                       
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -598,7 +598,7 @@ export default function MyJobs() {
                           </div>
                         </div>
 
-                        {/* Lokacije */}
+                        
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Lokacije *
@@ -635,7 +635,7 @@ export default function MyJobs() {
                           </button>
                         </div>
 
-                        {/* Plata i tip zaposlenja */}
+                       
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -674,7 +674,7 @@ export default function MyJobs() {
                           </div>
                         </div>
 
-                        {/* Kontakt informacije */}
+                        
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -716,7 +716,7 @@ export default function MyJobs() {
                           </div>
                         </div>
 
-                        {/* Opis posla */}
+                       
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Opis posla *
@@ -731,7 +731,7 @@ export default function MyJobs() {
                           />
                         </div>
 
-                        {/* Uslovi */}
+                        
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Uslovi
@@ -767,7 +767,7 @@ export default function MyJobs() {
                           </button>
                         </div>
 
-                        {/* Status */}
+                        
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Status
@@ -803,7 +803,7 @@ export default function MyJobs() {
                     </div>
                   ) : (
                     <>
-                      {/* Prikaz oglasa - normalni mod */}
+                     
                       <div className="space-y-4">
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
@@ -915,7 +915,7 @@ export default function MyJobs() {
                           )}
                         </div>
 
-                        {/* Dugmadi za akcije */}
+                        
                         <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-gray-200">
                           <button
                             onClick={() => startEditing(job)}
@@ -925,7 +925,7 @@ export default function MyJobs() {
                             Izmeni
                           </button>
 
-                          {/* Status dugmad */}
+                         
                           {job.status !== "aktivan" && (
                             <button
                               onClick={() =>
@@ -970,7 +970,7 @@ export default function MyJobs() {
                             Obriši
                           </button>
                         </div>
-                        {/* Sekcija za aplikacije */}
+                       
                         <div className="mt-4 border-t pt-4">
                           <div className="flex justify-between items-center mb-2">
                             <button
@@ -1136,7 +1136,292 @@ export default function MyJobs() {
                     </>
                   )}
                 </div>
-              ))}
+              ))} */}
+              {filteredJobs.map((job, index) => {
+                const isExpanded = showApplications[job._id];
+                const applicationsCount = applications[job._id]?.length || 0;
+
+                return (
+                  <div
+                    key={job._id}
+                    className={`relative border-l-4 ${getRandomBorderColor(
+                      index
+                    )} rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] bg-white`}
+                  >
+                    {/* ✅ GORNJI DEO KARTICE – ZATVORENI PRIKAZ */}
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        {/* Datum objave */}
+                        <p className="text-xs text-gray-500 mb-1">
+                          Objavljeno:{" "}
+                          {new Date(job.createdAt).toLocaleDateString("sr-RS", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })}{" "}
+                          u{" "}
+                          {new Date(job.createdAt).toLocaleTimeString("sr-RS", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+
+                        {/* Naslov i pozicija */}
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          {job.title}
+                        </h3>
+                        <div className="flex items-center mb-2">
+                          <FaUserTie className="text-blue-500 mr-2" />
+                          <span className="text-gray-700 font-medium">
+                            {job.position}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Status + broj prijava + dugme */}
+                      <div className="flex flex-col items-end">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                            job.status
+                          )} flex items-center`}
+                        >
+                          {getStatusIcon(job.status)}
+                          <span className="ml-1 capitalize">{job.status}</span>
+                        </span>
+
+                        <p className="text-sm text-gray-600 mt-2">
+                          {applicationsCount} prijava
+                        </p>
+
+                        <button
+                          onClick={async () => {
+                            setShowApplications((prev) => ({
+                              ...prev,
+                              [job._id]: !prev[job._id],
+                            }));
+                            // Kad se klikne prvi put na “Vidi više”, odmah učitaj aplikacije
+                            if (!applications[job._id]) {
+                              await fetchJobApplications(job._id);
+                            }
+                          }}
+                          className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm transition-colors"
+                        >
+                          {isExpanded ? "Sakrij detalje" : "Vidi više"}
+                        </button>
+
+                        {/* <button
+                          onClick={() =>
+                            setShowApplications((prev) => ({
+                              ...prev,
+                              [job._id]: !prev[job._id],
+                            }))
+                          }
+                          className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm transition-colors"
+                        >
+                          {isExpanded ? "Sakrij detalje" : "Vidi više"}
+                        </button> */}
+                      </div>
+                    </div>
+
+                    {/* ✅ DONJI DEO – OTVARA SE KAD SE KLIKNE “VIDI VIŠE” */}
+                    {isExpanded && (
+                      <div className="mt-5 border-t border-gray-200 pt-5 animate-fadeIn">
+                        {editingJob === job._id ? (
+                          // 👉 Forma za editovanje (isti dizajn, samo inputi umesto plain teksta)
+                          <div className="space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Naslov oglasa
+                              </label>
+                              <input
+                                type="text"
+                                name="title"
+                                value={editForm.title}
+                                onChange={handleEditChange}
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Pozicija
+                              </label>
+                              <input
+                                type="text"
+                                name="position"
+                                value={editForm.position}
+                                onChange={handleEditChange}
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Opis posla
+                              </label>
+                              <textarea
+                                name="description"
+                                value={editForm.description}
+                                onChange={handleEditChange}
+                                rows="4"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Status oglasa
+                              </label>
+                              <select
+                                name="status"
+                                value={editForm.status}
+                                onChange={handleEditChange}
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                              >
+                                <option value="aktivan">Aktivan</option>
+                                <option value="pauziran">Pauziran</option>
+                                <option value="arhiviran">Arhiviran</option>
+                              </select>
+                            </div>
+
+                            {/* Dugmad za potvrdu / otkazivanje */}
+                            <div className="flex gap-2 pt-2 border-t border-gray-100 mt-2">
+                              <button
+                                onClick={() => saveEdit(job._id)}
+                                disabled={saving}
+                                className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors text-sm"
+                              >
+                                {saving ? "Čuvanje..." : "Sačuvaj izmene"}
+                              </button>
+                              <button
+                                onClick={() => setEditingJob(null)}
+                                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded-lg transition-colors text-sm"
+                              >
+                                Otkaži
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          // 👉 Prikaz detalja oglasa (tvoj postojeći dizajn)
+                          <>
+                            {/* Ovde ide tvoj postojeći deo sa opisom, lokacijom, platom, kontaktom i dugmadima */}
+                          </>
+                        )}
+
+                        {/* Osnovne informacije */}
+                        <div className="space-y-3 mb-4">
+                          <div className="flex items-center text-sm text-gray-600">
+                            <FaMapMarkerAlt className="text-red-500 mr-2" />
+                            <span className="font-medium">Lokacije:</span>
+                            <span className="ml-2">
+                              {job.location.join(", ")}
+                            </span>
+                          </div>
+
+                          {job.salary && (
+                            <div className="flex items-center text-sm text-gray-600">
+                              <FaMoneyBillWave className="text-green-500 mr-2" />
+                              <span className="font-medium">Plata:</span>
+                              <span className="ml-2">{job.salary}</span>
+                            </div>
+                          )}
+
+                          <div className="flex items-center text-sm text-gray-600">
+                            <FaBriefcase className="text-purple-500 mr-2" />
+                            <span className="font-medium">Tip zaposlenja:</span>
+                            <span className="ml-2">{job.employmentType}</span>
+                          </div>
+                        </div>
+
+                        {/* Opis posla */}
+                        <div className="border-t pt-4">
+                          <p className="text-gray-700 text-sm mb-4 line-clamp-4">
+                            {job.description}
+                          </p>
+
+                          {job.requirements && job.requirements.length > 0 && (
+                            <div className="mb-4">
+                              <h4 className="font-medium text-gray-800 mb-2 text-sm">
+                                Uslovi:
+                              </h4>
+                              <ul className="text-sm text-gray-600 space-y-1">
+                                {job.requirements.map((req, idx) => (
+                                  <li key={idx} className="flex items-start">
+                                    <span className="text-green-500 mr-2">
+                                      •
+                                    </span>
+                                    <span className="line-clamp-2">{req}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Kontakt informacije */}
+                        {(job.contact?.person ||
+                          job.contact?.email ||
+                          job.contact?.phone) && (
+                          <div className="border-t pt-3 mt-3">
+                            <h4 className="font-medium text-gray-800 mb-2">
+                              Kontakt:
+                            </h4>
+                            <div className="space-y-1 text-sm">
+                              {job.contact?.person && (
+                                <div className="flex items-center text-gray-600">
+                                  <FaUser className="text-blue-500 mr-2" />
+                                  {job.contact.person}
+                                </div>
+                              )}
+                              {job.contact?.phone && (
+                                <div className="flex items-center text-gray-600">
+                                  <FaPhone className="text-green-500 mr-2" />
+                                  {job.contact.phone}
+                                </div>
+                              )}
+                              {job.contact?.email && (
+                                <div className="flex items-center text-gray-600">
+                                  <FaEnvelope className="text-purple-500 mr-2" />
+                                  {job.contact.email}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Dugmad */}
+                        <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-200 mt-4">
+                          <button
+                            onClick={() => startEditing(job)}
+                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
+                          >
+                            <FaEdit className="mr-1" />
+                            Izmeni
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              navigate(`/job/${job._id}/applications`)
+                            }
+                            className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
+                          >
+                            <FaUserTie className="mr-1" />
+                            Kandidati
+                          </button>
+
+                          <button
+                            onClick={() => deleteJob(job._id)}
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
+                          >
+                            <FaTrash className="mr-1" />
+                            Obriši
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

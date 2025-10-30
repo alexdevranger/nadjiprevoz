@@ -38,6 +38,7 @@ import AllJobs from "./pages/AllJobs";
 import ViberCommunity from "./pages/ViberCommunity";
 import DriverPortfolioPage from "./pages/DriverPortfolioPage";
 import PublicPortfolio from "./pages/PublicPorfolio";
+import JobApplicationsPage from "./pages/JobApplicationsPage";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -104,6 +105,10 @@ export default function App() {
               <Route path="/shop/:slug" element={<ShopPage />} />
               <Route path="/viber" element={<ViberCommunity />} />
               <Route path="/driver/:slug" element={<PublicPortfolio />} />
+              <Route
+                path="/job/:jobId/applications"
+                element={<JobApplicationsPage />}
+              />
               <Route
                 path="/driver-portfolio"
                 element={

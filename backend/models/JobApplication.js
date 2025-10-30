@@ -31,7 +31,26 @@ const jobApplicationSchema = new mongoose.Schema(
       phone: String,
       yearsOfExperience: Number,
       hasOwnVehicle: Boolean,
-      vehicleType: String,
+      vehicles: [
+        {
+          type: { type: String },
+          capacity: Number,
+          licensePlate: String,
+          year: Number,
+          description: String,
+          pallets: Number,
+          dimensions: {
+            length: Number,
+            width: Number,
+            height: Number,
+          },
+          image1: String,
+          image2: String,
+        },
+      ],
+      expectedSalary: String,
+      availability: String,
+      driverLicenses: [String],
       previousExperience: [
         {
           companyName: String,
