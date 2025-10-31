@@ -39,6 +39,9 @@ import ViberCommunity from "./pages/ViberCommunity";
 import DriverPortfolioPage from "./pages/DriverPortfolioPage";
 import PublicPortfolio from "./pages/PublicPorfolio";
 import JobApplicationsPage from "./pages/JobApplicationsPage";
+import MyJobApplications from "./pages/MyJobApplications";
+import MyCompanyReviews from "./pages/MyCompanyReviews.jsx";
+import MyCandidateReviews from "./pages/MyCandidateReviews.jsx";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -114,6 +117,30 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <DriverPortfolioPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-company-reviews"
+                element={
+                  <ProtectedRoute>
+                    <MyCompanyReviews />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-candidate-reviews"
+                element={
+                  <ProtectedRoute>
+                    <MyCandidateReviews />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-job-applications"
+                element={
+                  <ProtectedRoute>
+                    <MyJobApplications />
                   </ProtectedRoute>
                 }
               />

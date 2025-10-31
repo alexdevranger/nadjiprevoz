@@ -28,6 +28,8 @@ import portfolioRoutes from "./routes/portfolioRoutes.js";
 import jobApplications from "./routes/jobApplicationRoutes.js";
 import Message from "./models/Message.js";
 import Conversation from "./models/Conversation.js";
+import companyReviewsRouter from "./routes/companyReviewsRoutes.js";
+import candidateReviews from "./routes/candidateReviews.js";
 import webpush from "web-push";
 
 dotenv.config();
@@ -125,10 +127,11 @@ io.on("connection", (socket) => {
       });
 
       // emituj conversationUpdated u PERSONALNE sobe svakog učesnika
-      // conversation.participants.forEach((pId) => {
-      //   io.to(pId.toString()).emit("conversationUpdated", convObj);
-      // });
-      io.to(conversationId.toString()).emit("conversationUpdated", convObj);
+      //ovo je otkomentarisano da se ne bi pojavljivala notifikacija posiljaocu
+      conversation.participants.forEach((pId) => {
+        io.to(pId.toString()).emit("conversationUpdated", convObj);
+      });
+      // io.to(conversationId.toString()).emit("conversationUpdated", convObj);
     } catch (err) {
       console.error("Greška u sendMessage:", err);
     }
@@ -228,5 +231,7 @@ app.use("/api/ips", ipsRouter);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/job-applications", jobApplications);
+app.use("/api/company-reviews", companyReviewsRouter);
+app.use("/api/candidate-reviews", candidateReviews);
 
 server.listen(port, () => console.log(`Backend listening on ${port}`));

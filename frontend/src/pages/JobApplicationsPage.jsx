@@ -1,421 +1,7 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useParams, useNavigate } from "react-router-dom";
-// import {
-//   FaArrowLeft,
-//   FaFilter,
-//   FaEnvelope,
-//   FaPhone,
-//   FaUser,
-//   FaBriefcase,
-//   FaTools,
-//   FaCalendarAlt,
-//   FaMapMarkerAlt,
-//   FaChevronDown,
-//   FaChevronUp,
-//   FaExternalLinkAlt,
-//   FaUserTie,
-//   FaTruck,
-// } from "react-icons/fa";
-
-// export default function JobApplicationsPage() {
-//   const { jobId } = useParams();
-//   const navigate = useNavigate();
-//   const [job, setJob] = useState(null);
-//   const [applications, setApplications] = useState([]);
-//   const [filter, setFilter] = useState("");
-//   const [loading, setLoading] = useState(true);
-//   const [expandedCards, setExpandedCards] = useState({});
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const token = localStorage.getItem("token");
-//         const [jobRes, appRes] = await Promise.all([
-//           axios.get(`/api/jobs/${jobId}`, {
-//             headers: { Authorization: `Bearer ${token}` },
-//           }),
-//           axios.get(`/api/job-applications/oglas/${jobId}`, {
-//             headers: { Authorization: `Bearer ${token}` },
-//           }),
-//         ]);
-//         setJob(jobRes.data);
-//         setApplications(appRes.data);
-//         console.log("Applications fetched:", appRes.data);
-//       } catch (err) {
-//         console.error("Greška pri učitavanju:", err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchData();
-//   }, [jobId]);
-
-//   const filteredApps = filter
-//     ? applications.filter((a) => a.status === filter)
-//     : applications;
-
-//   const toggleExpand = (id) => {
-//     setExpandedCards((prev) => ({
-//       ...prev,
-//       [id]: !prev[id],
-//     }));
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 py-8">
-//       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-//         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-//           <button
-//             onClick={() => navigate(-1)}
-//             className="text-gray-600 hover:text-gray-800 flex items-center text-sm font-medium mb-4"
-//           >
-//             <FaArrowLeft className="mr-2" /> Nazad
-//           </button>
-
-//           {loading ? (
-//             <div className="text-center py-10">
-//               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto mb-4"></div>
-//               <p className="text-gray-600">Učitavanje kandidata...</p>
-//             </div>
-//           ) : (
-//             <>
-//               <div className="mb-6">
-//                 <h1 className="text-2xl font-bold text-gray-800 mb-1">
-//                   {job?.title}
-//                 </h1>
-//                 <p className="text-sm text-gray-500 mb-2">
-//                   Objavljeno:{" "}
-//                   {new Date(job?.createdAt).toLocaleDateString("sr-RS")}{" "}
-//                   {new Date(job?.createdAt).toLocaleTimeString("sr-RS")}
-//                 </p>
-//                 <span className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 font-medium border border-blue-200">
-//                   {job?.status}
-//                 </span>
-//               </div>
-
-//               {/* Filter po statusu */}
-//               <div className="bg-gray-50 border rounded-xl p-4 mb-6">
-//                 <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-//                   <FaFilter className="text-blue-500 mr-2" /> Filter po statusu
-//                 </h2>
-//                 <div className="flex flex-wrap gap-2">
-//                   {["na čekanju", "u užem izboru", "prihvaćen", "odbijen"].map(
-//                     (s) => (
-//                       <button
-//                         key={s}
-//                         onClick={() => setFilter(s)}
-//                         className={`px-3 py-1 rounded-full text-sm border transition-colors ${
-//                           filter === s
-//                             ? "bg-blue-100 text-blue-700 border-blue-300"
-//                             : "hover:bg-gray-100 border-gray-300 text-gray-600"
-//                         }`}
-//                       >
-//                         {s}
-//                       </button>
-//                     )
-//                   )}
-//                   <button
-//                     onClick={() => setFilter("")}
-//                     className="px-3 py-1 rounded-full text-sm border border-gray-300 text-gray-600 hover:bg-gray-100"
-//                   >
-//                     Sve
-//                   </button>
-//                 </div>
-//               </div>
-
-//               {/* Lista kandidata */}
-//               {filteredApps.length === 0 ? (
-//                 <div className="text-center py-10 text-gray-500">
-//                   <FaUserTie className="text-4xl mx-auto mb-3 opacity-50" />
-//                   <p>Nema kandidata za ovaj filter.</p>
-//                 </div>
-//               ) : (
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                   {filteredApps.map((app) => {
-//                     const hasPortfolio = app.applicantData?.portfolioData;
-//                     const expanded = expandedCards[app._id];
-
-//                     return (
-//                       <div
-//                         key={app._id}
-//                         className="border-l-4 border-blue-500 bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg hover:translate-y-[-2px]"
-//                       >
-//                         {/* Osnovni deo */}
-//                         <div className="flex justify-between items-start">
-//                           <div>
-//                             <h3 className="font-semibold text-gray-900 text-lg mb-1">
-//                               {app.applicantData?.name ||
-//                                 app.applicantId?.name ||
-//                                 "Nepoznato ime"}
-//                             </h3>
-//                             {/* <p className="text-sm text-gray-600 mb-2">
-//                               Status:{" "}
-//                               <span className="font-medium">
-//                                 {app.status || "—"}
-//                               </span>
-//                             </p> */}
-//                             <div className="mt-2">
-//                               <label className="text-sm text-gray-600 mr-2">
-//                                 Status:
-//                               </label>
-//                               <select
-//                                 value={app.status}
-//                                 onChange={async (e) => {
-//                                   const newStatus = e.target.value;
-//                                   try {
-//                                     const token = localStorage.getItem("token");
-//                                     await axios.patch(
-//                                       `/api/job-applications/${app._id}/status`,
-//                                       { status: newStatus },
-//                                       {
-//                                         headers: {
-//                                           Authorization: `Bearer ${token}`,
-//                                         },
-//                                       }
-//                                     );
-//                                     setApplications((prev) =>
-//                                       prev.map((a) =>
-//                                         a._id === app._id
-//                                           ? { ...a, status: newStatus }
-//                                           : a
-//                                       )
-//                                     );
-//                                   } catch (err) {
-//                                     console.error(
-//                                       "Greška pri promeni statusa:",
-//                                       err
-//                                     );
-//                                   }
-//                                 }}
-//                                 className="border rounded-lg px-2 py-1 text-sm text-gray-700"
-//                               >
-//                                 {[
-//                                   "na čekanju",
-//                                   "u užem izboru",
-//                                   "prihvaćen",
-//                                   "odbijen",
-//                                 ].map((opt) => (
-//                                   <option key={opt} value={opt}>
-//                                     {opt}
-//                                   </option>
-//                                 ))}
-//                               </select>
-//                             </div>
-
-//                             <p className="text-gray-700 text-sm italic line-clamp-3">
-//                               {app.message || "Nema poruke."}
-//                             </p>
-//                           </div>
-
-//                           <button
-//                             onClick={() => toggleExpand(app._id)}
-//                             className="text-gray-500 hover:text-gray-700 transition-colors"
-//                           >
-//                             {expanded ? <FaChevronUp /> : <FaChevronDown />}
-//                           </button>
-//                         </div>
-
-//                         {/* Prošireni deo */}
-//                         {expanded && (
-//                           <div className="mt-4 border-t pt-4 text-sm text-gray-700 animate-fadeIn">
-//                             {hasPortfolio ? (
-//                               <>
-//                                 <div className="mb-3">
-//                                   <div className="flex items-center text-gray-700 mb-1">
-//                                     <FaBriefcase className="text-blue-500 mr-2" />
-//                                     <span className="font-medium">
-//                                       Iskustvo:
-//                                     </span>
-//                                     <span className="ml-2">
-//                                       {app.applicantData.yearsOfExperience || 0}{" "}
-//                                       god.
-//                                     </span>
-//                                   </div>
-
-//                                   {app.applicantData.previousExperience
-//                                     ?.length > 0 && (
-//                                     <ul className="ml-6 list-disc text-gray-600 mb-2">
-//                                       {app.applicantData.previousExperience.map(
-//                                         (exp, i) => (
-//                                           <li key={i}>
-//                                             {exp.companyName} – {exp.position} (
-//                                             {exp.duration})
-//                                           </li>
-//                                         )
-//                                       )}
-//                                     </ul>
-//                                   )}
-//                                 </div>
-
-//                                 {app.applicantData.skills?.length > 0 && (
-//                                   <div className="mb-3">
-//                                     <h4 className="font-medium text-gray-800 mb-1 flex items-center">
-//                                       <FaTools className="text-green-500 mr-2" />{" "}
-//                                       Veštine:
-//                                     </h4>
-//                                     <div className="flex flex-wrap gap-2">
-//                                       {app.applicantData.skills.map(
-//                                         (skill, idx) => (
-//                                           <span
-//                                             key={idx}
-//                                             className="px-2 py-1 bg-gray-100 border border-gray-200 rounded-full text-xs text-gray-700"
-//                                           >
-//                                             {skill}
-//                                           </span>
-//                                         )
-//                                       )}
-//                                     </div>
-//                                   </div>
-//                                 )}
-//                                 {app.applicantData.availability && (
-//                                   <div className="mt-4 border-t pt-3">
-//                                     <h4 className="font-medium text-gray-800 mb-1">
-//                                       Dostupnost:
-//                                     </h4>
-//                                     <p className="text-sm text-gray-700 capitalize">
-//                                       {app.applicantData.availability}
-//                                     </p>
-//                                   </div>
-//                                 )}
-
-//                                 {app.applicantData.expectedSalary && (
-//                                   <div className="mt-3">
-//                                     <h4 className="font-medium text-gray-800 mb-1">
-//                                       Očekivana plata:
-//                                     </h4>
-//                                     <p className="text-sm text-gray-700">
-//                                       {app.applicantData.expectedSalary}
-//                                     </p>
-//                                   </div>
-//                                 )}
-
-//                                 {app.applicantData.driverLicenses?.length >
-//                                   0 && (
-//                                   <div className="mt-3">
-//                                     <h4 className="font-medium text-gray-800 mb-1">
-//                                       Kategorije vozačke dozvole:
-//                                     </h4>
-//                                     <div className="flex flex-wrap gap-2">
-//                                       {app.applicantData.driverLicenses.map(
-//                                         (lic, idx) => (
-//                                           <span
-//                                             key={idx}
-//                                             className="px-2 py-1 bg-blue-50 border border-blue-200 rounded-full text-xs text-blue-700 font-medium"
-//                                           >
-//                                             {lic}
-//                                           </span>
-//                                         )
-//                                       )}
-//                                     </div>
-//                                   </div>
-//                                 )}
-
-//                                 {app.applicantData.vehicles?.length > 0 && (
-//                                   <div className="mt-4 border-t pt-3">
-//                                     <h4 className="font-medium text-gray-800 mb-2 flex items-center">
-//                                       <FaTruck className="text-orange-500 mr-2" />{" "}
-//                                       Vozila:
-//                                     </h4>
-//                                     {app.applicantData.vehicles.map(
-//                                       (v, idx) => (
-//                                         <div
-//                                           key={idx}
-//                                           className="mb-3 bg-gray-50 rounded-lg p-3 shadow-inner"
-//                                         >
-//                                           <p className="text-sm font-medium text-gray-700">
-//                                             {v.type}
-//                                           </p>
-//                                           <p className="text-xs text-gray-600">
-//                                             Nosivost: {v.capacity}kg | Godište:{" "}
-//                                             {v.year} | Reg. oznaka:{" "}
-//                                             {v.licensePlate}
-//                                           </p>
-//                                           {v.image1 && (
-//                                             <img
-//                                               src={v.image1}
-//                                               alt="vozilo"
-//                                               className="mt-2 w-full h-40 object-cover rounded-lg border"
-//                                             />
-//                                           )}
-//                                         </div>
-//                                       )
-//                                     )}
-//                                   </div>
-//                                 )}
-
-//                                 <div className="mt-4 border-t pt-3">
-//                                   <h4 className="font-medium mb-1 flex items-center">
-//                                     <FaEnvelope className="text-purple-500 mr-2" />{" "}
-//                                     Kontakt:
-//                                   </h4>
-//                                   <p>Email: {app.applicantData.email}</p>
-//                                   {app.applicantData.phone && (
-//                                     <p>Telefon: {app.applicantData.phone}</p>
-//                                   )}
-//                                 </div>
-
-//                                 <div className="mt-3">
-//                                   <button
-//                                     onClick={async () => {
-//                                       try {
-//                                         const res = await axios.get(
-//                                           `/api/portfolio/by-user/${app.applicantId._id}`
-//                                         );
-//                                         if (res.data.success && res.data.slug) {
-//                                           window.open(
-//                                             `/#/driver/${res.data.slug}`,
-//                                             "_blank"
-//                                           );
-//                                         } else {
-//                                           alert(
-//                                             "Portfolio nije pronađen za ovog kandidata."
-//                                           );
-//                                         }
-//                                       } catch (err) {
-//                                         console.error(
-//                                           "Greška pri otvaranju portfolija:",
-//                                           err
-//                                         );
-//                                       }
-//                                     }}
-//                                     className="text-blue-600 hover:text-blue-800 text-sm flex items-center"
-//                                   >
-//                                     <FaExternalLinkAlt className="mr-1" />
-//                                     Otvori portfolio
-//                                   </button>
-//                                 </div>
-//                               </>
-//                             ) : (
-//                               <div>
-//                                 <p className="italic text-gray-600">
-//                                   Kandidat nije dodao portfolio.
-//                                 </p>
-//                                 {app.applicantId?.email && (
-//                                   <p className="mt-2 flex items-center text-sm">
-//                                     <FaEnvelope className="mr-2 text-purple-500" />{" "}
-//                                     {app.applicantId.email}
-//                                   </p>
-//                                 )}
-//                               </div>
-//                             )}
-//                           </div>
-//                         )}
-//                       </div>
-//                     );
-//                   })}
-//                 </div>
-//               )}
-//             </>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { useToast } from "../components/ToastContext";
 import {
   FaArrowLeft,
   FaFilter,
@@ -441,6 +27,7 @@ import {
   FaTimesCircle,
   FaEye,
   FaListAlt,
+  FaComment,
 } from "react-icons/fa";
 
 export default function JobApplicationsPage() {
@@ -451,11 +38,18 @@ export default function JobApplicationsPage() {
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [expandedCards, setExpandedCards] = useState({});
+  const [selectedRatingCandidate, setSelectedRatingCandidate] = useState(null);
+  const [ratings, setRatings] = useState({});
+  const { success, error, warning, info } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) {
+          error("Sesija je istekla. Molimo prijavite se ponovo.");
+          return;
+        }
         const [jobRes, appRes] = await Promise.all([
           axios.get(`/api/jobs/${jobId}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -466,6 +60,15 @@ export default function JobApplicationsPage() {
         ]);
         setJob(jobRes.data);
         setApplications(appRes.data);
+        const reviewsRes = await axios.get(`/api/candidate-reviews`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const ratingsMap = {};
+        reviewsRes.data.reviews.forEach((r) => {
+          ratingsMap[r.applicantId._id] = r;
+        });
+        setRatings(ratingsMap);
         console.log("Applications fetched:", appRes.data);
       } catch (err) {
         console.error("Greška pri učitavanju:", err);
@@ -485,6 +88,63 @@ export default function JobApplicationsPage() {
       ...prev,
       [id]: !prev[id],
     }));
+  };
+
+  const handleCandidateRatingSubmit = async (applicantId, rating, comment) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        error("Sesija je istekla. Molimo prijavite se ponovo.");
+        return;
+      }
+      console.log("Submitting rating:", { applicantId, rating, comment });
+
+      const res = await axios.post(
+        "/api/candidate-reviews",
+        { applicantId, rating, comment },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setRatings((prev) => ({
+        ...prev,
+        [applicantId]: res.data.review,
+      }));
+      success("✅ Uspešno ste sačuvali ocenu kandidata!");
+      setSelectedRatingCandidate(null);
+    } catch (err) {
+      console.error("Greška pri čuvanju ocene kandidata:", err);
+    }
+  };
+
+  const openChat = async (app) => {
+    const token = localStorage.getItem("token");
+    const otherUserId = app.applicantId?._id || app.applicantData?._id;
+
+    if (!otherUserId) {
+      warning("Korisnik nije pronađen.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        error("Sesija je istekla. Molimo prijavite se ponovo.");
+        return;
+      }
+      const res = await axios.post(
+        "/api/conversations",
+        { otherUserId, jobId },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const conv = res.data;
+      navigate("/chat", { state: { conversationId: conv._id } });
+    } catch (err) {
+      console.error("Greška pri otvaranju konverzacije:", err);
+      error("❌ Greška pri otvaranju konverzacije.");
+    }
   };
 
   // Funkcija za boje statusa
@@ -517,11 +177,11 @@ export default function JobApplicationsPage() {
       case "odbijen":
         return <FaTimesCircle className="text-red-500 mr-1" />;
       case "aktivan":
-        return <FaCheckCircle className="text-green-500" />;
+        return <FaCheckCircle className="text-green-500 mr-1" />;
       case "pauziran":
-        return <FaPauseCircle className="text-yellow-500" />;
+        return <FaPauseCircle className="text-yellow-500 mr-1" />;
       case "arhiviran":
-        return <FaArchive className="text-gray-500" />;
+        return <FaArchive className="text-gray-500 mr-1" />;
       default:
         return <FaClock className="text-yellow-500 mr-1" />;
     }
@@ -685,6 +345,44 @@ export default function JobApplicationsPage() {
                                 </span>
                               )}
                             </div>
+                            <div className="mt-3 text-right">
+                              {console.log(
+                                app.applicantId?._id,
+                                app.applicantId?.name
+                              )}
+                              <button
+                                onClick={() =>
+                                  setSelectedRatingCandidate({
+                                    applicantId:
+                                      app.applicantId?._id ||
+                                      app.applicantData?._id,
+                                    name:
+                                      app.applicantId?.name ||
+                                      app.applicantData?.name ||
+                                      "Nepoznato ime",
+                                  })
+                                }
+                                className="text-yellow-600 text-sm hover:underline flex items-center justify-end"
+                              >
+                                <FaStar className="mr-1" />
+                                {ratings[app.applicantId?._id]
+                                  ? "Vidi ocenu kandidata"
+                                  : "Oceni kandidata"}
+                              </button>
+                              {/* Dugme za chat */}
+                              {(app.status === "u užem izboru" ||
+                                app.status === "prihvaćen") && (
+                                <div className="mt-2 text-right">
+                                  <button
+                                    onClick={() => openChat(app)}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-end ml-auto transition-colors"
+                                  >
+                                    <FaComment className="mr-2" />
+                                    Pošalji poruku
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
 
                           <button
@@ -710,6 +408,12 @@ export default function JobApplicationsPage() {
                               const newStatus = e.target.value;
                               try {
                                 const token = localStorage.getItem("token");
+                                if (!token) {
+                                  error(
+                                    "Sesija je istekla. Molimo prijavite se ponovo."
+                                  );
+                                  return;
+                                }
                                 await axios.patch(
                                   `/api/job-applications/${app._id}/status`,
                                   { status: newStatus },
@@ -972,10 +676,111 @@ export default function JobApplicationsPage() {
                   })}
                 </div>
               )}
+              {selectedRatingCandidate && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                  <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6 relative">
+                    <button
+                      onClick={() => setSelectedRatingCandidate(null)}
+                      className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                    >
+                      ✕
+                    </button>
+
+                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                      <FaStar className="text-yellow-500 mr-2" />
+                      Ocena kandidata: {selectedRatingCandidate.name}
+                    </h2>
+                    {console.log(selectedRatingCandidate)}
+
+                    <RatingForm
+                      applicantId={selectedRatingCandidate.applicantId}
+                      existingRating={
+                        ratings[selectedRatingCandidate.applicantId]?.rating ||
+                        0
+                      }
+                      existingComment={
+                        ratings[selectedRatingCandidate.applicantId]?.comment ||
+                        ""
+                      }
+                      onSubmit={(rating, comment) =>
+                        handleCandidateRatingSubmit(
+                          selectedRatingCandidate.applicantId, // string _id
+                          rating,
+                          comment
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+function RatingForm({
+  applicantId,
+  existingRating = 0,
+  existingComment = "",
+  onSubmit,
+}) {
+  const [rating, setRating] = useState(existingRating);
+  const [comment, setComment] = useState(existingComment);
+  const [isChanged, setIsChanged] = useState(false);
+
+  useEffect(() => {
+    setRating(existingRating);
+    setComment(existingComment);
+  }, [existingRating, existingComment]);
+
+  const handleStarClick = (value) => {
+    setRating(value);
+    setIsChanged(true);
+  };
+
+  const handleSave = () => {
+    onSubmit(rating, comment);
+    setIsChanged(false);
+  };
+
+  return (
+    <div>
+      <div className="flex mb-4 justify-center">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <FaStar
+            key={star}
+            onClick={() => handleStarClick(star)}
+            className={`mr-2 text-2xl cursor-pointer transition-colors ${
+              star <= rating ? "text-yellow-500" : "text-gray-300"
+            }`}
+          />
+        ))}
+      </div>
+
+      <textarea
+        value={comment}
+        onChange={(e) => {
+          setComment(e.target.value);
+          setIsChanged(true);
+        }}
+        placeholder="Kratka napomena o kandidatu (nije javna)"
+        className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-yellow-400"
+        rows="3"
+      ></textarea>
+
+      <button
+        onClick={handleSave}
+        disabled={!isChanged}
+        className={`mt-3 w-full py-2 rounded-lg text-white transition-colors ${
+          isChanged
+            ? "bg-yellow-500 hover:bg-yellow-600"
+            : "bg-gray-400 cursor-not-allowed"
+        }`}
+      >
+        {existingRating ? "Sačuvaj izmene" : "Sačuvaj ocenu"}
+      </button>
     </div>
   );
 }

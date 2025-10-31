@@ -24,6 +24,8 @@ import {
   FaArchive,
   FaBuilding,
   FaPaperPlane,
+  FaStar,
+  FaExternalLinkAlt,
 } from "react-icons/fa";
 
 export default function MyJobs() {
@@ -488,6 +490,29 @@ export default function MyJobs() {
                 </button>
               </Link>
             </div>
+          </div>
+          <div className="mt-5 flex items-center justify-between bg-gradient-to-r from-yellow-50 via-orange-50 to-pink-50 border border-yellow-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
+            <div className="flex items-center">
+              <div className="bg-yellow-100 p-2 rounded-full mr-3">
+                <FaStar className="text-yellow-500 text-xl" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-800">
+                  Pogledajte sve ocene kandidata
+                </h3>
+                <p className="text-xs text-gray-600">
+                  Pregledajte, izmenite ili dodajte svoje komentare o
+                  kandidatima.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/my-candidate-reviews"
+              className="ml-4 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow transition-all flex items-center"
+            >
+              <FaExternalLinkAlt className="mr-1" />
+              Vidi ocene
+            </Link>
           </div>
         </div>
 

@@ -157,6 +157,7 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         console.log(user);
+        const token = localStorage.getItem("token");
         // Učitaj vozila
         const vehiclesRes = await axios.get("/api/vehicles", {
           headers: { Authorization: `Bearer ${token}` },
@@ -198,6 +199,7 @@ export default function Dashboard() {
   useEffect(() => {
     const checkShop = async () => {
       try {
+        const token = localStorage.getItem("token");
         const shopRes = await axios.get("/api/shop", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -242,6 +244,7 @@ export default function Dashboard() {
     formData.append("image", file);
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "/api/images/upload-profile",
         formData,
@@ -284,6 +287,7 @@ export default function Dashboard() {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.delete("/api/images/delete-profile-image", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -322,6 +326,7 @@ export default function Dashboard() {
   // Funkcija za izmenu profila
   const handleProfileUpdate = async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.put(
         "/api/auth/profile",
         {
@@ -364,6 +369,7 @@ export default function Dashboard() {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.put(
         "/api/auth/delete-company",
         {},
@@ -399,6 +405,7 @@ export default function Dashboard() {
 
   const checkPortfolio = async () => {
     try {
+      const token = localStorage.getItem("token");
       const portfolioRes = await axios.get("/api/portfolio/my-portfolio", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -610,7 +617,7 @@ export default function Dashboard() {
                   <DashboardCard
                     icon={<FaPlusCircle className="text-green-500" />}
                     title="Napravi poslovni profil"
-                    description="Kreirajte svoj shop/portfolio"
+                    description="Kreirajte svoju biznis stranu"
                     color="border-l-green-500"
                     onClick={() => {
                       // if (vehicles.length === 0) {
@@ -652,6 +659,13 @@ export default function Dashboard() {
                   />
                 </div>
               )}
+              <DashboardCard
+                icon={<FaBriefcase className="text-orange-500" />}
+                title="Moje prijave za posao"
+                description="Pregledajte oglase na koje ste aplicirali"
+                link="/my-job-applications"
+                color="border-l-orange-500"
+              />
               <DashboardCard
                 icon={<FaUserTie className="text-[#adadad]" />}
                 title="Dodaj Posao"
@@ -994,6 +1008,7 @@ export default function Dashboard() {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.post(
         "/api/shop",
         {
@@ -1022,6 +1037,7 @@ export default function Dashboard() {
   // Funkcija za brisanje shopa
   const handleDeleteShop = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.delete(`/api/shop/${shop._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });

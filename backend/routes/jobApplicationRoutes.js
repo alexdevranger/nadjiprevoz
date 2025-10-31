@@ -59,6 +59,29 @@ router.get("/moje", authMiddleware, async (req, res) => {
   }
 });
 
+// 🔹 Kandidat vidi sve svoje prijave
+router.get("/my-applications", authMiddleware, async (req, res) => {
+  try {
+    const applications = await JobApplication.find({ applicantId: req.user.id })
+      // .populate("jobId", "title position location status createdAt")
+      .populate({
+        path: "jobId",
+        select:
+          "title position location salary contact employmentType description requirements createdAt status isActive company",
+        populate: {
+          path: "company",
+          select: "companyName logo slug", // iz Shop modela
+        },
+      })
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, applications });
+  } catch (err) {
+    console.error("❌ Greška u /my-applications:", err);
+    res.status(500).json({ success: false, message: "Greška na serveru" });
+  }
+});
+
 // Sve prijave na oglase koje je transporter objavio
 /* 🔹 Sve prijave na oglase koje je transporter objavio - ISPRAVLJENO */
 router.get("/moje-objave", authMiddleware, async (req, res) => {

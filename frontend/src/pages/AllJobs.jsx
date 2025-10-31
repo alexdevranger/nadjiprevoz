@@ -886,7 +886,7 @@ export default function AllJobs() {
                         className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
                       >
                         <FaPaperPlane className="mr-1" />
-                        Apply
+                        Konkuriši
                       </button>
                     </div>
                   </div>
