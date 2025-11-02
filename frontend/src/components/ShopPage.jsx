@@ -1459,21 +1459,42 @@ const ShopPage = () => {
       warning("Ne možete poslati poruku sami sebi.");
       return;
     }
+
     try {
       const res = await axios.post(
         "/api/conversations",
         { tourId, otherUserId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      const conv = res.data;
-      navigate("/chat", { state: { conversationId: conv._id } });
+      navigate("/chat", { state: { conversationId: res.data._id, tourId } });
     } catch (err) {
       console.error(err);
       error("Greška pri otvaranju konverzacije");
     }
   }
+  // async function openChat(tour) {
+  //   const otherUserId = tour.createdBy._id;
+  //   const tourId = tour._id;
+
+  //   if (String(otherUserId) === String(user._id)) {
+  //     warning("Ne možete poslati poruku sami sebi.");
+  //     return;
+  //   }
+  //   try {
+  //     const res = await axios.post(
+  //       "/api/conversations/tour",
+  //       { tourId, otherUserId },
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+  //     const conv = res.data;
+  //     navigate("/chat", { state: { conversationId: conv._id } });
+  //   } catch (err) {
+  //     console.error(err);
+  //     error("Greška pri otvaranju konverzacije");
+  //   }
+  // }
 
   useEffect(() => {
     if (!token || !user) return;

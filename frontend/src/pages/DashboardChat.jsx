@@ -200,7 +200,6 @@ export default function DashboardChat() {
 
   useEffect(() => {
     // Izračunaj ukupan broj nepročitanih poruka
-    console.log(user);
     if (!user || !conversations) return;
     const totalUnread = conversations.reduce((total, conv) => {
       return total + (conv.unread?.[user.id] || 0);
@@ -214,6 +213,11 @@ export default function DashboardChat() {
   useEffect(() => {
     const load = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          error("Sesija je istekla. Molimo prijavite se ponovo.");
+          return;
+        }
         const res = await axios.get("/api/conversations", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -231,7 +235,7 @@ export default function DashboardChat() {
         if (state?.conversationId) {
           // pronađi tu konverzaciju
           const c = res.data.find((x) => x._id === state.conversationId);
-          if (c) {
+          if (c && c._id) {
             // setConversations([c]); // prikaži samo tu sobu
             openConversation(c);
           } else {
@@ -239,7 +243,7 @@ export default function DashboardChat() {
               `/api/conversations?conversationId=${state.conversationId}`,
               { headers: { Authorization: `Bearer ${token}` } }
             );
-            if (resp.data) {
+            if (resp.data && resp.data._id) {
               setConversations((prev) =>
                 prev.some((p) => p._id === resp.data._id)
                   ? prev
@@ -264,6 +268,18 @@ export default function DashboardChat() {
 
           // spoji: prvo sve te ture, pa ostale
           setConversations([...related, ...others]);
+        } else if (state?.jobId) {
+          const related = allConvs.filter((c) => {
+            const jid = c.jobId?._id;
+            return jid && String(jid) === String(state.jobId);
+          });
+
+          const others = allConvs.filter((c) => {
+            const jid = c.jobId?._id || c.jobId;
+            return !(jid && String(jid) === String(state.jobId));
+          });
+
+          setConversations([...related, ...others]);
         } else {
           // nema prosleđenog ID-ja → prikaži sve postojeće
           setConversations(allConvs);
@@ -275,40 +291,6 @@ export default function DashboardChat() {
     if (token) load();
   }, [token, state]); // može ostati token + state
 
-  // --- openConversation: postavi activeConv i REF, pridruži sobi, markRead, load poruka
-  // const openConversation = async (conv) => {
-  //   setActiveConv(conv);
-  //   activeConvRef.current = conv; // VAŽNO: ažuriramo ref
-
-  //   // Odmah lokalno setujemo unread na 0 (optimistic update)
-  //   setConversations((prev) =>
-  //     prev.map((c) =>
-  //       c._id === conv._id ? { ...c, unread: { ...c.unread, [user.id]: 0 } } : c
-  //     )
-  //   );
-
-  //   // mark read preko socket-a (server će emit-ovati conversationUpdated)
-  //   console.log("user.id", user.id);
-  //   console.log("conv._id", conv._id);
-  //   socket?.emit("markRead", {
-  //     conversationId: conv._id,
-  //     userId: user.id,
-  //   });
-
-  //   // join socket room
-  //   socket?.emit("joinRoom", conv._id);
-
-  //   // load poruke
-  //   try {
-  //     const res = await axios.get(`/api/messages/${conv._id}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-  //     setMessages(Array.isArray(res.data) ? res.data : []);
-  //   } catch (err) {
-  //     console.error("Greška pri učitavanju poruka:", err);
-  //     setMessages([]);
-  //   }
-  // };
   const openConversation = async (conv) => {
     setActiveConv(conv);
     activeConvRef.current = conv;
@@ -404,7 +386,10 @@ export default function DashboardChat() {
 
         {conversations.map((c) => {
           console.log("c", c);
-          const other = c.participants.find((p) => p._id !== user.id);
+          const other = Array.isArray(c.participants)
+            ? c.participants.find((p) => p._id !== user.id)
+            : null;
+          console.log("other", other);
           const unread = c.unread?.[user.id] || 0;
 
           // Formatiranje datuma
@@ -456,8 +441,32 @@ export default function DashboardChat() {
                       ? `${c.shipmentId.pickupLocation} → ${
                           c.shipmentId.dropoffLocation || "Bilo gde"
                         }`
+                      : c.jobId
+                      ? `Posao: ${
+                          c.jobId.title ||
+                          c.jobId.position ||
+                          "Nepoznato radno mesto"
+                        }`
                       : "Razgovor"}
                   </div>
+                  {c.jobId && (
+                    <>
+                      <div className="text-sm text-gray-700">
+                        Posao: {c.jobId.title || "Nepoznat"}
+                      </div>
+                      {c.jobId?.slug && (
+                        <div
+                          className="text-xs text-blue-600 hover:underline cursor-pointer mt-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/poslovi/${c.jobId.slug}`);
+                          }}
+                        >
+                          Otvori oglas
+                        </div>
+                      )}
+                    </>
+                  )}
 
                   <div className="text-sm text-gray-600 mt-1">
                     {c.lastMessage?.text
@@ -500,39 +509,7 @@ export default function DashboardChat() {
         {activeConv ? (
           <>
             {/* Lista poruka */}
-            {/* <div
-              className="flex-1 overflow-auto mb-3"
-              ref={(el) => {
-                if (el) {
-                  el.scrollTop = el.scrollHeight; // Auto-scroll na dno
-                }
-              }}
-            >
-              {messages.map((m, i) => {
-                const mine =
-                  m.senderId === user.id ||
-                  m.senderId === (user._id || user.id);
-                return (
-                  <div
-                    key={i}
-                    className={`mb-2 ${mine ? "text-right" : "text-left"}`}
-                  >
-                    <div
-                      className={`inline-block p-2 rounded ${
-                        mine ? "bg-blue-400 text-white" : "bg-gray-100"
-                      }`}
-                    >
-                      {m.text}
-                    </div>
-                    <div className="text-xs text-gray-400 mt-1">
-                      {format(new Date(m.createdAt), "d. MMM yyyy HH:mm", {
-                        locale: srLatin,
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div> */}
+
             <div
               className="flex-1 overflow-auto mb-3 space-y-3 p-4"
               ref={(el) => {

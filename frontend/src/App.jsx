@@ -55,6 +55,7 @@ export default function App() {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
+      console.log("storedUser", storedUser);
       setGlobalState("user", JSON.parse(storedUser));
     }
     const storedToken = localStorage.getItem("token");
@@ -64,11 +65,11 @@ export default function App() {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    if (user?._id) {
-      console.log("registering user", user._id);
-      socket.emit("registerUser", user._id);
+    if (user?.id) {
+      console.log("registering user", user.id);
+      socket.emit("registerUser", user.id);
     }
-  }, [user?._id]);
+  }, [user?.id]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");

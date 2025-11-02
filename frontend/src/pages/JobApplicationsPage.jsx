@@ -116,36 +116,66 @@ export default function JobApplicationsPage() {
     }
   };
 
-  const openChat = async (app) => {
-    const token = localStorage.getItem("token");
-    const otherUserId = app.applicantId?._id || app.applicantData?._id;
+  async function openChat(job) {
+    const otherUserId = job.createdBy?._id || job.companyId?._id;
+    const jobId = job._id;
 
     if (!otherUserId) {
       warning("Korisnik nije pronađen.");
       return;
     }
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        error("Sesija je istekla. Molimo prijavite se ponovo.");
-        return;
-      }
-      const res = await axios.post(
-        "/api/conversations",
-        { otherUserId, jobId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const conv = res.data;
-      navigate("/chat", { state: { conversationId: conv._id } });
-    } catch (err) {
-      console.error("Greška pri otvaranju konverzacije:", err);
-      error("❌ Greška pri otvaranju konverzacije.");
+    if (String(otherUserId) === String(user._id)) {
+      warning("Ne možete poslati poruku sami sebi.");
+      return;
     }
-  };
+
+    try {
+      const res = await axios.post(
+        "/api/conversations/job",
+        { jobId, otherUserId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      navigate("/chat", { state: { conversationId: res.data._id, jobId } });
+    } catch (err) {
+      console.error(err);
+      error("Greška pri otvaranju konverzacije");
+    }
+  }
+
+  // const openChat = async (app) => {
+  //   console.log("app", app);
+  //   const token = localStorage.getItem("token");
+  //   const otherUserId = app.applicantId?._id || app.applicantData?._id;
+
+  //   if (!otherUserId) {
+  //     warning("Korisnik nije pronađen.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       error("Sesija je istekla. Molimo prijavite se ponovo.");
+  //       return;
+  //     }
+  //     console.log("Opening chat with user:", otherUserId, "for job:", jobId);
+  //     const res = await axios.post(
+  //       "/api/conversations/job",
+  //       { otherUserId, jobId },
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+
+  //     const conv = res.data;
+  //     console.log("Conversation opened:", conv);
+  //     navigate("/chat", { state: { conversationId: conv._id } });
+  //   } catch (err) {
+  //     console.error("Greška pri otvaranju konverzacije:", err);
+  //     error("❌ Greška pri otvaranju konverzacije.");
+  //   }
+  // };
 
   // Funkcija za boje statusa
   const getStatusColor = (status) => {

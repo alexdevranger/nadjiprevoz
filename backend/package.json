@@ -10,6 +10,7 @@
     "dependencies": {
         "@turf/turf": "^7.2.0",
         "axios": "^1.11.0",
+        "base64-js": "^1.5.1",
         "bcryptjs": "^3.0.2",
         "cloudinary": "^2.7.0",
         "cors": "^2.8.5",

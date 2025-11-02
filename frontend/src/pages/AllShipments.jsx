@@ -205,21 +205,7 @@ export default function AllShipments() {
     const otherUserId = shipment.createdBy._id;
     const shipmentId = shipment._id;
 
-    const isOwner =
-      user &&
-      shipment.createdBy &&
-      (String(user.id) === String(shipment.createdBy._id) ||
-        String(user._id) === String(shipment.createdBy._id));
-
-    if (isOwner) {
-      navigate("/chat", { state: { shipmentId: shipment._id } });
-      return;
-    }
-
-    if (
-      String(otherUserId) === String(user?.id) ||
-      String(otherUserId) === String(user?._id)
-    ) {
+    if (String(otherUserId) === String(user._id)) {
       warning("Ne možete poslati poruku sami sebi.");
       return;
     }
@@ -230,13 +216,51 @@ export default function AllShipments() {
         { shipmentId, otherUserId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const conv = res.data;
-      navigate("/chat", { state: { conversationId: conv._id } });
+      navigate("/chat", {
+        state: { conversationId: res.data._id, shipmentId },
+      });
     } catch (err) {
       console.error(err);
       error("Greška pri otvaranju konverzacije");
     }
   }
+
+  // async function openChat(shipment) {
+  //   const otherUserId = shipment.createdBy._id;
+  //   const shipmentId = shipment._id;
+
+  //   const isOwner =
+  //     user &&
+  //     shipment.createdBy &&
+  //     (String(user.id) === String(shipment.createdBy._id) ||
+  //       String(user._id) === String(shipment.createdBy._id));
+
+  //   if (isOwner) {
+  //     navigate("/chat", { state: { shipmentId: shipment._id } });
+  //     return;
+  //   }
+
+  //   if (
+  //     String(otherUserId) === String(user?.id) ||
+  //     String(otherUserId) === String(user?._id)
+  //   ) {
+  //     warning("Ne možete poslati poruku sami sebi.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await axios.post(
+  //       "/api/conversations/shipment",
+  //       { shipmentId, otherUserId },
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+  //     const conv = res.data;
+  //     navigate("/chat", { state: { conversationId: conv._id } });
+  //   } catch (err) {
+  //     console.error(err);
+  //     error("Greška pri otvaranju konverzacije");
+  //   }
+  // }
   const toggleNote = (id) => {
     setExpandedNotes((prev) => ({ ...prev, [id]: !prev[id] }));
   };

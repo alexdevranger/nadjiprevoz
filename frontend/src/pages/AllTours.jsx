@@ -55,24 +55,47 @@ export default function AllTours() {
     setPage(1); // Resetuj stranicu na 1 kada se promeni filter
   };
 
+  // async function openChat(tour) {
+  //   const otherUserId = tour.createdBy._id;
+  //   const tourId = tour._id;
+
+  //   if (String(otherUserId) === String(user._id)) {
+  //     warning("Ne možete poslati poruku sami sebi.");
+  //     return;
+  //   }
+  //   try {
+  //     const res = await axios.post(
+  //       "/api/conversations/tour",
+  //       { tourId, otherUserId },
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+  //     const conv = res.data;
+  //     navigate("/chat", { state: { conversationId: conv._id } });
+  //   } catch (err) {
+  //     console.error(err);
+  //     error("Greška pri otvaranju konverzacije");
+  //   }
+  // }
   async function openChat(tour) {
     const otherUserId = tour.createdBy._id;
     const tourId = tour._id;
+    console.log("OTHER USER ID", otherUserId, "TOURID", tourId);
 
     if (String(otherUserId) === String(user._id)) {
       warning("Ne možete poslati poruku sami sebi.");
       return;
     }
+
     try {
       const res = await axios.post(
-        "/api/conversations",
+        "/api/conversations/tour",
         { tourId, otherUserId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      const conv = res.data;
-      navigate("/chat", { state: { conversationId: conv._id } });
+      console.log("TOUR RES", res.data);
+      navigate("/chat", { state: { conversationId: res.data._id, tourId } });
     } catch (err) {
       console.error(err);
       error("Greška pri otvaranju konverzacije");

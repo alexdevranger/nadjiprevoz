@@ -128,8 +128,16 @@ io.on("connection", (socket) => {
 
       // emituj conversationUpdated u PERSONALNE sobe svakog učesnika
       //ovo je otkomentarisano da se ne bi pojavljivala notifikacija posiljaocu
+      console.log(conversationId);
+      const updatedConv = await Conversation.findById(conversationId)
+        .populate("participants", "name company")
+        .populate("tourId", "startLocation endLocation date")
+        .populate("shipmentId", "pickupLocation dropoffLocation date")
+        .populate("jobId", "title position company createdAt")
+        .populate("lastMessage");
+
       conversation.participants.forEach((pId) => {
-        io.to(pId.toString()).emit("conversationUpdated", convObj);
+        io.to(pId.toString()).emit("conversationUpdated", updatedConv);
       });
       // io.to(conversationId.toString()).emit("conversationUpdated", convObj);
     } catch (err) {
@@ -169,7 +177,13 @@ io.on("connection", (socket) => {
       // conversation.participants.forEach((pId) => {
       //   io.to(pId.toString()).emit("conversationUpdated", convObj);
       // });
-      io.to(conversationId.toString()).emit("conversationUpdated", convObj);
+      const updatedConv = await Conversation.findById(conversationId)
+        .populate("participants", "name company")
+        .populate("tourId", "startLocation endLocation date")
+        .populate("shipmentId", "pickupLocation dropoffLocation date")
+        .populate("jobId", "title position company createdAt")
+        .populate("lastMessage");
+      io.to(conversationId.toString()).emit("conversationUpdated", updatedConv);
     } catch (err) {
       console.error("Greška u markRead:", err);
     }
