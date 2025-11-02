@@ -30,6 +30,7 @@ import ScrollToTopButton from "./components/ScrollToTopButton";
 import Intro from "./pages/Intro";
 import ShopPage from "./components/ShopPage";
 import ShopDashboard from "./components/ShopDashboard";
+import GlobalChat from "./components/GlobalChat";
 import { ToastProvider } from "./components/ToastContext";
 import Faq from "./pages/FAQ";
 import AddJob from "./pages/AddJob";
@@ -95,6 +96,7 @@ export default function App() {
               <Route path="/intro" element={<Intro />} />
               <Route path="/alltours" element={<AllTours />} />
               <Route path="/all-jobs" element={<AllJobs />} />
+              <Route path="global-chat" element={<GlobalChat />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/map" element={<MapPage />} />

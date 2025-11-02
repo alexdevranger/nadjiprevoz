@@ -32,6 +32,7 @@ import {
 
 export default function JobApplicationsPage() {
   const { jobId } = useParams();
+  const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const [job, setJob] = useState(null);
   const [applications, setApplications] = useState([]);
@@ -116,16 +117,21 @@ export default function JobApplicationsPage() {
     }
   };
 
-  async function openChat(job) {
-    const otherUserId = job.createdBy?._id || job.companyId?._id;
-    const jobId = job._id;
+  async function openChat(app) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      error("Sesija je istekla. Molimo prijavite se ponovo.");
+      return;
+    }
+    const otherUserId = app.applicantId._id;
+    const jobId = app.jobId;
 
     if (!otherUserId) {
       warning("Korisnik nije pronađen.");
       return;
     }
 
-    if (String(otherUserId) === String(user._id)) {
+    if (String(otherUserId) === String(user.id)) {
       warning("Ne možete poslati poruku sami sebi.");
       return;
     }
@@ -317,6 +323,7 @@ export default function JobApplicationsPage() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {filteredApps.map((app) => {
+                    console.log("Application", app);
                     const hasPortfolio = app.applicantData?.portfolioData;
                     const expanded = expandedCards[app._id];
 

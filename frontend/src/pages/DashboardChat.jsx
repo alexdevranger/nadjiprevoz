@@ -443,13 +443,13 @@ export default function DashboardChat() {
                         }`
                       : c.jobId
                       ? `Posao: ${
-                          c.jobId.title ||
                           c.jobId.position ||
+                          c.jobId.title ||
                           "Nepoznato radno mesto"
                         }`
                       : "Razgovor"}
                   </div>
-                  {c.jobId && (
+                  {/* {c.jobId && (
                     <>
                       <div className="text-sm text-gray-700">
                         Posao: {c.jobId.title || "Nepoznat"}
@@ -466,7 +466,7 @@ export default function DashboardChat() {
                         </div>
                       )}
                     </>
-                  )}
+                  )} */}
 
                   <div className="text-sm text-gray-600 mt-1">
                     {c.lastMessage?.text

@@ -27,9 +27,11 @@ import jobRoutes from "./routes/jobs.js";
 import portfolioRoutes from "./routes/portfolioRoutes.js";
 import jobApplications from "./routes/jobApplicationRoutes.js";
 import Message from "./models/Message.js";
+import GlobalChatMessage from "./models/GlobalChatMessage.js";
 import Conversation from "./models/Conversation.js";
 import companyReviewsRouter from "./routes/companyReviewsRoutes.js";
 import candidateReviews from "./routes/candidateReviews.js";
+import globalChatRoutes from "./routes/globalChatRoutes.js";
 import webpush from "web-push";
 
 dotenv.config();
@@ -167,6 +169,7 @@ io.on("connection", (socket) => {
         "shipmentId",
         "pickupLocation dropoffLocation"
       );
+      await conversation.populate("jobId", "title position company createdAt");
 
       const convObj = conversation.toObject();
       convObj.unread = {};
@@ -186,6 +189,31 @@ io.on("connection", (socket) => {
       io.to(conversationId.toString()).emit("conversationUpdated", updatedConv);
     } catch (err) {
       console.error("Greška u markRead:", err);
+    }
+  });
+
+  socket.on("joinGlobalChat", async () => {
+    const messages = await GlobalChatMessage.find()
+      .sort({ createdAt: 1 })
+      .populate("user", "name company profileImage");
+    socket.emit("globalChatHistory", messages);
+  });
+
+  socket.on("sendGlobalMessage", async (data) => {
+    const { userId, content } = data;
+    if (!content) return;
+
+    try {
+      const newMsg = await GlobalChatMessage.create({
+        user: userId, // korisnik iz frontenda ili auth
+        content,
+      });
+
+      await newMsg.populate("user", "name company profileImage");
+
+      io.emit("receiveGlobalMessage", newMsg);
+    } catch (err) {
+      console.error("Greška u slanju globalne poruke:", err);
     }
   });
 
@@ -247,5 +275,6 @@ app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/job-applications", jobApplications);
 app.use("/api/company-reviews", companyReviewsRouter);
 app.use("/api/candidate-reviews", candidateReviews);
+app.use("/api/global-chat", globalChatRoutes);
 
 server.listen(port, () => console.log(`Backend listening on ${port}`));
