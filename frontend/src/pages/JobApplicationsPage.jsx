@@ -144,7 +144,7 @@ export default function JobApplicationsPage() {
       );
       navigate("/chat", { state: { conversationId: res.data._id, jobId } });
     } catch (err) {
-      console.error(err);
+      console.log(err);
       error("Greška pri otvaranju konverzacije");
     }
   }

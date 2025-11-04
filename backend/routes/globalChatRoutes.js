@@ -27,7 +27,7 @@ router.post("/", authMiddleware, async (req, res) => {
 
   try {
     const newMsg = await GlobalChatMessage.create({
-      user: req.user._id, // uzimamo iz authMiddleware
+      user: req.user.id, // uzimamo iz authMiddleware
       content,
     });
 
@@ -43,26 +43,5 @@ router.post("/", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-// router.post("/", authMiddleware, async (req, res) => {
-//   try {
-//     const { content } = req.body;
-//     if (!content || !content.trim())
-//       return res.status(400).json({ error: "Poruka je prazna" });
-
-//     const message = new GlobalChatMessage({
-//       user: req.user.id,
-//       content,
-//     });
-//     await message.save();
-//     const populatedMessage = await message.populate(
-//       "user",
-//       "name company profileImage"
-//     );
-//     res.status(201).json(populatedMessage);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "Greška pri slanju poruke" });
-//   }
-// });
 
 export default router;

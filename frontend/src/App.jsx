@@ -30,7 +30,6 @@ import ScrollToTopButton from "./components/ScrollToTopButton";
 import Intro from "./pages/Intro";
 import ShopPage from "./components/ShopPage";
 import ShopDashboard from "./components/ShopDashboard";
-import GlobalChat from "./components/GlobalChat";
 import { ToastProvider } from "./components/ToastContext";
 import Faq from "./pages/FAQ";
 import AddJob from "./pages/AddJob";
@@ -43,6 +42,8 @@ import JobApplicationsPage from "./pages/JobApplicationsPage";
 import MyJobApplications from "./pages/MyJobApplications";
 import MyCompanyReviews from "./pages/MyCompanyReviews.jsx";
 import MyCandidateReviews from "./pages/MyCandidateReviews.jsx";
+import GlobalChatPage from "./pages/GlobalChatPage.jsx";
+import GlobalChat from "./pages/GlobalChat.jsx";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -96,7 +97,8 @@ export default function App() {
               <Route path="/intro" element={<Intro />} />
               <Route path="/alltours" element={<AllTours />} />
               <Route path="/all-jobs" element={<AllJobs />} />
-              <Route path="global-chat" element={<GlobalChat />} />
+              <Route path="/global-chat" element={<GlobalChatPage />} />
+              <Route path="/global-chat-page" element={<GlobalChat />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/map" element={<MapPage />} />
