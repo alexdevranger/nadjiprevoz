@@ -130,6 +130,14 @@ const GlobalChat = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude, accuracy } = position.coords;
+        console.log(
+          "Latitude:",
+          latitude,
+          "Longitude:",
+          longitude,
+          "Accuracy:",
+          accuracy
+        );
 
         const locationLink = `📍 Lokacija (${
           accuracy < 50 ? "tačna" : "približna"

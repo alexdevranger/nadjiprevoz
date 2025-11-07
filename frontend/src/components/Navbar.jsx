@@ -211,36 +211,38 @@ export default function Navbar() {
           >
             <FaClipboardList className="mr-1" /> Poslovi
           </NavLink>
-
-          {/* Chat - vidljiv svima ali funkcionalan samo za ulogovane */}
-          <NavLink
-            to="/chat"
-            className={({ isActive }) =>
-              `flex items-center px-3 py-2 rounded-md transition-colors relative ${
-                isActive ? "bg-blue-700" : "hover:bg-blue-700"
-              }`
-            }
-          >
-            <FaComments className="mr-1" /> Chat
-            {user && totalUnread > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                {totalUnread}
-              </span>
-            )}
-          </NavLink>
         </div>
       </div>
 
       {/* Desna strana - korisnički deo */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-1">
         {user ? (
           <>
-            {/* Notifikacije sa Lottie animacijom */}
+            {/* Chat - vidljiv svima ali funkcionalan samo za ulogovane */}
+            <NavLink
+              to="/chat"
+              className={({ isActive }) =>
+                `flex items-center justify-center p-2 rounded-md transition-colors relative ${
+                  isActive ? "bg-blue-700" : "hover:bg-blue-700"
+                }`
+              }
+            >
+              <div className="w-6 h-6 relative flex items-center justify-center">
+                <FaComments className="text-xl" />{" "}
+                {/* Povećana sa text-lg na text-xl */}
+                {user && totalUnread > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                    {totalUnread}
+                  </span>
+                )}
+              </div>
+            </NavLink>
+            {/* Notifikacije - bolje centriranje */}
             <div className="relative group">
-              <button className="p-2 rounded-full hover:bg-blue-700 transition-colors">
-                <div className="w-6 h-6 relative">
-                  <FaBell className="text-lg" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+              <button className="p-2 rounded-full hover:bg-blue-700 transition-colors flex items-center justify-center">
+                <div className="w-6 h-6 relative flex items-center justify-center">
+                  <FaBell className="text-xl" />
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                     3
                   </span>
                 </div>

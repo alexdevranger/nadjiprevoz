@@ -44,6 +44,9 @@ import MyCompanyReviews from "./pages/MyCompanyReviews.jsx";
 import MyCandidateReviews from "./pages/MyCandidateReviews.jsx";
 import GlobalChatPage from "./pages/GlobalChatPage.jsx";
 import GlobalChat from "./pages/GlobalChat.jsx";
+import NearbyMap from "./pages/NearbyMap";
+import AllServices from "./pages/AllServices";
+import ImagesToPdf from "./pages/ImagesToPdf.jsx";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -77,7 +80,7 @@ export default function App() {
     const storedToken = localStorage.getItem("token");
     if (storedToken && user) {
       // Inicijalizuj servis za praćenje poruka
-      initMessageService(token, user.id);
+      initMessageService(token);
 
       // Uzmi početni broj nepročitanih poruka
       fetchUnreadCount(token);
@@ -94,9 +97,12 @@ export default function App() {
           <main>
             <Routes>
               <Route path="/" element={<Pocetna />} />
+              <Route path="/pngtopdf" element={<ImagesToPdf />} />
               <Route path="/intro" element={<Intro />} />
               <Route path="/alltours" element={<AllTours />} />
               <Route path="/all-jobs" element={<AllJobs />} />
+              <Route path="/nearby-map" element={<NearbyMap />} />
+              <Route path="/all-services" element={<AllServices />} />
               <Route path="/global-chat" element={<GlobalChatPage />} />
               <Route path="/global-chat-page" element={<GlobalChat />} />
               <Route path="/login" element={<Login />} />

@@ -385,11 +385,11 @@ export default function DashboardChat() {
         </div>
 
         {conversations.map((c) => {
-          console.log("c", c);
+          // console.log("c", c);
           const other = Array.isArray(c.participants)
             ? c.participants.find((p) => p._id !== user.id)
             : null;
-          console.log("other", other);
+          // console.log("other", other);
           const unread = c.unread?.[user.id] || 0;
 
           // Formatiranje datuma

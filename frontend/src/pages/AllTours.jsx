@@ -79,11 +79,12 @@ export default function AllTours() {
   //   }
   // }
   async function openChat(tour) {
+    console.log("Opening chat for tour:", tour);
     const otherUserId = tour.createdBy._id;
     const tourId = tour._id;
     console.log("OTHER USER ID", otherUserId, "TOURID", tourId);
 
-    if (String(otherUserId) === String(user._id)) {
+    if (String(otherUserId) === String(user.id)) {
       warning("Ne možete poslati poruku sami sebi.");
       return;
     }
@@ -94,7 +95,7 @@ export default function AllTours() {
         { tourId, otherUserId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("TOUR RES", res.data);
+      console.log("conversation TOUR RES", res.data);
       navigate("/chat", { state: { conversationId: res.data._id, tourId } });
     } catch (err) {
       console.error(err);

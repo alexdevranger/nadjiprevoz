@@ -6,22 +6,23 @@ import axios from "axios";
 let isInitialized = false;
 let currentUserId = null;
 
-export const initMessageService = (token, userId) => {
+export const initMessageService = (token) => {
   if (isInitialized) return;
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id;
   currentUserId = userId;
-
+  console.log("Initializing message service for user:", user);
   // Slušaj socket događaje za nove poruke
   socket.on("newMessage", (message) => {
     // VAŽNO: Povećaj broj nepročitanih SAMO ako poruka nije od trenutnog korisnika
     console.log(
       "newMessage",
       message.senderId !== userId,
-      message.senderId !== userId._id,
       message.senderId,
       userId
     );
-    if (message.senderId !== userId && message.senderId !== userId._id) {
+    if (message.senderId !== userId) {
       setGlobalState("totalUnread", (prev) => prev + 1);
     }
   });
