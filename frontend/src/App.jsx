@@ -46,6 +46,8 @@ import GlobalChatPage from "./pages/GlobalChatPage.jsx";
 import GlobalChat from "./pages/GlobalChat.jsx";
 import NearbyMap from "./pages/NearbyMap";
 import AllServices from "./pages/AllServices";
+import AddServiceAd from "./pages/AddServiceAd.jsx";
+import MyServiceAds from "./pages/MyServiceAds.jsx";
 import ImagesToPdf from "./pages/ImagesToPdf.jsx";
 
 export const socket = io("http://localhost:4000", {
@@ -99,6 +101,8 @@ export default function App() {
               <Route path="/" element={<Pocetna />} />
               <Route path="/pngtopdf" element={<ImagesToPdf />} />
               <Route path="/intro" element={<Intro />} />
+              <Route path="/my-ads" element={<MyServiceAds />} />
+              <Route path="/add-ad" element={<AddServiceAd />} />
               <Route path="/alltours" element={<AllTours />} />
               <Route path="/all-jobs" element={<AllJobs />} />
               <Route path="/nearby-map" element={<NearbyMap />} />

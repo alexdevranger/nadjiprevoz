@@ -32,6 +32,7 @@ import Conversation from "./models/Conversation.js";
 import companyReviewsRouter from "./routes/companyReviewsRoutes.js";
 import candidateReviews from "./routes/candidateReviews.js";
 import globalChatRoutes from "./routes/globalChatRoutes.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
 import webpush from "web-push";
 
 dotenv.config();
@@ -276,5 +277,6 @@ app.use("/api/job-applications", jobApplications);
 app.use("/api/company-reviews", companyReviewsRouter);
 app.use("/api/candidate-reviews", candidateReviews);
 app.use("/api/global-chat", globalChatRoutes);
+app.use("/api/service-ads", serviceRoutes);
 
 server.listen(port, () => console.log(`Backend listening on ${port}`));
