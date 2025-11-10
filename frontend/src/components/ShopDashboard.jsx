@@ -1327,18 +1327,19 @@ const ShopDashboard = () => {
 
   // Stilovi koji se koriste u oba moda
   const inputStyle =
-    "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500";
+    "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white dark:bg-cardBGText";
   const labelStyle =
     "block text-sm font-medium text-gray-700 mb-2 flex items-center";
-  const sectionStyle = "bg-white rounded-xl shadow-md p-6 mb-6";
+  const sectionStyle =
+    "bg-white rounded-xl shadow-md p-6 mb-6 dark:bg-cardBGText";
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className={sectionStyle}>
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
               <FaStore className="text-blue-500" />
               Upravljanje Radnjom:
               <div className="relative group">
@@ -1385,9 +1386,10 @@ const ShopDashboard = () => {
           </div>
 
           {/* Status aktivnosti - LEPŠI TOGGLE */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border dark:bg-mainDarkBG">
             <label className={labelStyle}>
-              Status radnje {renderHelp("isActive")}
+              <p className="dark:text-white">Status radnje</p>{" "}
+              {renderHelp("isActive")}
             </label>
             {editing ? (
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -1412,7 +1414,7 @@ const ShopDashboard = () => {
                     </>
                   )}
                 </button>
-                <span className="text-sm text-gray-600 bg-white px-3 py-2 rounded-lg border">
+                <span className="text-sm text-gray-600 bg-white dark:bg-mainDarkBG dark:text-white px-3 py-2 rounded-lg border">
                   {editData.isActive
                     ? "✅ Radnja je trenutno vidljiva javno"
                     : "❌ Radnja je trenutno skrivena od javnosti"}
@@ -1439,7 +1441,7 @@ const ShopDashboard = () => {
                     </>
                   )}
                 </div>
-                <span className="text-sm text-gray-600 bg-white px-3 py-2 rounded-lg border">
+                <span className="text-sm text-gray-600 bg-white px-3 py-2 rounded-lg border dark:text-white dark:bg-cardBGText">
                   {shop.isActive
                     ? "✅ Radnja je trenutno vidljiva javno"
                     : "❌ Radnja je trenutno skrivena od javnosti"}
@@ -1454,7 +1456,8 @@ const ShopDashboard = () => {
             <div>
               <label className={labelStyle}>
                 <FaStore className="mr-2 text-blue-500" />
-                Naziv Shopa * {renderHelp("name")}
+                <p className="dark:text-white">Naziv Shopa *</p>{" "}
+                {renderHelp("name")}
               </label>
               {editing ? (
                 <>
@@ -1500,7 +1503,8 @@ const ShopDashboard = () => {
             <div>
               <label className={labelStyle}>
                 <FaBuilding className="mr-2 text-indigo-500" />
-                Naziv Kompanije * {renderHelp("companyName")}
+                <p className="dark:text-white">Naziv Kompanije *</p>{" "}
+                {renderHelp("companyName")}
               </label>
               {editing ? (
                 <input
@@ -1522,7 +1526,8 @@ const ShopDashboard = () => {
             <div>
               <label className={labelStyle}>
                 <FaTag className="mr-2 text-pink-500" />
-                Specijalnost {renderHelp("specialization")}
+                <p className="dark:text-white">Specijalnost</p>{" "}
+                {renderHelp("specialization")}
               </label>
               {editing ? (
                 <input
@@ -1544,7 +1549,7 @@ const ShopDashboard = () => {
             <div>
               <label className={labelStyle}>
                 <FaGlobe className="mr-2 text-orange-500" />
-                Website
+                <p className="dark:text-white">Website</p>
               </label>
               {editing ? (
                 <input
@@ -1567,7 +1572,7 @@ const ShopDashboard = () => {
             <div className="flex flex-col items-start">
               <label className={labelStyle}>
                 <FaUpload className="mr-2 text-orange-500" />
-                Logo
+                <p className="dark:text-white">Logo</p>
               </label>
               {editing ? (
                 <div className="space-y-2">
@@ -1623,7 +1628,7 @@ const ShopDashboard = () => {
                   <span className="text-gray-700">✅ Logo je postavljen</span>
                 </div>
               ) : (
-                <div className="p-3 bg-gray-50 rounded-lg border text-gray-500">
+                <div className="p-3 bg-gray-50 rounded-lg border text-gray-500 dark:text-darkText dark:bg-mainDarkBG">
                   ❌ Logo nije postavljen
                 </div>
               )}
@@ -1634,7 +1639,8 @@ const ShopDashboard = () => {
           <div className="mb-6">
             <label className={labelStyle}>
               <FaInfoCircle className="mr-2 text-teal-500" />
-              Opis Shopa {renderHelp("description")}
+              <p className="dark:text-white">Opis Shopa</p>{" "}
+              {renderHelp("description")}
             </label>
             {editing ? (
               <textarea
@@ -1662,7 +1668,7 @@ const ShopDashboard = () => {
             <div>
               <label className={labelStyle}>
                 <FaPhone className="inline mr-2 text-green-500" />
-                Telefon 1
+                <p className="dark:text-white">Telefon 1</p>
               </label>
               {editing ? (
                 <input
@@ -1682,7 +1688,7 @@ const ShopDashboard = () => {
             <div>
               <label className={labelStyle}>
                 <FaPhone className="inline mr-2 text-blue-500" />
-                Telefon 2
+                <p className="dark:text-white">Telefon 2</p>
               </label>
               {editing ? (
                 <input
@@ -1704,7 +1710,7 @@ const ShopDashboard = () => {
             <div>
               <label className={labelStyle}>
                 <FaEnvelope className="inline mr-2 text-purple-500" />
-                Email
+                <p className="dark:text-white">Email</p>
               </label>
               {editing ? (
                 <input
@@ -1828,9 +1834,9 @@ const ShopDashboard = () => {
           )}
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-md p-6 mb-6 dark:bg-cardBGText">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
+            <h2 className="text-xl font-semibold flex items-center gap-2 dark:text-white">
               <FaPlus className="mr-2 text-blue-500" />
               Usluge
             </h2>
@@ -1841,11 +1847,11 @@ const ShopDashboard = () => {
 
           {/* Forma za dodavanje nove usluge */}
           {editing && (
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+            <div className="bg-gray-50 dark:bg-cardBGText p-4 rounded-lg mb-6">
               <h3 className="text-lg font-medium mb-3">Dodaj novu uslugu</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                     Naziv usluge *
                   </label>
                   <input
@@ -1978,9 +1984,9 @@ const ShopDashboard = () => {
         {/* Sekcija za Vozila */}
         {/* Vozila */}
         {!editing && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+          <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
+              <h2 className="text-xl font-semibold flex items-center gap-2 dark:text-white">
                 <FaTruck className="text-green-500" />
                 Vaša Vozila
               </h2>
@@ -1997,11 +2003,11 @@ const ShopDashboard = () => {
               {vehicles.map((vehicle) => (
                 <div
                   key={vehicle._id}
-                  className="border rounded-xl bg-white shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col"
+                  className="border rounded-xl bg-white dark:bg-mainDarkBG shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col"
                 >
                   {/* Slika vozila */}
                   {vehicle.image1 ? (
-                    <div className="h-40 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <div className="h-40 w-full bg-gray-100 dark:bg-cardBg dark:border-b flex items-center justify-center overflow-hidden">
                       <img
                         src={vehicle.image1}
                         alt={vehicle.type}
@@ -2016,12 +2022,12 @@ const ShopDashboard = () => {
 
                   {/* Podaci o vozilu */}
                   <div className="p-4 flex-1 flex flex-col">
-                    <h4 className="font-semibold text-lg mb-3 flex items-center gap-2 text-gray-800">
+                    <h4 className="font-semibold text-lg mb-3 flex items-center gap-2 text-gray-800 dark:text-white">
                       <FaTruck className="text-green-500" />
                       {vehicle.type}
                     </h4>
 
-                    <div className="space-y-2 text-sm text-gray-700">
+                    <div className="space-y-2 text-sm text-gray-700 dark:text-white">
                       <p className="flex items-center gap-2">
                         <FaIdCard className="text-blue-500" />
                         <span className="font-medium">Registracija:</span>{" "}

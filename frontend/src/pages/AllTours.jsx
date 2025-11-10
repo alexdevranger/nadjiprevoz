@@ -226,13 +226,13 @@ export default function AllTours() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
                 Sve Dostupne Ture
               </h1>
               <p className="text-gray-600 mt-2">
@@ -240,12 +240,12 @@ export default function AllTours() {
               </p>
             </div>
             <div className="flex items-center mt-4 md:mt-0">
-              <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mr-3">
+              <span className="bg-blue-100 dark:bg-mainDarkBG text-blue-800 text-sm px-3 py-1 rounded-full mr-3">
                 {total} tura (strana {page})
               </span>
               <button
                 onClick={handleResetFilters}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-colors"
+                className="bg-gray-100 dark:bg-mainDarkBG hover:bg-gray-200 text-gray-700 dark:text-white px-4 py-2 rounded-lg flex items-center transition-colors"
               >
                 <FaSyncAlt className="mr-2" />
                 Reset filtera
@@ -255,8 +255,8 @@ export default function AllTours() {
         </div>
 
         {/* Filteri */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
             Filteri
           </h2>
@@ -264,7 +264,7 @@ export default function AllTours() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Datum */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
+              <label className="flex text-sm font-medium text-gray-700 dark:text-white mb-2 items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" />
                 Datum
               </label>
@@ -273,7 +273,7 @@ export default function AllTours() {
                 onChange={handleFilterChange(setFilterDate)}
                 isClearable
                 placeholderText="Svi datumi"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 dateFormat="d. MMMM yyyy"
                 locale="sr-latin"
                 minDate={new Date()}
@@ -282,7 +282,7 @@ export default function AllTours() {
 
             {/* Vrsta vozila */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
+              <label className="flex text-sm font-medium text-gray-700 dark:text-white mb-2 items-center">
                 <FaTruck className="text-green-500 mr-2" />
                 Vrsta vozila
               </label>
@@ -291,7 +291,7 @@ export default function AllTours() {
                 onChange={(e) =>
                   handleFilterChange(setFilterVehicleType)(e.target.value)
                 }
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Sve vrste</option>
                 {uniqueVehicleTypes.map((type) => (
@@ -304,7 +304,7 @@ export default function AllTours() {
 
             {/* Nosivost */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
+              <label className="flex text-sm font-medium text-gray-700 dark:text-white mb-2 items-center">
                 <FaWeightHanging className="text-purple-500 mr-2" />
                 Nosivost (kg)
               </label>
@@ -315,14 +315,14 @@ export default function AllTours() {
                   handleFilterChange(setFilterCapacity)(e.target.value)
                 }
                 placeholder="Min. nosivost"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min={0}
               />
             </div>
 
             {/* Lokacija */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
+              <label className="flex text-sm font-medium text-gray-700 dark:text-white mb-2 items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" />
                 Početna lokacija
               </label>
@@ -333,14 +333,14 @@ export default function AllTours() {
                   handleFilterChange(setFilterStartLocation)(e.target.value)
                 }
                 placeholder="Unesi lokaciju"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
         </div>
 
         {/* Toggle sakrij moje ture i limit iznad tura */}
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4 dark:text-white">
           <div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -360,7 +360,7 @@ export default function AllTours() {
                   setLimit(Number(e.target.value));
                   setPage(1);
                 }}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2"
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2 dark:bg-mainDarkBG"
               >
                 <option value={20}>20</option>
                 <option value={40}>40</option>
@@ -371,7 +371,7 @@ export default function AllTours() {
         </div>
 
         {/* Lista tura */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md overflow-hidden mb-6">
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
@@ -419,7 +419,7 @@ export default function AllTours() {
                   return (
                     <div
                       key={tour._id}
-                      className={`relative rounded-xl shadow-md p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] ${
+                      className={`relative rounded-xl shadow-md p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] dark:bg-mainDarkBG ${
                         isPremium
                           ? "border-l-4 border-yellow-500 bg-yellow-50 ring-2 ring-yellow-400"
                           : "bg-white"
@@ -439,8 +439,8 @@ export default function AllTours() {
                       )}
 
                       {/* Sadržaj */}
-                      <div className="flex-1 space-y-2 leading-tight text-sm text-gray-700">
-                        <div className="flex items-center text-lg font-bold text-gray-900">
+                      <div className="flex-1 space-y-2 leading-tight text-sm text-gray-700 dark:text-white">
+                        <div className="flex items-center text-lg font-bold text-gray-900 dark:text-white">
                           <FaCalendarAlt className="text-blue-500 mr-2" />
                           {format(new Date(tour.date), "d. MMMM yyyy", {
                             locale: srLatin,
@@ -485,7 +485,7 @@ export default function AllTours() {
                           </div>
                         )}
                         {tour.note && (
-                          <div className="text-gray-600 italic flex items-start">
+                          <div className="text-gray-600 dark:text-white italic flex items-start">
                             <div>
                               {expandedNotes
                                 ? tour.note

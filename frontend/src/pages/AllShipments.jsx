@@ -269,26 +269,26 @@ export default function AllShipments() {
     return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
   };
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
                 Svi Transportni Zahtevi
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 mt-2 dark:text-darkText">
                 Pronađite savršenu pošiljku za vaš transport
               </p>
             </div>
             <div className="flex items-center mt-4 md:mt-0">
-              <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mr-3">
+              <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mr-3 dark:text-white dark:bg-blueBg">
                 {total} zahteva (strana {page})
               </span>
               <button
                 onClick={handleResetFilters}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-colors"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 dark:text-darkText dark:bg-mainDarkBG px-4 py-2 rounded-lg flex items-center transition-colors"
               >
                 <FaSyncAlt className="mr-2" />
                 Reset filtera
@@ -298,14 +298,14 @@ export default function AllShipments() {
         </div>
 
         {/* Filteri */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center dark:text-white">
             <FaFilter className="text-blue-500 mr-2" /> Filteri
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
+              <label className="flex text-sm font-medium text-gray-700 mb-2 items-center dark:text-darkText">
                 <FaCalendarAlt className="text-blue-500 mr-2" /> Datum
               </label>
               <DatePicker
@@ -313,7 +313,7 @@ export default function AllShipments() {
                 onChange={handleFilterChange(setFilterDate)}
                 isClearable
                 placeholderText="Svi datumi"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 dateFormat="d. MMMM yyyy"
                 locale="sr-latin"
                 minDate={new Date()}
@@ -321,7 +321,7 @@ export default function AllShipments() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
+              <label className="flex text-sm font-medium text-gray-700 mb-2 items-center dark:text-darkText">
                 <FaWeightHanging className="text-green-500 mr-2" /> Težina (kg)
               </label>
               <input
@@ -331,13 +331,13 @@ export default function AllShipments() {
                   handleFilterChange(setMinWeight)(e.target.value)
                 }
                 placeholder="Min. težina"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min={0}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
+              <label className="flex text-sm font-medium text-gray-700 mb-2 items-center dark:text-darkText">
                 <FaMapMarkerAlt className="text-purple-500 mr-2" /> Početna
                 lokacija
               </label>
@@ -348,12 +348,12 @@ export default function AllShipments() {
                   handleFilterChange(setPickupLocation)(e.target.value)
                 }
                 placeholder="Unesi lokaciju"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 items-center">
+              <label className="flex dark:text-darkText text-sm font-medium text-gray-700 mb-2 items-center">
                 <FaBox className="text-red-500 mr-2" /> Vrsta robe
               </label>
               <input
@@ -363,7 +363,7 @@ export default function AllShipments() {
                   handleFilterChange(setGoodsType)(e.target.value)
                 }
                 placeholder="Unesi vrstu robe"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -372,7 +372,7 @@ export default function AllShipments() {
         {/* Controls above list: hide my + limit */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
           <div>
-            <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-700">
+            <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-darkText">
               <input
                 type="checkbox"
                 checked={hideMyShipments}
@@ -383,7 +383,7 @@ export default function AllShipments() {
           </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-700 mr-2">
+            <label className="text-sm text-gray-700 mr-2 dark:text-darkText">
               Prikaži po strani:
             </label>
             <select
@@ -392,7 +392,7 @@ export default function AllShipments() {
                 setLimit(Number(e.target.value));
                 setPage(1);
               }}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="dark:bg-cardBGText dark:text-darkText border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value={20}>20</option>
               <option value={40}>40</option>
@@ -402,11 +402,13 @@ export default function AllShipments() {
         </div>
 
         {/* Lista pošiljki */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md overflow-hidden mb-6">
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Učitavanje zahteva...</p>
+              <p className="text-gray-600 mt-4 dark:text-darkText">
+                Učitavanje zahteva...
+              </p>
             </div>
           ) : currentShipments.length === 0 ? (
             <div className="p-8 text-center">
@@ -431,7 +433,7 @@ export default function AllShipments() {
                 return (
                   <div
                     key={shipment._id}
-                    className={`relative rounded-xl shadow-md p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] ${
+                    className={`dark:bg-mainDarkBG relative rounded-xl shadow-md p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] ${
                       isPremium
                         ? "border-l-4 border-yellow-500 bg-yellow-50"
                         : `border-l-4 ${getRandomBorderColor(index)} bg-white`
@@ -448,26 +450,26 @@ export default function AllShipments() {
 
                     {/* Sadržaj */}
                     <div className="flex-1 space-y-2 leading-tight text-sm text-gray-700">
-                      <div className="flex items-center text-lg font-bold text-gray-900">
+                      <div className="flex items-center text-lg font-bold text-gray-900 dark:text-white">
                         <FaCalendarAlt className="text-blue-500 mr-2" />
                         {format(new Date(shipment.date), "d. MMMM yyyy", {
                           locale: srLatin,
                         })}
                       </div>
 
-                      <div className="flex items-center font-medium">
+                      <div className="flex items-center font-medium dark:text-darkText">
                         <FaMapMarkerAlt className="text-red-500 mr-2" />
                         {shipment.pickupLocation} →{" "}
                         {shipment.dropoffLocation || "Bilo gde"}
                       </div>
 
-                      <div className="flex items-center">
+                      <div className="flex items-center dark:text-darkText">
                         <FaWeightHanging className="text-green-500 mr-2" />
                         {shipment.weightKg} kg • {shipment.pallets} paleta
                       </div>
 
                       {shipment.goodsType && (
-                        <div className="text-gray-600 italic flex items-start">
+                        <div className="text-gray-600 italic flex items-start dark:text-darkText">
                           <FaBox className="text-purple-500 mr-2 mt-1" />
                           <div>
                             {expandedShipmentGoods
@@ -495,14 +497,14 @@ export default function AllShipments() {
                       {shipment.dimensions?.length &&
                         shipment.dimensions?.width &&
                         shipment.dimensions?.height && (
-                          <div className="text-gray-600">
+                          <div className="text-gray-600 dark:text-darkText">
                             Dimenzije: {shipment.dimensions.length} ×{" "}
                             {shipment.dimensions.width} ×{" "}
                             {shipment.dimensions.height} m
                           </div>
                         )}
                       {shipment.note && (
-                        <div className="text-gray-600 italic">
+                        <div className="text-gray-600 italic dark:text-darkText">
                           {expandedNotes
                             ? shipment.note
                             : truncate(shipment.note, 60)}
@@ -519,7 +521,7 @@ export default function AllShipments() {
                       )}
 
                       {shipment.contactPhone && (
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center gap-2 mt-2 dark:text-darkText">
                           <FaPhoneAlt className="text-green-600" />
                           <span>
                             {shipment.createdBy?.name ||

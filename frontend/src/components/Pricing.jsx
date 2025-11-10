@@ -72,9 +72,11 @@ export default function Pricing() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="w-2/3 mx-auto p-6 bg-gray-50 dark:bg-mainDarkBG">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Cenovnik</h1>
+        <h1 className="text-3xl font-bold text-[#0b0c0c] dark:text-white">
+          Cenovnik
+        </h1>
         <p className="text-gray-600 mt-1">
           Izaberi ulogu i paket koji odgovara tvom poslovanju.
         </p>

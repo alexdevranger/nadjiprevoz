@@ -622,24 +622,24 @@ export default function AllJobs() {
 
     return (
       <div className="border-t pt-3 mt-3">
-        <h4 className="font-medium text-gray-800 mb-2 text-sm">
+        <h4 className="font-medium text-gray-800 dark:text-white mb-2 text-sm">
           Kontakt informacije:
         </h4>
         <div className="space-y-1 text-sm">
           {person && (
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 dark:text-white">
               <FaUser className="text-blue-500 mr-2 text-xs" />
               {person}
             </div>
           )}
           {phone && (
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 dark:text-white">
               <FaPhone className="text-green-500 mr-2 text-xs" />
               {phone}
             </div>
           )}
           {email && (
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 dark:text-white pb-3">
               <FaEnvelope className="text-purple-500 mr-2 text-xs" />
               {email}
             </div>
@@ -650,19 +650,19 @@ export default function AllJobs() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white flex items-center">
                 Svi Oglasi za Posao
                 <span className="ml-3 text-lg font-medium text-blue-400 border-l-2 border-gray-300 pl-3">
                   {jobs.length} {jobs.length === 1 ? "oglas" : "oglasa"}
                 </span>
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 dark:text-darkText mt-2">
                 Pronađite savršen posao za vas medju našim oglasima
               </p>
             </div>
@@ -670,8 +670,8 @@ export default function AllJobs() {
         </div>
 
         {/* Filteri */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
             Pretraga i filteri
           </h2>
@@ -679,7 +679,7 @@ export default function AllJobs() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Pretraga */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="text-sm font-medium text-gray-700 dark:text-darkText mb-2 flex items-center">
                 <FaSearch className="text-blue-500 mr-2" />
                 Pretraži oglase
               </label>
@@ -688,13 +688,13 @@ export default function AllJobs() {
                 value={filters.search}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
                 placeholder="Naslov, pozicija, kompanija..."
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             {/* Tip zaposlenja */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="dark:text-darkText text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaUserTie className="text-purple-500 mr-2" />
                 Tip zaposlenja
               </label>
@@ -703,7 +703,7 @@ export default function AllJobs() {
                 onChange={(e) =>
                   handleFilterChange("employmentType", e.target.value)
                 }
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Svi tipovi</option>
                 {employmentTypes.map((type) => (
@@ -716,14 +716,14 @@ export default function AllJobs() {
 
             {/* Lokacija */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="dark:text-darkText text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" />
                 Lokacija
               </label>
               <select
                 value={filters.location}
                 onChange={(e) => handleFilterChange("location", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Sve lokacije</option>
                 {allLocations.map((location) => (
@@ -738,7 +738,7 @@ export default function AllJobs() {
             <div className="flex items-end">
               <button
                 onClick={resetFilters}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-colors w-full h-[42px] text-base"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-blueBg dark:text-white px-4 py-2 rounded-lg flex items-center transition-colors w-full h-[42px] text-base"
               >
                 <FaSyncAlt className="mr-2" />
                 Reset filtera
@@ -747,23 +747,25 @@ export default function AllJobs() {
           </div>
 
           {/* Broj pronađenih oglasa */}
-          <div className="mt-4 text-sm text-gray-600">
+          <div className="mt-4 text-sm text-gray-600 dark:text-darkText">
             Pronađeno: <strong>{filteredJobs.length}</strong> od{" "}
             <strong>{jobs.length}</strong> oglasa
           </div>
         </div>
 
         {/* Lista oglasa */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Učitavanje oglasa...</p>
+              <p className="text-gray-600 dark:text-darkText mt-4">
+                Učitavanje oglasa...
+              </p>
             </div>
           ) : filteredJobs.length === 0 ? (
             <div className="p-8 text-center">
               <FaBriefcase className="text-4xl text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 dark:text-darkText text-lg">
                 {filters.search || filters.employmentType || filters.location
                   ? "Nema oglasa koji odgovaraju vašim filterima."
                   : "Trenutno nema dostupnih oglasa za posao."}
@@ -784,18 +786,18 @@ export default function AllJobs() {
                   key={job._id}
                   className={`relative border-l-4 ${getRandomBorderColor(
                     index
-                  )} rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] bg-white flex flex-col justify-between min-h-[500px]`}
+                  )} rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] bg-white dark:bg-mainDarkBG flex flex-col justify-between min-h-[500px]`}
                 >
                   {/* Gornji deo kartice - sve informacije */}
                   <div className="flex-1 flex flex-col overflow-hidden">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
                           {job.title}
                         </h3>
                         <div className="flex items-center mb-2">
                           <FaUserTie className="text-blue-500 mr-2" />
-                          <span className="text-gray-700 font-medium">
+                          <span className="text-gray-700 font-medium dark:text-darkText">
                             {job.position}
                           </span>
                         </div>
@@ -809,7 +811,7 @@ export default function AllJobs() {
                               className="h-8 w-8 object-contain rounded mb-1"
                             />
                           )}
-                          <div className="flex items-center text-sm text-gray-600">
+                          <div className="flex items-center text-sm text-gray-600 dark:text-white">
                             <FaBuilding className="mr-1" />
                             <span className="text-xs">
                               {job.company.companyName}
@@ -821,21 +823,21 @@ export default function AllJobs() {
 
                     {/* Osnovne informacije */}
                     <div className="space-y-3 mb-4">
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-white">
                         <FaMapMarkerAlt className="text-red-500 mr-2" />
                         <span className="font-medium">Lokacije:</span>
                         <span className="ml-2">{job.location.join(", ")}</span>
                       </div>
 
                       {job.salary && (
-                        <div className="flex items-center text-sm text-gray-600">
+                        <div className="flex items-center text-sm text-gray-600 dark:text-white">
                           <FaMoneyBillWave className="text-green-500 mr-2" />
                           <span className="font-medium">Plata:</span>
                           <span className="ml-2">{job.salary}</span>
                         </div>
                       )}
 
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-white">
                         <FaBriefcase className="text-purple-500 mr-2" />
                         <span className="font-medium">Tip zaposlenja:</span>
                         <span className="ml-2">{job.employmentType}</span>
@@ -844,16 +846,16 @@ export default function AllJobs() {
 
                     {/* Opis posla */}
                     <div className="border-t pt-4">
-                      <p className="text-gray-700 text-sm mb-4 line-clamp-4">
+                      <p className="text-gray-700 text-sm mb-4 line-clamp-4 dark:text-darkText">
                         {job.description}
                       </p>
 
                       {job.requirements && job.requirements.length > 0 && (
                         <div className="mb-4">
-                          <h4 className="font-medium text-gray-800 mb-2 text-sm">
+                          <h4 className="font-medium text-gray-800 mb-2 text-sm dark:text-white">
                             Uslovi:
                           </h4>
-                          <ul className="text-sm text-gray-600 space-y-1">
+                          <ul className="text-sm text-gray-600 space-y-1 dark:text-white">
                             {job.requirements.slice(0, 4).map((req, idx) => (
                               <li key={idx} className="flex items-start">
                                 <span className="text-green-500 mr-2">•</span>

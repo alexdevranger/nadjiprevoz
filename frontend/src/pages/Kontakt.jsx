@@ -2,13 +2,13 @@ import React from "react";
 
 const Kontakt = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-200">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG">
       {/* Main Content */}
       <main className="container mx-auto px-6 py-16">
-        <h2 className="text-4xl md:text-5xl pt-12 lg:pt-24 font-extrabold text-gray-800 mb-6 text-center">
+        <h2 className="text-4xl md:text-5xl pt-12 lg:pt-24 font-extrabold text-gray-800 dark:text-gray-400 mb-6 text-center">
           Kontaktirajte nas
         </h2>
-        <p className="text-lg text-gray-600 mb-10 text-center">
+        <p className="text-lg text-gray-600 dark:text-white mb-10 text-center">
           Ako imate pitanja, predloge ili želite da nas kontaktirate, popunite
           formu ispod ili koristite ponuđene informacije.
         </p>
@@ -16,15 +16,15 @@ const Kontakt = () => {
         {/* Contact Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-700 mb-4">
+          <div className="bg-white dark:bg-mainDarkBG p-6 rounded-xl shadow-lg">
+            <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-100 mb-4">
               Kontakt forma
             </h3>
             <form className="space-y-4">
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-600"
+                  className="block text-sm font-medium text-gray-600 dark:text-gray-100"
                 >
                   Ime i prezime
                 </label>
@@ -32,13 +32,13 @@ const Kontakt = () => {
                   type="text"
                   id="name"
                   placeholder="Vaše ime"
-                  className="w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:bg-mainDarkBG dark:text-white"
                 />
               </div>
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-600"
+                  className="block text-sm font-medium text-gray-600 dark:text-gray-100"
                 >
                   Email adresa
                 </label>
@@ -46,13 +46,13 @@ const Kontakt = () => {
                   type="email"
                   id="email"
                   placeholder="Vaš email"
-                  className="w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="dark:bg-mainDarkBG w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:text-white"
                 />
               </div>
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-sm font-medium text-gray-600"
+                  className="block text-sm font-medium text-gray-600 dark:text-gray-100"
                 >
                   Poruka
                 </label>
@@ -60,7 +60,7 @@ const Kontakt = () => {
                   id="message"
                   rows="5"
                   placeholder="Vaša poruka"
-                  className="w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="dark:bg-mainDarkBG w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:text-white"
                 ></textarea>
               </div>
               <button

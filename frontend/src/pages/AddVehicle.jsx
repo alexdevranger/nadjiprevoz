@@ -103,17 +103,17 @@ export default function AddVehicle() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-6">
             Dodaj novo vozilo
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaCar className="mr-2 text-blue-500" />
                     Tip vozila *
@@ -124,7 +124,7 @@ export default function AddVehicle() {
                   value={formData.type}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="dark:text-white dark:bg-cardBGText w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 >
                   <option value="">Odaberi vrstu vozila</option>
                   <option value="Kamion">Kamion</option>
@@ -136,7 +136,7 @@ export default function AddVehicle() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaHashtag className="mr-2 text-purple-500" />
                     Registarska oznaka *
@@ -148,12 +148,12 @@ export default function AddVehicle() {
                   value={formData.licensePlate}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="dark:text-white dark:bg-cardBGText w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaWeight className="mr-2 text-green-500" />
                     Nosivost (kg) *
@@ -166,12 +166,12 @@ export default function AddVehicle() {
                   value={formData.capacity}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="dark:text-white dark:bg-cardBGText w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaCalendar className="mr-2 text-[#ff6dd8]" />
                     Godina proizvodnje
@@ -183,12 +183,12 @@ export default function AddVehicle() {
                   placeholder="npr. 2020"
                   value={formData.year}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="dark:text-white dark:bg-cardBGText w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaPallet className="mr-2 text-indigo-500" />
                     Broj paletnih mesta
@@ -200,12 +200,12 @@ export default function AddVehicle() {
                   placeholder="npr. 10"
                   value={formData.pallets}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="dark:text-white dark:bg-cardBGText w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaRuler className="mr-2 text-yellow-400" />
                     Dimenzije (cm)
@@ -218,7 +218,7 @@ export default function AddVehicle() {
                     placeholder="Dužina"
                     value={formData.dimensions.length}
                     onChange={handleChange}
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                    className="dark:text-white dark:bg-cardBGText border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                   />
                   <input
                     name="width"
@@ -226,7 +226,7 @@ export default function AddVehicle() {
                     placeholder="Širina"
                     value={formData.dimensions.width}
                     onChange={handleChange}
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                    className="dark:text-white dark:bg-cardBGText border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                   />
                   <input
                     name="height"
@@ -234,14 +234,14 @@ export default function AddVehicle() {
                     placeholder="Visina"
                     value={formData.dimensions.height}
                     onChange={handleChange}
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                    className="dark:text-white dark:bg-cardBGText border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                   />
                 </div>
               </div>
 
               {/* Upload slika */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaImage className="mr-2 text-[#BA68C8]" />
                     Slika 1
@@ -322,7 +322,7 @@ export default function AddVehicle() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                 <div className="flex items-center">
                   <FaInfo className="mr-2 text-gray-500" />
                   Opis vozila
@@ -334,7 +334,7 @@ export default function AddVehicle() {
                 value={formData.description}
                 onChange={handleChange}
                 rows="3"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300 dark:text-white dark:bg-cardBGText"
               />
             </div>
 

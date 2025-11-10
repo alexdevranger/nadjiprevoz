@@ -174,17 +174,17 @@ export default function AddShipment() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">
             Dodaj Novi Zahtev za Prevoz
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Datum transporta */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" />
                 Datum transporta
               </label>
@@ -193,7 +193,7 @@ export default function AddShipment() {
                 onChange={handleDateChange}
                 locale="sr-latin"
                 dateFormat="d. MMMM yyyy"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
@@ -201,7 +201,7 @@ export default function AddShipment() {
             {/* Lokacije */}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaMapMarkerAlt className="text-red-500 mr-2" />
                   Početna destinacija
                 </label>
@@ -217,7 +217,7 @@ export default function AddShipment() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaMapMarkerAlt className="text-green-500 mr-2" />
                   Krajnja destinacija
                 </label>
@@ -286,7 +286,7 @@ export default function AddShipment() {
             {/* Težina i palete */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaWeightHanging className="text-green-500 mr-2" />
                   Težina (kg)
                 </label>
@@ -297,12 +297,12 @@ export default function AddShipment() {
                   type="number"
                   placeholder="Težina u kg"
                   required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaPallet className="text-purple-500 mr-2" />
                   Broj paleta
                 </label>
@@ -312,14 +312,14 @@ export default function AddShipment() {
                   onChange={handleChange}
                   type="number"
                   placeholder="Broj paleta"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             {/* Dimenzije */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaRulerCombined className="text-indigo-500 mr-2" />
                 Dimenzije (m)
               </label>
@@ -330,7 +330,7 @@ export default function AddShipment() {
                     value={form.dimensions.length}
                     onChange={handleChange}
                     placeholder="Dužina"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -339,7 +339,7 @@ export default function AddShipment() {
                     value={form.dimensions.width}
                     onChange={handleChange}
                     placeholder="Širina"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -348,7 +348,7 @@ export default function AddShipment() {
                     value={form.dimensions.height}
                     onChange={handleChange}
                     placeholder="Visina"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -357,7 +357,7 @@ export default function AddShipment() {
             {/* Vrsta robe i kontakt telefon */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaBox className="text-yellow-500 mr-2" />
                   Vrsta robe
                 </label>
@@ -366,12 +366,12 @@ export default function AddShipment() {
                   value={form.goodsType}
                   onChange={handleChange}
                   placeholder="Vrsta robe"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaPhone className="text-green-500 mr-2" />
                   Kontakt telefon
                 </label>
@@ -380,14 +380,14 @@ export default function AddShipment() {
                   value={form.contactPhone}
                   onChange={handleChange}
                   placeholder="Kontakt telefon"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             {/* Napomena */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaStickyNote className="text-blue-500 mr-2" />
                 Napomena
               </label>
@@ -396,7 +396,7 @@ export default function AddShipment() {
                 value={form.note}
                 onChange={handleChange}
                 placeholder="Dodatne napomene o transportu"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={3}
               />
             </div>

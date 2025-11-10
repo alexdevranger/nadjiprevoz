@@ -384,13 +384,13 @@ export default function MyVehicles() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white flex items-center">
                 Moja Vozila
                 <span className="ml-3 text-lg font-medium text-blue-400 border-l-2 border-gray-300 pl-3">
                   {vehicles.length} vozila
@@ -424,8 +424,8 @@ export default function MyVehicles() {
         </div>
 
         {/* Filteri */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
             Filteri
           </h2>
@@ -433,7 +433,7 @@ export default function MyVehicles() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Tip vozila filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="text-sm font-medium text-gray-700 dark:text-white mb-2 flex items-center">
                 <FaCar className="text-green-500 mr-2" />
                 Tip vozila
               </label>
@@ -465,16 +465,18 @@ export default function MyVehicles() {
         </div>
 
         {/* Lista vozila */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Učitavanje vozila...</p>
+              <p className="text-gray-600 dark:text-white mt-4">
+                Učitavanje vozila...
+              </p>
             </div>
           ) : filteredVehicles.length === 0 ? (
             <div className="p-8 text-center">
               <FaCar className="text-4xl text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 dark:text-white text-lg">
                 {filterType
                   ? `Nema vozila tipa ${filterType}`
                   : "Trenutno nema dostupnih vozila."}
@@ -492,18 +494,18 @@ export default function MyVehicles() {
                   key={vehicle._id}
                   className={`relative border-l-4 ${getRandomBorderColor(
                     index
-                  )} rounded-xl shadow-md p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] bg-white`}
+                  )} dark:bg-mainDarkBG rounded-xl shadow-md p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] bg-white`}
                   style={{ minHeight: "320px" }}
                 >
                   {editingVehicle === vehicle._id ? (
                     <div className="space-y-4">
-                      <h3 className="text-lg font-medium text-gray-800 mb-4">
+                      <h3 className="text-lg font-medium text-gray-800 dark:text-white mb-4">
                         Izmena vozila
                       </h3>
 
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                          <label className="text-sm font-medium text-gray-700 dark:text-white mb-2 flex items-center">
                             <FaCar className="text-blue-500 mr-2" />
                             Tip vozila
                           </label>
@@ -524,7 +526,7 @@ export default function MyVehicles() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                          <label className="text-sm font-medium text-gray-700 dark:text-white mb-2 flex items-center">
                             <FaCar className="text-green-500 mr-2" />
                             Registarska oznaka
                           </label>
@@ -537,7 +539,7 @@ export default function MyVehicles() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                          <label className="text-sm font-medium text-gray-700 dark:text-white mb-2 flex items-center">
                             <FaWeightHanging className="text-purple-500 mr-2" />
                             Nosivost (kg)
                           </label>
@@ -551,7 +553,7 @@ export default function MyVehicles() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                          <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                             <FaCalendarAlt className="text-yellow-500 mr-2" />
                             Godina proizvodnje
                           </label>
@@ -565,7 +567,7 @@ export default function MyVehicles() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                          <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                             <FaPallet className="text-indigo-500 mr-2" />
                             Broj paletnih mesta
                           </label>
@@ -579,7 +581,7 @@ export default function MyVehicles() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                          <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                             <FaRulerCombined className="text-red-500 mr-2" />
                             Dimenzije (cm)
                           </label>
@@ -614,7 +616,7 @@ export default function MyVehicles() {
                         {/* Slike vozila */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                            <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                               <FaImage className="text-blue-500 mr-2" />
                               Slika 1
                             </label>
@@ -637,7 +639,7 @@ export default function MyVehicles() {
                             ) : (
                               <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 h-32 cursor-pointer hover:border-blue-400">
                                 <FaImage className="text-2xl text-gray-400 mb-2" />
-                                <span className="text-sm text-gray-600">
+                                <span className="text-sm text-gray-600 dark:text-white">
                                   Dodaj sliku
                                 </span>
                                 <input
@@ -653,7 +655,7 @@ export default function MyVehicles() {
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                            <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                               <FaImage className="text-blue-500 mr-2" />
                               Slika 2
                             </label>
@@ -676,7 +678,7 @@ export default function MyVehicles() {
                             ) : (
                               <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 h-32 cursor-pointer hover:border-blue-400">
                                 <FaImage className="text-2xl text-gray-400 mb-2" />
-                                <span className="text-sm text-gray-600">
+                                <span className="text-sm text-gray-600 dark:text-white">
                                   Dodaj sliku
                                 </span>
                                 <input
@@ -714,20 +716,20 @@ export default function MyVehicles() {
                       {/* Prikaz vozila - normalni mod */}
                       <div className="flex-1 space-y-3">
                         <div className="flex items-center">
-                          <div className="p-2 rounded-lg bg-blue-100 text-blue-600 mr-3">
+                          <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-600 dark:text-blue-100 text-blue-600 mr-3">
                             <FaCar className="text-xl" />
                           </div>
                           <div>
-                            <h3 className="text-lg font-bold text-gray-900">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                               {vehicle.type}
                             </h3>
-                            <p className="text-gray-700 font-medium">
+                            <p className="text-gray-700 dark:text-white font-medium">
                               {vehicle.licensePlate}
                             </p>
                           </div>
                         </div>
 
-                        <div className="space-y-2 text-sm text-gray-700">
+                        <div className="space-y-2 text-sm text-gray-700 dark:text-white">
                           <div className="flex items-center">
                             <FaWeightHanging className="text-green-500 mr-2" />
                             Nosivost: {vehicle.capacity} kg

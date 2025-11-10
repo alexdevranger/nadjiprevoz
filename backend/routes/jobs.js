@@ -61,6 +61,32 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Get jobs by shop (public)
+router.get("/shop/:shopId", async (req, res) => {
+  try {
+    const shop = await Shop.findById(req.params.shopId);
+    console.log("shop", shop);
+
+    if (!shop) {
+      return res.status(404).json({ error: "Shop nije pronađen" });
+    }
+
+    const jobs = await Job.find({
+      createdBy: shop.userId,
+      isActive: true,
+      status: "aktivan",
+    })
+      .populate("createdBy", "name email profileImage")
+      .populate("company", "companyName logo")
+      .sort({ createdAt: -1 });
+
+    res.json(jobs);
+  } catch (error) {
+    console.error("❌ Greška u /shop/:shopId:", error);
+    res.status(500).json({ error: "Greška pri učitavanju oglasa za shop" });
+  }
+});
+
 // Create job
 router.post("/", authMiddleware, async (req, res) => {
   try {

@@ -99,13 +99,13 @@ const FAQ = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-16 px-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-16 px-6">
       <div className="max-w-5xl mx-auto">
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="text-4xl font-bold text-center text-gray-800 mb-12"
+          className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-12"
         >
           Često postavljana pitanja (FAQ)
         </motion.h1>
@@ -126,17 +126,17 @@ const FAQ = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: faqIndex * 0.05 }}
-                    className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100"
+                    className="bg-white dark:bg-mainDarkBG rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-white"
                   >
                     <button
                       onClick={() => toggleFAQ(sectionIndex, faqIndex)}
                       className="w-full flex justify-between items-center p-5 text-left focus:outline-none"
                     >
-                      <span className="text-lg font-medium text-gray-800">
+                      <span className="text-lg font-medium text-gray-800 dark:text-white">
                         {faq.question}
                       </span>
                       <ChevronDown
-                        className={`w-5 h-5 text-gray-500 transform transition-transform duration-300 ${
+                        className={`w-5 h-5 text-gray-500 dark:text-gray-100 transform transition-transform duration-300 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                       />
@@ -154,7 +154,7 @@ const FAQ = () => {
                       }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 pb-5 text-gray-600 text-base leading-relaxed">
+                      <div className="px-5 pb-5 text-gray-600 dark:text-gray-200 text-base leading-relaxed">
                         {faq.answer}
                       </div>
                     </motion.div>
@@ -166,7 +166,7 @@ const FAQ = () => {
         ))}
 
         <div className="text-center mt-16">
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 mb-4 dark:text-white">
             Niste pronašli odgovor na svoje pitanje?
           </p>
           <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-full shadow hover:bg-blue-700 transition-all">

@@ -49,6 +49,7 @@ import AllServices from "./pages/AllServices";
 import AddServiceAd from "./pages/AddServiceAd.jsx";
 import MyServiceAds from "./pages/MyServiceAds.jsx";
 import ImagesToPdf from "./pages/ImagesToPdf.jsx";
+import ThemeSwitch from "./components/ThemeSwitch";
 
 export const socket = io("http://localhost:4000", {
   auth: { token: localStorage.getItem("token") },
@@ -96,6 +97,7 @@ export default function App() {
           <ServiceWorkerCleanup />
           <Navbar />
           <Agent />
+          <ThemeSwitch />
           <main>
             <Routes>
               <Route path="/" element={<Pocetna />} />

@@ -130,17 +130,17 @@ export default function AddTour() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-6">
             Dodaj novu turu
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Datum ture */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
                 <div className="flex items-center">
                   <FaCalendarAlt className="mr-2 text-blue-500" />
                   Datum ture
@@ -152,7 +152,7 @@ export default function AddTour() {
                 locale="sr-latin"
                 dateFormat="d. MMMM yyyy"
                 placeholderText="Izaberite datum"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 required
               />
             </div>
@@ -160,7 +160,7 @@ export default function AddTour() {
             {/* Kontakt osoba i telefon u gridu */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="dark:text-white block text-sm font-medium text-gray-700 mb-2">
                   <div className="flex items-center">
                     <FaUser className="mr-2 text-blue-500" />
                     Kontakt osoba
@@ -171,14 +171,14 @@ export default function AddTour() {
                   name="contactPerson"
                   value={formData.contactPerson}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                   placeholder="Ime i prezime"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="dark:text-white block text-sm font-medium text-gray-700 mb-2">
                   <div className="flex items-center">
                     <FaPhone className="mr-2 text-blue-500" />
                     Kontakt telefon
@@ -189,7 +189,7 @@ export default function AddTour() {
                   name="contactPhone"
                   value={formData.contactPhone}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                   placeholder="+381 6x xxx xxxx"
                   required
                 />
@@ -198,7 +198,7 @@ export default function AddTour() {
 
             {/* Vozilo */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                 <div className="flex items-center">
                   <FaTruck className="mr-2 text-blue-500" />
                   Izaberi vozilo
@@ -209,7 +209,7 @@ export default function AddTour() {
                 value={formData.vehicle}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
               >
                 <option value="">-- Izaberi vozilo --</option>
                 {vehicles.map((v) => (
@@ -223,7 +223,7 @@ export default function AddTour() {
             {/* Lokacije */}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                   <div className="flex items-center">
                     <FaMapMarkerAlt className="mr-2 text-red-500" />
                     Početna destinacija
@@ -239,12 +239,12 @@ export default function AddTour() {
                       startLocationLng: val.lng,
                     }));
                   }}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                   <div className="flex items-center">
                     <FaMapMarkerAlt className="mr-2 text-green-500" />
                     Krajnja destinacija
@@ -267,7 +267,7 @@ export default function AddTour() {
 
             {/* Napomena */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                 <div className="flex items-center">
                   <FaStickyNote className="mr-2 text-blue-500" />
                   Napomena
@@ -278,7 +278,7 @@ export default function AddTour() {
                 value={formData.note}
                 onChange={handleChange}
                 rows="3"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 placeholder="Unesite dodatne informacije o turi"
               />
             </div>

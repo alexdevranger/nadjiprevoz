@@ -5,7 +5,7 @@ import QrCodeImg from "../images/qrcodeproba.png"; // Ubaci svoj QR kod u assets
 
 const ViberCommunity = () => {
   return (
-    <section className="relative overflow-hidden bg-white min-h-screen flex py-20 px-6 md:px-12 lg:px-24">
+    <section className="relative overflow-hidden bg-white dark:bg-cardBGText min-h-screen flex py-20 px-6 md:px-12 lg:px-24">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         {/* Tekstualni deo */}
         <motion.div
@@ -14,12 +14,12 @@ const ViberCommunity = () => {
           transition={{ duration: 0.8 }}
           className="space-y-6"
         >
-          <h2 className="text-4xl md:text-6xl text-gray-800 font-bold leading-tight">
+          <h2 className="text-4xl md:text-6xl text-[#0b0c0c] dark:text-gray-400 font-bold leading-tight">
             Pridruži se našoj <span className="text-blue-600">Viber </span>{" "}
             grupi
           </h2>
 
-          <p className="text-lg max-w-lg text-gray-800">
+          <p className="text-lg max-w-lg text-[#0b0c0c] dark:text-white">
             Viber grupa dodatno omogucava korisnicima da se povežu, razmenjuju
             iskustva i dobiju brzu podršku.
             <br />

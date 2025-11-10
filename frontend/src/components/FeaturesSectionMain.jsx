@@ -31,14 +31,14 @@ const features = [
 
 const FeaturesSectionMain = () => {
   return (
-    <section className="relative w-full py-20 bg-gradient-to-b from-white to-gray-50">
+    <section className="relative w-full py-20 bg-gray-50 dark:bg-cardBGText">
       <div className="max-w-6xl mx-auto px-6 text-center">
         {/* Naslov */}
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6"
+          className="text-4xl md:text-5xl font-extrabold text-[#0b0c0c] dark:text-white mb-6"
         >
           Brzo, sigurno i jednostavno
         </motion.h2>
@@ -48,7 +48,7 @@ const FeaturesSectionMain = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-16"
+          className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16"
         >
           Naša platforma pruža sve što vam je potrebno da pronađete pravog
           partnera za transport u nekoliko klikova.
@@ -62,13 +62,15 @@ const FeaturesSectionMain = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.2, duration: 0.6 }}
-              className="bg-white shadow-xl rounded-2xl p-8 hover:shadow-2xl transition-all duration-300"
+              className="bg-white dark:bg-mainDarkBG shadow-xl rounded-2xl p-8 hover:shadow-2xl transition-all duration-300"
             >
               <div className="flex justify-center mb-6">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">
+              <h3 className="text-xl font-semibold  text-gray-600 dark:text-gray-400 mb-3">
                 {feature.title}
               </h3>
-              <p className="text-gray-600 text-base">{feature.description}</p>
+              <p className="text-gray-600 dark:text-white text-base">
+                {feature.description}
+              </p>
             </motion.div>
           ))}
         </div>

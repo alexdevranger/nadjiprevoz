@@ -103,15 +103,17 @@ const gridSquareVariants = {
 // Komponenta kartice po uzoru na DashboardCard
 const HomeCard = ({ icon, title, description, color }) => (
   <div
-    className={`bg-white rounded-xl shadow-md p-8 h-full transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 border-l-4 ${color}`}
+    className={`bg-white dark:bg-mainDarkBG rounded-xl shadow-md p-8 h-full transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 border-l-4 ${color}`}
   >
     <div className="flex items-center mb-6">
       <div className={`text-2xl mr-3 ${color.replace("border-l-", "text-")}`}>
         {icon}
       </div>
-      <h3 className="text-xl font-bold text-gray-800">{title}</h3>
+      <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+        {title}
+      </h3>
     </div>
-    <p className="text-gray-600">{description}</p>
+    <p className="text-gray-600 dark:text-gray-400">{description}</p>
   </div>
 );
 
@@ -177,14 +179,14 @@ const Pocetna = () => {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center">
+      <div className="min-h-screen bg-white dark:bg-mainDarkBG flex items-center">
         <div className="container mx-auto px-6 py-16">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="lg:w-1/2 text-center lg:text-left">
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
+              <h1 className="text-5xl md:text-6xl font-bold text-cardBGText dark:text-white mb-6">
                 NAĐI PREVOZ
               </h1>
-              <h2 className="text-2xl font-bold text-gray-600 mb-8 flex flex-wrap items-center justify-center lg:justify-start">
+              <h2 className="text-2xl font-bold text-gray-600 dark:text-white mb-8 flex flex-wrap items-center justify-center lg:justify-start">
                 <span className="text-blue-600 mr-2">
                   <Typewriter
                     words={[
@@ -206,7 +208,7 @@ const Pocetna = () => {
                   className="w-12 h-12 object-contain"
                 />
               </h2>
-              <p className="text-lg text-gray-600 mb-10 leading-relaxed">
+              <p className="text-lg text-gray-600 dark:text-white mb-10 leading-relaxed">
                 Platforma koja revolucionarno povezuje pružaoce transportnih
                 usluga sa klijentima. Više povratnih tura, više posla, pomoć AI
                 prijatelja.
@@ -235,16 +237,16 @@ const Pocetna = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>{" "}
+      <FeaturesSectionMain />
       {/* Video Tutorials Section */}
-      {/* Video Tutorials Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 dark:bg-mainDarkBG">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-white mb-4">
               Kako funkcioniše NađiPrevoz ?
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-white max-w-2xl mx-auto">
               Pogledajte kratke video tutorijale kako biste brzo savladali
               korišćenje naše platforme.
             </p>
@@ -362,13 +364,13 @@ const Pocetna = () => {
         </div>
       </section>
       {/* Prednosti sajta */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50 dark:bg-cardBGText">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            <h2 className="text-4xl font-bold text-[#0b0c0c] dark:text-white mb-4">
               Zašto odabrati baš nas?
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-white max-w-2xl mx-auto">
               Naša platforma je dizajnirana da olakša i unapredi transportne
               usluge kroz pametne alate i jednostavno korišćenje.
             </p>
@@ -436,23 +438,22 @@ const Pocetna = () => {
           </motion.div>
         </div>
       </section>
-
       {/* Prikaz turi i zahteva */}
-      <section className="py-20 bg-gradient-to-r from-blue-50 to-indigo-50">
+      {/* <section className="py-20 bg-gray-50 dark:bg-mainDarkBG">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            <h2 className="text-4xl font-bold text-[#0b0c0c] dark:text-white mb-4">
               Kako izgledaju naše ture i zahtevi?
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-white max-w-2xl mx-auto">
               Pogledajte kako platforma prikazuje dostupne ture i transportne
               zahteve
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Ture */}
-            <div className="bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-1">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12"> */}
+      {/* Ture */}
+      {/* <div className="bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-1">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
                   <FaRoute className="text-xl text-blue-600" />
@@ -499,10 +500,9 @@ const Pocetna = () => {
               >
                 Pogledaj sve ture <FaArrowRight className="ml-2" />
               </Link>
-            </div>
-
-            {/* Zahtevi */}
-            <div className="bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-1">
+            </div> */}
+      {/* Zahtevi */}
+      {/* <div className="bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-1">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
                   <FaClipboardList className="text-xl text-green-600" />
@@ -549,12 +549,10 @@ const Pocetna = () => {
               >
                 Pogledaj sve zahteve <FaArrowRight className="ml-2" />
               </Link>
-            </div>
-          </div>
+            </div> */}
+      {/* </div>
         </div>
-      </section>
-      <Pricing />
-
+      </section> */}
       {/* Call to Action */}
       <section className="py-20 bg-blue-600 text-white">
         <div className="container mx-auto px-6 text-center">
@@ -583,8 +581,8 @@ const Pocetna = () => {
       </section>
       {/* Viber */}
       <ViberCommunity />
+      {/* <Pricing /> */}
       {/* <Oglasi /> */}
-      <FeaturesSectionMain />
       <Kontakt />
     </div>
   );

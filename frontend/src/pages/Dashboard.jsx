@@ -116,12 +116,12 @@ export default function Dashboard() {
     return (
       <div
         onClick={onClick}
-        className={`block h-full text-gray-800 no-underline ${
+        className={`block h-full text-gray-800 dark:text-white no-underline ${
           onClick ? "cursor-pointer" : ""
         }`}
       >
         <div
-          className={`bg-white rounded-xl shadow-md p-6 h-full transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 border-l-4 ${color}`}
+          className={`bg-white dark:bg-mainDarkBG rounded-xl shadow-md p-6 h-full transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 border-l-4 ${color}`}
         >
           <div className="flex items-center mb-4">
             <div
@@ -131,7 +131,9 @@ export default function Dashboard() {
             </div>
             <h3 className="text-lg font-semibold">{title}</h3>
           </div>
-          <p className="text-sm text-gray-600 mb-2">{description}</p>
+          <p className="text-sm text-gray-600 mb-2 dark:text-gray-300">
+            {description}
+          </p>
           {count !== undefined && (
             <div className="mt-2 text-right">
               <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
@@ -1059,13 +1061,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-cardBGText">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-mainDarkBG rounded-xl shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
                 Dobrodošli, {user?.hasCompany ? user.company : user?.name}!
               </h1>
               {/* <p className="text-gray-600 mt-2">
@@ -1093,10 +1095,10 @@ export default function Dashboard() {
                   </div>
                 )}
                 <div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-white">
                     Trenutno prijavljeni kao
                   </p>
-                  <p className="font-medium">
+                  <p className="font-medium text-gray-600 dark:text-white">
                     {user?.hasCompany ? "Kompanija" : "Pojedinac"}
                   </p>
                 </div>
@@ -1106,7 +1108,7 @@ export default function Dashboard() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-xl shadow-md mb-6 overflow-hidden">
+        <div className="bg-white dark:bg-mainDarkBG rounded-xl shadow-md mb-6 overflow-hidden">
           <div className="border-b border-gray-200">
             <nav className="flex -mb-px">
               <button
@@ -1114,7 +1116,7 @@ export default function Dashboard() {
                 className={`py-4 px-6 text-center font-medium text-sm border-b-2 transition-colors duration-300 flex items-center ${
                   activeTab === "overview"
                     ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-white"
                 }`}
               >
                 <FaChartBar className="mr-2" /> Pregled
@@ -1124,7 +1126,7 @@ export default function Dashboard() {
                 className={`py-4 px-6 text-center font-medium text-sm border-b-2 transition-colors duration-300 flex items-center ${
                   activeTab === "profile"
                     ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-white"
                 }`}
               >
                 <FaUser className="mr-2" /> Profil i Postavke
@@ -1134,7 +1136,7 @@ export default function Dashboard() {
                 className={`py-4 px-6 text-center font-medium text-sm border-b-2 transition-colors duration-300 flex items-center ${
                   activeTab === "logout"
                     ? "border-red-500 text-red-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-white"
                 }`}
               >
                 <FaSignOutAlt className="mr-1" /> Odjavi se
@@ -1149,50 +1151,64 @@ export default function Dashboard() {
         {/* Quick Stats */}
         {activeTab === "overview" && (
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-mainDarkBG rounded-xl shadow-md p-6">
               <div className="flex items-center">
-                <div className="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                <div className="p-3 rounded-lg bg-blue-100 dark:bg-mainDarkBG text-blue-600 mr-4">
                   <FaCar className="text-2xl" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Ukupno vozila</p>
-                  <p className="text-2xl font-bold">{vehicles.length}</p>
+                  <p className="text-sm text-gray-600 dark:text-white">
+                    Ukupno vozila
+                  </p>
+                  <p className="text-2xl font-bold dark:text-white">
+                    {vehicles.length}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-mainDarkBG rounded-xl shadow-md p-6">
               <div className="flex items-center">
-                <div className="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                <div className="p-3 rounded-lg bg-green-100 dark:bg-mainDarkBG text-green-600 mr-4">
                   <FaClipboardList className="text-2xl" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Aktivne ture</p>
-                  <p className="text-2xl font-bold">{tours.length}</p>
+                  <p className="text-sm text-gray-600 dark:text-white">
+                    Aktivne ture
+                  </p>
+                  <p className="text-2xl font-bold dark:text-white">
+                    {tours.length}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-mainDarkBG rounded-xl shadow-md p-6">
               <div className="flex items-center">
-                <div className="p-3 rounded-lg bg-purple-100 text-purple-600 mr-4">
+                <div className="p-3 rounded-lg bg-purple-100 dark:bg-mainDarkBG text-purple-600 mr-4">
                   <FaBriefcase className="text-2xl" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Aktivni zahtevi</p>
-                  <p className="text-2xl font-bold">{shipments.length}</p>
+                  <p className="text-sm text-gray-600 dark:text-white">
+                    Aktivni zahtevi
+                  </p>
+                  <p className="text-2xl font-bold dark:text-white">
+                    {shipments.length}
+                  </p>
                 </div>
               </div>
             </div>
             {/* DODATA STATISTIKA ZA PORTFOLIO */}
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-mainDarkBG rounded-xl shadow-md p-6">
               <div className="flex items-center">
-                <div className="p-3 rounded-lg bg-teal-100 text-teal-600 mr-4">
+                <div className="p-3 rounded-lg bg-teal-100 dark:bg-mainDarkBG text-teal-600 mr-4">
                   <FaUserTie className="text-2xl" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Portfolio status</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-sm text-gray-600 dark:text-white">
+                    Portfolio status
+                  </p>
+                  <p className="text-2xl font-bold dark:text-white">
                     {hasPortfolio ? "Aktivan" : "Nije kreiran"}
                   </p>
                   {hasPortfolio && portfolio && (
