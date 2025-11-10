@@ -48,7 +48,7 @@ const FeaturesSectionMain = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16"
+          className="text-lg md:text-xl text-gray-600 dark:text-darkText max-w-3xl mx-auto mb-16"
         >
           Naša platforma pruža sve što vam je potrebno da pronađete pravog
           partnera za transport u nekoliko klikova.
@@ -64,11 +64,13 @@ const FeaturesSectionMain = () => {
               transition={{ delay: index * 0.2, duration: 0.6 }}
               className="bg-white dark:bg-mainDarkBG shadow-xl rounded-2xl p-8 hover:shadow-2xl transition-all duration-300"
             >
-              <div className="flex justify-center mb-6">{feature.icon}</div>
-              <h3 className="text-xl font-semibold  text-gray-600 dark:text-gray-400 mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600 dark:text-white text-base">
+              <div className="h-[125px]">
+                <div className="flex justify-center mb-3">{feature.icon}</div>
+                <h3 className="text-xl font-semibold  text-gray-600 dark:text-gray-400 mb-3">
+                  {feature.title}
+                </h3>
+              </div>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-[15px]">
                 {feature.description}
               </p>
             </motion.div>

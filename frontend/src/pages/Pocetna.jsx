@@ -232,7 +232,7 @@ const Pocetna = () => {
               <img
                 src={Monitor}
                 alt="TransportHub platforma"
-                className="w-full rounded-xl shadow-xl"
+                className="w-full rounded-xl"
               />
             </div>
           </div>

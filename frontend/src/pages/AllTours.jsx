@@ -235,12 +235,12 @@ export default function AllTours() {
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
                 Sve Dostupne Ture
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 mt-2 dark:text-darkText">
                 Pronađite savršenu turu za vaš transport
               </p>
             </div>
             <div className="flex items-center mt-4 md:mt-0">
-              <span className="bg-blue-100 dark:bg-mainDarkBG text-blue-800 text-sm px-3 py-1 rounded-full mr-3">
+              <span className="bg-blue-100 dark:bg-mainDarkBG text-blue-800 dark:text-white dark:bg-blueBg text-sm px-3 py-1 rounded-full mr-3">
                 {total} tura (strana {page})
               </span>
               <button

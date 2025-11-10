@@ -14,12 +14,12 @@ const ViberCommunity = () => {
           transition={{ duration: 0.8 }}
           className="space-y-6"
         >
-          <h2 className="text-4xl md:text-6xl text-[#0b0c0c] dark:text-gray-400 font-bold leading-tight">
+          <h2 className="text-4xl md:text-6xl text-[#0b0c0c] dark:text-white font-bold leading-tight">
             Pridruži se našoj <span className="text-blue-600">Viber </span>{" "}
             grupi
           </h2>
 
-          <p className="text-lg max-w-lg text-[#0b0c0c] dark:text-white">
+          <p className="text-lg max-w-lg text-[#0b0c0c] dark:text-darkText">
             Viber grupa dodatno omogucava korisnicima da se povežu, razmenjuju
             iskustva i dobiju brzu podršku.
             <br />
@@ -36,7 +36,9 @@ const ViberCommunity = () => {
               <MessageCircle className="w-5 h-5" />
               Pridruži se
             </a>
-            <p className="text-sm text-gray-800">Skeniraj QR kod</p>
+            <p className="text-sm text-gray-800 dark:text-darkText">
+              Skeniraj QR kod
+            </p>
           </div>
         </motion.div>
 
@@ -45,14 +47,14 @@ const ViberCommunity = () => {
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex flex-col items-center justify-center bg-gray-200 backdrop-blur-md p-8 rounded-3xl shadow-2xl"
+          className="flex flex-col items-center justify-center bg-gray-200 dark:bg-mainDarkBG backdrop-blur-md p-8 rounded-3xl shadow-2xl"
         >
           <img
             src={QrCodeImg} // ubaci svoj QR kod ovde
             alt="Viber QR Code"
             className="w-48 h-48 mb-4 rounded-xl shadow-md"
           />
-          <p className="text-gray-800 text-sm text-center max-w-xs">
+          <p className="text-gray-800 dark:text-darkText text-sm text-center max-w-xs">
             Skeniraj QR code sa kamerom mobilnog telefona da se pridružiš našoj
             Viber zajednici!
           </p>

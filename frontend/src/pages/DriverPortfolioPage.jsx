@@ -386,23 +386,23 @@ export default function DriverPortfolioPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center">
               <button
                 onClick={() => navigate("/dashboard")}
-                className="mr-4 text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100"
+                className="mr-4 text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 dark:text-white"
               >
                 <FaArrowLeft size={20} />
               </button>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
                   {viewMode ? "Pregled Portfolija" : "Moj Portfolio Vozača"}
                 </h1>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-600 mt-2 dark:text-darkText">
                   {viewMode
                     ? "Ovako će vaš portfolio izgledati poslodavcima"
                     : portfolio
@@ -517,18 +517,20 @@ export default function DriverPortfolioPage() {
           }`}
         >
           {/* Kontakt Informacije */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 dark:bg-cardBGText">
             <div className="flex items-center mb-6">
               <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-3">
                 <FaUser className="text-2xl" />
               </div>
-              <h2 className="text-xl font-semibold">Kontakt Informacije</h2>
+              <h2 className="text-xl font-semibold dark:text-white">
+                Kontakt Informacije
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* IME */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   Ime *
                 </label>
                 {editing ? (
@@ -538,12 +540,12 @@ export default function DriverPortfolioPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, firstName: e.target.value })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Unesite vaše ime"
                     required
                   />
                 ) : (
-                  <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg">
+                  <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg dark:text-white dark:bg-mainDarkBG">
                     {formData.firstName || "Nije postavljeno"}
                   </p>
                 )}
@@ -551,7 +553,7 @@ export default function DriverPortfolioPage() {
 
               {/* PREZIME */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   Prezime *
                 </label>
                 {editing ? (
@@ -561,12 +563,12 @@ export default function DriverPortfolioPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, lastName: e.target.value })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Unesite vaše prezime"
                     required
                   />
                 ) : (
-                  <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg">
+                  <p className="text-lg font-medium bg-gray-50 dark:text-white dark:bg-mainDarkBG p-3 rounded-lg">
                     {formData.lastName || "Nije postavljeno"}
                   </p>
                 )}
@@ -574,7 +576,7 @@ export default function DriverPortfolioPage() {
 
               {/* EMAIL */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   Email *
                 </label>
                 {editing ? (
@@ -590,12 +592,12 @@ export default function DriverPortfolioPage() {
                         },
                       })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="vas@email.com"
                     required
                   />
                 ) : (
-                  <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg">
+                  <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg dark:text-white dark:bg-mainDarkBG">
                     {formData.contactInfo.email || "Nije postavljeno"}
                   </p>
                 )}
@@ -603,7 +605,7 @@ export default function DriverPortfolioPage() {
 
               {/* TELEFON */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   Telefon
                 </label>
                 {editing ? (
@@ -619,11 +621,11 @@ export default function DriverPortfolioPage() {
                         },
                       })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="+381 64 123 4567"
                   />
                 ) : (
-                  <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg">
+                  <p className="dark:text-white dark:bg-mainDarkBG text-lg font-medium bg-gray-50 p-3 rounded-lg">
                     {formData.contactInfo.phone || "Nije postavljeno"}
                   </p>
                 )}
@@ -631,7 +633,7 @@ export default function DriverPortfolioPage() {
 
               {/* URL PORTFOLIJA */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   URL Portfolija
                 </label>
                 {editing ? (
@@ -644,7 +646,7 @@ export default function DriverPortfolioPage() {
                         setFormData({ ...formData, slug: newSlug });
                         checkSlugAvailability(newSlug);
                       }}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="ime-prezime"
                     />
                     {slugAvailable !== null && (
@@ -658,13 +660,13 @@ export default function DriverPortfolioPage() {
                           : "✗ URL je zauzet"}
                       </p>
                     )}
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1 ">
                       Vaš portfolio će biti dostupan na: /driver/{formData.slug}
                     </p>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg flex-1">
+                    <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg flex-1 dark:text-white dark:bg-mainDarkBG">
                       /driver/{formData.slug}
                     </p>
                     {portfolio && (
@@ -685,7 +687,7 @@ export default function DriverPortfolioPage() {
           </div>
           {/* Ostale sekcije ostaju slične kao prethodno, ali bez vehicleType polja */}
           {/* Osnovne Informacije */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white dark:text-white dark:bg-cardBGText rounded-xl shadow-md p-6">
             <div className="flex items-center mb-6">
               <div className="p-3 rounded-full bg-green-100 text-green-600 mr-3">
                 <FaBriefcase className="text-2xl" />
@@ -695,7 +697,7 @@ export default function DriverPortfolioPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   Godine iskustva {editing && "*"}
                 </label>
                 {editing ? (
@@ -710,10 +712,10 @@ export default function DriverPortfolioPage() {
                         yearsOfExperience: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg">
+                  <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg dark:bg-mainDarkBG dark:text-white ">
                     {formData.yearsOfExperience || 0}{" "}
                     {formData.yearsOfExperience === 1 ? "godina" : "godine"}
                   </p>
@@ -721,7 +723,7 @@ export default function DriverPortfolioPage() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   Kategorije vozačke dozvole
                 </label>
                 {editing ? (
@@ -729,7 +731,7 @@ export default function DriverPortfolioPage() {
                     {licenseOptions.map((license) => (
                       <label
                         key={license}
-                        className="flex items-center space-x-2 bg-gray-100 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-200"
+                        className="flex items-center space-x-2 bg-gray-100 dark:bg-mainDarkBG dark:text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-200"
                       >
                         <input
                           type="checkbox"
@@ -746,14 +748,14 @@ export default function DriverPortfolioPage() {
                     {formData.licenseCategories?.map((license) => (
                       <span
                         key={license}
-                        className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                        className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm "
                       >
                         {license}
                       </span>
                     ))}
                     {(!formData.licenseCategories ||
                       formData.licenseCategories.length === 0) && (
-                      <span className="text-gray-500 bg-gray-50 p-3 rounded-lg">
+                      <span className="text-gray-500 bg-gray-50 p-3 rounded-lg dark:bg-mainDarkBG dark:text-white ">
                         Nema unetih kategorija
                       </span>
                     )}
@@ -765,17 +767,19 @@ export default function DriverPortfolioPage() {
 
           {/* Moja Vozila sekcija - SA SLIKOM */}
           {userVehicles.length > 0 && (
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white rounded-xl shadow-md p-6 dark:bg-cardBGText">
               <div className="flex items-center mb-6">
-                <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-3">
+                <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-3 dark:bg-mainDarkBG">
                   <FaCar className="text-2xl" />
                 </div>
-                <h2 className="text-xl font-semibold">Moja Vozila</h2>
+                <h2 className="text-xl font-semibold dark:text-white">
+                  Moja Vozila
+                </h2>
               </div>
 
               {editing ? (
                 <div className="space-y-3">
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-gray-600 mb-4 dark:text-darkText">
                     Odaberite vozila iz vaše liste koja želite da prikažete u
                     portfolio-u:
                   </p>
@@ -804,10 +808,10 @@ export default function DriverPortfolioPage() {
                               </div>
                             )}
                             <div className="flex-1">
-                              <div className="font-medium text-lg">
+                              <div className="font-medium text-lg dark:text-white">
                                 {vehicle.type}
                               </div>
-                              <div className="text-sm text-gray-600">
+                              <div className="text-sm text-gray-600 dark:text-white">
                                 {vehicle.licensePlate} • {vehicle.capacity}kg
                                 {vehicle.brand && ` • ${vehicle.brand}`}
                                 {vehicle.model && ` ${vehicle.model}`}
@@ -817,7 +821,7 @@ export default function DriverPortfolioPage() {
                                 className={`text-xs mt-1 ${
                                   formData.vehicles.includes(vehicle._id)
                                     ? "text-green-600 font-medium"
-                                    : "text-gray-400"
+                                    : "text-gray-400 dark:text-darkText"
                                 }`}
                               >
                                 {formData.vehicles.includes(vehicle._id)
@@ -859,7 +863,7 @@ export default function DriverPortfolioPage() {
                             )}
 
                             <div className="flex-1">
-                              <div className="font-medium text-lg mb-2 text-gray-800">
+                              <div className="font-medium text-lg mb-2 text-gray-800 dark:text-white">
                                 {vehicle.type}
                               </div>
                               <div className="text-sm text-gray-600 space-y-1">
@@ -926,7 +930,7 @@ export default function DriverPortfolioPage() {
                       );
                     })
                   ) : (
-                    <div className="col-span-2 text-center text-gray-500 py-8">
+                    <div className="col-span-2 text-center text-gray-500 py-8 dark:text-darkText">
                       <FaCar className="text-4xl mx-auto mb-3 opacity-30" />
                       <p className="text-lg">Nema odabranih vozila za prikaz</p>
                       <p className="text-sm mt-1">
@@ -942,17 +946,21 @@ export default function DriverPortfolioPage() {
           )}
 
           {/* Prethodno Iskustvo */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 dark:bg-cardBGText">
             <div className="flex items-center mb-6">
               <div className="p-3 rounded-full bg-green-100 text-green-600 mr-3">
                 <FaBriefcase className="text-2xl" />
               </div>
-              <h2 className="text-xl font-semibold">Prethodno Iskustvo</h2>
+              <h2 className="text-xl font-semibold dark:text-white">
+                Prethodno Iskustvo
+              </h2>
             </div>
 
             {editing && (
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-medium mb-3">Dodaj novo iskustvo</h3>
+              <div className="mb-6 p-4 bg-gray-50 dark:bg-mainDarkBG rounded-lg">
+                <h3 className="font-medium mb-3 dark:text-white">
+                  Dodaj novo iskustvo
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <input
                     type="text"
@@ -964,7 +972,7 @@ export default function DriverPortfolioPage() {
                         companyName: e.target.value,
                       })
                     }
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:bg-cardBGText dark:text-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <input
                     type="text"
@@ -976,7 +984,7 @@ export default function DriverPortfolioPage() {
                         position: e.target.value,
                       })
                     }
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:bg-cardBGText dark:text-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <input
                     type="month"
@@ -988,7 +996,7 @@ export default function DriverPortfolioPage() {
                         startDate: e.target.value,
                       })
                     }
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:bg-cardBGText dark:text-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <div className="flex items-center space-x-3">
                     <input
@@ -1002,7 +1010,7 @@ export default function DriverPortfolioPage() {
                         })
                       }
                       disabled={newExperience.current}
-                      className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                      className="dark:bg-cardBGText dark:text-white flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                     />
                     <label className="flex items-center">
                       <input
@@ -1019,7 +1027,7 @@ export default function DriverPortfolioPage() {
                         }
                         className="mr-2"
                       />
-                      <span className="text-sm">Trenutno</span>
+                      <span className="text-sm dark:text-white">Trenutno</span>
                     </label>
                   </div>
                 </div>
@@ -1033,7 +1041,7 @@ export default function DriverPortfolioPage() {
                     })
                   }
                   rows="2"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
+                  className="dark:bg-cardBGText dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
                 />
                 <button
                   onClick={addExperience}
@@ -1080,7 +1088,7 @@ export default function DriverPortfolioPage() {
               ))}
 
               {formData.previousExperience.length === 0 && (
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-500 text-center py-4 dark:text-darkText">
                   {editing
                     ? "Dodajte svoje prvo radno iskustvo"
                     : "Nema unetog radnog iskustva"}
@@ -1092,12 +1100,14 @@ export default function DriverPortfolioPage() {
           {/* Veštine i Jezici */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Veštine */}
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white rounded-xl shadow-md p-6 dark:bg-cardBGText">
               <div className="flex items-center mb-6">
-                <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-3">
+                <div className="p-3 rounded-full bg-purple-100 dark:bg-mainDarkBG text-purple-600 mr-3">
                   <FaGraduationCap className="text-2xl" />
                 </div>
-                <h2 className="text-xl font-semibold">Veštine</h2>
+                <h2 className="text-xl font-semibold dark:text-white">
+                  Veštine
+                </h2>
               </div>
 
               {editing ? (
@@ -1113,7 +1123,7 @@ export default function DriverPortfolioPage() {
                           addSkill();
                         }
                       }}
-                      className="flex-1 border border-gray-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="dark:bg-mainDarkBG dark:text-white flex-1 border border-gray-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
                       onClick={addSkill}
@@ -1127,7 +1137,7 @@ export default function DriverPortfolioPage() {
                     {formData.skills.map((skill, index) => (
                       <span
                         key={index}
-                        className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center"
+                        className="dark:bg-mainDarkBG dark:text-white bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center"
                       >
                         {skill}
                         <button
@@ -1151,19 +1161,23 @@ export default function DriverPortfolioPage() {
                     </span>
                   ))}
                   {formData.skills.length === 0 && (
-                    <span className="text-gray-500">Nema unetih veština</span>
+                    <span className="text-gray-500 dark:text-darkText">
+                      Nema unetih veština
+                    </span>
                   )}
                 </div>
               )}
             </div>
 
             {/* Jezici */}
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6">
               <div className="flex items-center mb-6">
                 <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-3">
                   <FaLanguage className="text-2xl" />
                 </div>
-                <h2 className="text-xl font-semibold">Jezici</h2>
+                <h2 className="text-xl font-semibold dark:text-white">
+                  Jezici
+                </h2>
               </div>
 
               {editing ? (
@@ -1179,7 +1193,7 @@ export default function DriverPortfolioPage() {
                           language: e.target.value,
                         })
                       }
-                      className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="dark:bg-mainDarkBG dark:text-white flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <select
                       value={newLanguage.level}
@@ -1189,7 +1203,7 @@ export default function DriverPortfolioPage() {
                           level: e.target.value,
                         })
                       }
-                      className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="dark:bg-mainDarkBG dark:text-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       {languageLevels.map((level) => (
                         <option key={level} value={level}>
@@ -1209,13 +1223,13 @@ export default function DriverPortfolioPage() {
                     {formData.languages.map((lang, index) => (
                       <div
                         key={index}
-                        className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg"
+                        className="flex justify-between items-center bg-gray-50 dark:bg-mainDarkBG dark:text-white px-3 py-2 rounded-lg"
                       >
                         <span className="font-medium capitalize">
                           {lang.language}
                         </span>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-600 capitalize">
+                          <span className="text-sm text-gray-600 dark:text-white capitalize">
                             {lang.level}
                           </span>
                           <button
@@ -1246,7 +1260,9 @@ export default function DriverPortfolioPage() {
                     </div>
                   ))}
                   {formData.languages.length === 0 && (
-                    <span className="text-gray-500">Nema unetih jezika</span>
+                    <span className="text-gray-500 dark:text-darkText">
+                      Nema unetih jezika
+                    </span>
                   )}
                 </div>
               )}
@@ -1254,17 +1270,19 @@ export default function DriverPortfolioPage() {
           </div>
 
           {/* Dodatne Informacije */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6">
             <div className="flex items-center mb-6">
               <div className="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-3">
                 <FaEuroSign className="text-2xl" />
               </div>
-              <h2 className="text-xl font-semibold">Dodatne Informacije</h2>
+              <h2 className="text-xl font-semibold dark:text-white">
+                Dodatne Informacije
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-darkText mb-2">
                   Dostupnost
                 </label>
                 {editing ? (
@@ -1273,7 +1291,7 @@ export default function DriverPortfolioPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, availability: e.target.value })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {availabilityOptions.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -1282,7 +1300,7 @@ export default function DriverPortfolioPage() {
                     ))}
                   </select>
                 ) : (
-                  <p className="text-lg font-medium capitalize">
+                  <p className="text-lg font-medium capitalize dark:text-white">
                     {availabilityOptions.find(
                       (opt) => opt.value === formData.availability
                     )?.label || formData.availability}
@@ -1291,7 +1309,7 @@ export default function DriverPortfolioPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   Očekivana plata (RSD)
                 </label>
                 {editing ? (
@@ -1304,11 +1322,11 @@ export default function DriverPortfolioPage() {
                         salaryExpectation: e.target.value,
                       })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Unesite izraz želje"
                   />
                 ) : (
-                  <p className="text-lg font-medium">
+                  <p className="text-lg font-medium dark:text-white">
                     {formData.salaryExpectation
                       ? `${formData.salaryExpectation} €`
                       : "Nije navedeno"}
@@ -1317,7 +1335,7 @@ export default function DriverPortfolioPage() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
                   O meni
                 </label>
                 {editing ? (
@@ -1328,16 +1346,16 @@ export default function DriverPortfolioPage() {
                     }
                     rows="4"
                     placeholder="Opisite sebe, vaše profesionalne ciljeve i šta vas čini dobrim vozačem..."
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     maxLength="1000"
                   />
                 ) : (
-                  <p className="text-gray-700 whitespace-pre-wrap">
+                  <p className="text-gray-700 whitespace-pre-wrap dark:text-white">
                     {formData.aboutMe || "Nema unetog opisa."}
                   </p>
                 )}
                 {editing && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-darkText mt-1">
                     {formData.aboutMe.length}/1000 karaktera
                   </p>
                 )}
