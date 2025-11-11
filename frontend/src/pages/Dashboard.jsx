@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { setGlobalState, useGlobalState } from "../helper/globalState";
 import { useToast } from "../components/ToastContext";
 import axios from "axios";
-
+import { useTranslation } from "react-i18next";
 import {
   FaTruck,
   FaPallet,
@@ -61,6 +61,17 @@ export default function Dashboard() {
   const [portfolio, setPortfolio] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
 
   // Komponenta za prikaz kartice
   const DashboardCard = ({
@@ -889,7 +900,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* ----------- Podešavanja ----------- */}
             {/* ----------- Podešavanja ----------- */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <div className="flex items-center mb-6">

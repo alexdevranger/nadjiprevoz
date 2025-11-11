@@ -1,24 +1,28 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const Kontakt = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG">
       {/* Main Content */}
       <main className="container mx-auto px-6 py-16">
         <h2 className="text-4xl md:text-5xl pt-12 lg:pt-24 font-extrabold text-gray-800 dark:text-gray-400 mb-6 text-center">
-          Kontaktirajte nas
+          {t("Contact us")}
         </h2>
         <p className="text-lg text-gray-600 dark:text-white mb-10 text-center">
-          Ako imate pitanja, predloge ili želite da nas kontaktirate, popunite
-          formu ispod ili koristite ponuđene informacije.
+          {t(
+            "If you have questions, suggestions or want to contact us, fill out the form below or use the provided information."
+          )}
         </p>
 
         {/* Contact Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <div className="bg-white dark:bg-mainDarkBG p-6 rounded-xl shadow-lg">
+          <div className="bg-white dark:bg-cardBGText p-6 rounded-xl shadow-lg">
             <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-100 mb-4">
-              Kontakt forma
+              {t("Contact form")}
             </h3>
             <form className="space-y-4">
               <div>
@@ -26,12 +30,12 @@ const Kontakt = () => {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-600 dark:text-gray-100"
                 >
-                  Ime i prezime
+                  {t("Full name")}
                 </label>
                 <input
                   type="text"
                   id="name"
-                  placeholder="Vaše ime"
+                  placeholder={t("Your name")}
                   className="w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:bg-mainDarkBG dark:text-white"
                 />
               </div>
@@ -40,12 +44,12 @@ const Kontakt = () => {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-600 dark:text-gray-100"
                 >
-                  Email adresa
+                  {t("Email address")}
                 </label>
                 <input
                   type="email"
                   id="email"
-                  placeholder="Vaš email"
+                  placeholder={t("Your email")}
                   className="dark:bg-mainDarkBG w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:text-white"
                 />
               </div>
@@ -54,12 +58,12 @@ const Kontakt = () => {
                   htmlFor="message"
                   className="block text-sm font-medium text-gray-600 dark:text-gray-100"
                 >
-                  Poruka
+                  {t("Message")}
                 </label>
                 <textarea
                   id="message"
                   rows="5"
-                  placeholder="Vaša poruka"
+                  placeholder={t("Your message")}
                   className="dark:bg-mainDarkBG w-full px-4 py-3 rounded-lg shadow border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:text-white"
                 ></textarea>
               </div>
@@ -67,33 +71,35 @@ const Kontakt = () => {
                 type="submit"
                 className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200"
               >
-                Pošalji
+                {t("Send")}
               </button>
             </form>
           </div>
 
           {/* Contact Info */}
           <div className="space-y-6">
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <h3 className="text-2xl font-bold text-gray-700 mb-4">
-                Kontakt informacije
+            <div className="bg-white dark:bg-cardBGText p-6 rounded-xl shadow-lg">
+              <h3 className="text-2xl font-bold text-gray-700 mb-4 dark:text-white">
+                {t("Contact information")}
               </h3>
-              <p className="text-gray-600">
-                <span className="font-bold">Adresa:</span> Bulevar Revolucije
-                123, Beograd
+              <p className="text-gray-600 dark:text-darkText">
+                <span className="font-bold">{t("Address")}:</span> Bulevar
+                Revolucije 123, Beograd
               </p>
-              <p className="text-gray-600">
-                <span className="font-bold">Telefon:</span> +381 64 123 4567
+              <p className="text-gray-600 dark:text-darkText">
+                <span className="font-bold">{t("Phone")}:</span> +381 64 123
+                4567
               </p>
-              <p className="text-gray-600">
-                <span className="font-bold">Email:</span> info@transporthub.rs
+              <p className="text-gray-600 dark:text-darkText">
+                <span className="font-bold">{t("Email")}:</span>{" "}
+                info@transporthub.rs
               </p>
             </div>
 
             {/* Map */}
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <h3 className="text-2xl font-bold text-gray-700 mb-4">
-                Naša lokacija
+            <div className="bg-white dark:bg-cardBGText p-6 rounded-xl shadow-lg">
+              <h3 className="text-2xl font-bold text-gray-700 mb-4 dark:text-white">
+                {t("Our location")}
               </h3>
               <div className="w-full h-64 rounded-lg overflow-hidden">
                 <iframe

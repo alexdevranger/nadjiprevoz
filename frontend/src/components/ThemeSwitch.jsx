@@ -6,7 +6,7 @@ const ThemeSwitch = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <StyledWrapper className="">
+    <StyledWrapper>
       <div className="toggle-switch">
         <label className="switch-label">
           <input

@@ -1,35 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Truck, Users, Search, ShieldCheck } from "lucide-react";
-
-const features = [
-  {
-    icon: <Truck className="w-10 h-10 text-blue-600" />,
-    title: "Brzo povezivanje",
-    description:
-      "Naša aplikacija trenutno povezuje prevoznike i potražioce prevoza bez nepotrebnog čekanja.",
-  },
-  {
-    icon: <Users className="w-10 h-10 text-green-600" />,
-    title: "Široka mreža",
-    description:
-      "Pristupite velikoj mreži proverenih korisnika i klijenata širom zemlje.",
-  },
-  {
-    icon: <Search className="w-10 h-10 text-purple-600" />,
-    title: "Jednostavna pretraga",
-    description:
-      "Pametni filteri i algoritmi pomažu da brzo pronađete odgovarajuće partnere.",
-  },
-  {
-    icon: <ShieldCheck className="w-10 h-10 text-red-600" />,
-    title: "Sigurnost i poverenje",
-    description:
-      "Svi korisnici su verifikovani kako bi saradnja bila maksimalno bezbedna.",
-  },
-];
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const FeaturesSectionMain = () => {
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
+
+  // Definišite features unutar komponente da biste mogli koristiti t() funkciju
+  const features = [
+    {
+      icon: <Truck className="w-10 h-10 text-blue-600" />,
+      title: t("Quick connection"),
+      description: t(
+        "Our app currently connects transporters and transport seekers without unnecessary waiting."
+      ),
+    },
+    {
+      icon: <Users className="w-10 h-10 text-green-600" />,
+      title: t("Wide network"),
+      description: t(
+        "Access a large network of verified users and clients across the country."
+      ),
+    },
+    {
+      icon: <Search className="w-10 h-10 text-purple-600" />,
+      title: t("Simple search"),
+      description: t(
+        "Smart filters and algorithms help you quickly find suitable partners."
+      ),
+    },
+    {
+      icon: <ShieldCheck className="w-10 h-10 text-red-600" />,
+      title: t("Security and trust"),
+      description: t(
+        "All users are verified to ensure maximum safety in cooperation."
+      ),
+    },
+  ];
+
   return (
     <section className="relative w-full py-20 bg-gray-50 dark:bg-cardBGText">
       <div className="max-w-6xl mx-auto px-6 text-center">
@@ -40,7 +60,7 @@ const FeaturesSectionMain = () => {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-extrabold text-[#0b0c0c] dark:text-white mb-6"
         >
-          Brzo, sigurno i jednostavno
+          {t("Fast, secure and simple")}
         </motion.h2>
 
         {/* Podnaslov */}
@@ -50,8 +70,9 @@ const FeaturesSectionMain = () => {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="text-lg md:text-xl text-gray-600 dark:text-darkText max-w-3xl mx-auto mb-16"
         >
-          Naša platforma pruža sve što vam je potrebno da pronađete pravog
-          partnera za transport u nekoliko klikova.
+          {t(
+            "Our platform provides everything you need to find the right transport partner in a few clicks."
+          )}
         </motion.p>
 
         {/* Kartice sa mogućnostima */}
@@ -66,7 +87,7 @@ const FeaturesSectionMain = () => {
             >
               <div className="h-[125px]">
                 <div className="flex justify-center mb-3">{feature.icon}</div>
-                <h3 className="text-xl font-semibold  text-gray-600 dark:text-gray-400 mb-3">
+                <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-3">
                   {feature.title}
                 </h3>
               </div>

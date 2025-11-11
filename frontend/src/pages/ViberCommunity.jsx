@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { MessageCircle, QrCode } from "lucide-react";
 import QrCodeImg from "../images/qrcodeproba.png"; // Ubaci svoj QR kod u assets folder
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const ViberCommunity = () => {
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
+
   return (
     <section className="relative overflow-hidden bg-white dark:bg-cardBGText min-h-screen flex py-20 px-6 md:px-12 lg:px-24">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -15,15 +30,19 @@ const ViberCommunity = () => {
           className="space-y-6"
         >
           <h2 className="text-4xl md:text-6xl text-[#0b0c0c] dark:text-white font-bold leading-tight">
-            Pridruži se našoj <span className="text-blue-600">Viber </span>{" "}
-            grupi
+            {t("Join our")}
+            <span className="text-blue-600">{t("Viber")} </span> {t("group")}
           </h2>
 
           <p className="text-lg max-w-lg text-[#0b0c0c] dark:text-darkText">
-            Viber grupa dodatno omogucava korisnicima da se povežu, razmenjuju
-            iskustva i dobiju brzu podršku.
+            {t(
+              "The Viber group additionally allows users to connect, share experiences, and get quick support."
+            )}
+
             <br />
-            Budi deo naše zajednice i ostani u toku sa najnovijim informacijama
+            {t(
+              "Be part of our community and stay updated with the latest information"
+            )}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
@@ -34,10 +53,10 @@ const ViberCommunity = () => {
               className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg transition-transform transform hover:-translate-y-1"
             >
               <MessageCircle className="w-5 h-5" />
-              Pridruži se
+              {t("Join")}
             </a>
             <p className="text-sm text-gray-800 dark:text-darkText">
-              Skeniraj QR kod
+              {t("Scan QR Code")}
             </p>
           </div>
         </motion.div>
@@ -55,8 +74,9 @@ const ViberCommunity = () => {
             className="w-48 h-48 mb-4 rounded-xl shadow-md"
           />
           <p className="text-gray-800 dark:text-darkText text-sm text-center max-w-xs">
-            Skeniraj QR code sa kamerom mobilnog telefona da se pridružiš našoj
-            Viber zajednici!
+            {t(
+              "Scan the QR code with your phone camera to join our Viber community!"
+            )}
           </p>
         </motion.div>
       </div>

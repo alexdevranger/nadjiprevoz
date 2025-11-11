@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   motion,
   useAnimation,
@@ -6,12 +6,13 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swiper from "swiper";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { useTranslation } from "react-i18next";
 import {
   FaArrowRight,
   FaCheckCircle,
@@ -122,11 +123,35 @@ const Pocetna = () => {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true });
   const mainControls = useAnimation();
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
+  useEffect(() => {
+    console.log("Test prevod:", t("NAĐI PREVOZ"));
+  }, [t, i18n.language]);
+  useEffect(() => {
+    console.log("Trenutni jezik:", i18n.language);
+    console.log("Dostupni jezici:", i18n.languages);
+    console.log("Test prevod 'NAĐI PREVOZ':", t("NAĐI PREVOZ"));
+    console.log(
+      "Svi ključevi za trenutni jezik:",
+      i18n.getResourceBundle(i18n.language, "translation")
+    );
+  }, [i18n.language, t]);
 
   const paragraphOneValue = useTransform(
     scrollYProgress,
@@ -184,7 +209,7 @@ const Pocetna = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="lg:w-1/2 text-center lg:text-left">
               <h1 className="text-5xl md:text-6xl font-bold text-cardBGText dark:text-white mb-6">
-                NAĐI PREVOZ
+                {t("FIND TRANSPORT")}
               </h1>
               <h2 className="text-2xl font-bold text-gray-600 dark:text-white mb-8 flex flex-wrap items-center justify-center lg:justify-start">
                 <span className="text-blue-600 mr-2">
@@ -209,22 +234,22 @@ const Pocetna = () => {
                 />
               </h2>
               <p className="text-lg text-gray-600 dark:text-white mb-10 leading-relaxed">
-                Platforma koja revolucionarno povezuje pružaoce transportnih
-                usluga sa klijentima. Više povratnih tura, više posla, pomoć AI
-                prijatelja.
+                {t(
+                  "A platform that revolutionarily connects transport service providers with clients. More return trips, more work, AI assistant help."
+                )}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
                   to="/register"
                   className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center"
                 >
-                  Započni odmah <FaArrowRight className="ml-2" />
+                  {t("Start Now")} <FaArrowRight className="ml-2" />
                 </Link>
                 <Link
                   to="/alltours"
                   className="border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center"
                 >
-                  Pogledaj ture <FaRoute className="ml-2" />
+                  {t("View Trips")} <FaRoute className="ml-2" />
                 </Link>
               </div>
             </div>
@@ -244,11 +269,12 @@ const Pocetna = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 dark:text-white mb-4">
-              Kako funkcioniše NađiPrevoz ?
+              {t("How FindTransport Works")} ?
             </h2>
             <p className="text-lg text-gray-600 dark:text-white max-w-2xl mx-auto">
-              Pogledajte kratke video tutorijale kako biste brzo savladali
-              korišćenje naše platforme.
+              {t(
+                "Watch short video tutorials to quickly master using our platform."
+              )}
             </p>
           </div>
 
@@ -271,11 +297,12 @@ const Pocetna = () => {
                     </div>
                     <div className="p-6 flex-grow">
                       <h3 className="text-xl font-bold text-gray-800 mb-2">
-                        Kako da kreirate svoj prvi zahtev
+                        {t("How to Create Your First Request")}
                       </h3>
                       <p className="text-gray-600">
-                        Naučite kako da postavite svoj prvi zahtev za transport
-                        u samo nekoliko koraka.
+                        {t(
+                          "Learn how to post your first transport request in just a few steps."
+                        )}
                       </p>
                     </div>
                   </div>
@@ -296,11 +323,12 @@ const Pocetna = () => {
                     </div>
                     <div className="p-6 flex-grow">
                       <h3 className="text-xl font-bold text-gray-800 mb-2">
-                        Upravljanje turama - kompletno uputstvo
+                        {t("Trip Management - Complete Guide")}
                       </h3>
                       <p className="text-gray-600">
-                        Saznajte kako da efikasno organizujete i pratite sve
-                        vaše ture.
+                        {t(
+                          "Learn how to efficiently organize and track all your trips."
+                        )}
                       </p>
                     </div>
                   </div>
@@ -321,11 +349,12 @@ const Pocetna = () => {
                     </div>
                     <div className="p-6 flex-grow">
                       <h3 className="text-xl font-bold text-gray-800 mb-2">
-                        Kako da pronađete idealne prevoznike
+                        {t("How to Find Ideal Transporters")}
                       </h3>
                       <p className="text-gray-600">
-                        Saveti kako da pronađete i verifikujete najpouzdanije
-                        prevoznike za vaše potrebe.
+                        {t(
+                          "Tips on how to find and verify the most reliable transporters for your needs."
+                        )}
                       </p>
                     </div>
                   </div>
@@ -346,11 +375,12 @@ const Pocetna = () => {
                     </div>
                     <div className="p-6 flex-grow">
                       <h3 className="text-xl font-bold text-gray-800 mb-2">
-                        Praćenje transakcija i sigurnost
+                        {t("Transaction Tracking and Security")}
                       </h3>
                       <p className="text-gray-600">
-                        Objašnjenje kako platforma obezbeđuje sigurnu razmenu i
-                        praćenje svih transakcija.
+                        {t(
+                          "Explanation of how the platform ensures secure exchanges and tracks all transactions."
+                        )}
                       </p>
                     </div>
                   </div>
@@ -368,11 +398,12 @@ const Pocetna = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#0b0c0c] dark:text-white mb-4">
-              Zašto odabrati baš nas?
+              {t("Why Choose Us?")}
             </h2>
             <p className="text-lg text-gray-600 dark:text-white max-w-2xl mx-auto">
-              Naša platforma je dizajnirana da olakša i unapredi transportne
-              usluge kroz pametne alate i jednostavno korišćenje.
+              {t(
+                "Our platform is designed to simplify and improve transport services through smart tools and ease of use."
+              )}
             </p>
           </div>
 
@@ -557,24 +588,25 @@ const Pocetna = () => {
       <section className="py-20 bg-blue-600 text-white">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-6">
-            Spremni da transformišete svoj transportni biznis?
+            {t("Ready to Transform Your Transport Business?")}
           </h2>
           <p className="text-xl mb-10 max-w-2xl mx-auto">
-            Pridružite se našoj zajednici prevoznika i klijenata i iskusite
-            jednostavnost organizacije transporta na jednom mestu.
+            {t(
+              "Join our community of transporters and clients and experience the ease of managing transport in one place."
+            )}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/register"
               className="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition-colors duration-300"
             >
-              Registrujte se besplatno
+              {t("Register for Free")}
             </Link>
             <Link
               to="/login"
               className="border border-white text-white hover:bg-blue-700 font-semibold py-3 px-8 rounded-lg transition-colors duration-300"
             >
-              Već imate nalog? Prijavite se
+              {t("Already have an account? Log in")}
             </Link>
           </div>
         </div>

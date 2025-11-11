@@ -450,8 +450,6 @@ export default function Navbar() {
                     OSTALO
                   </div>
 
-                  <ThemeSwitch />
-
                   <Link
                     to="/istorija"
                     className="flex items-center px-4 py-2 hover:bg-blue-50 transition-colors"
