@@ -4,6 +4,7 @@ import { useGlobalState } from "../helper/globalState";
 import { useToast } from "../components/ToastContext";
 import ConfirmModal from "../components/ConfirmModal";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   FaCar,
   FaEdit,
@@ -51,7 +52,17 @@ export default function MyVehicles() {
     isLoading: false,
   });
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
   const showConfirmModal = ({
     title,
     message,
@@ -391,14 +402,14 @@ export default function MyVehicles() {
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white flex items-center">
-                Moja Vozila
+                {t("My Vehicles")}
                 <span className="ml-3 text-lg font-medium text-blue-400 border-l-2 border-gray-300 pl-3">
-                  {vehicles.length} vozila
+                  {vehicles.length} {t("vehicles")}
                 </span>
               </h1>
 
               <p className="text-gray-600 mt-2">
-                Upravljajte svojim vozilima i njihovim specifikacijama
+                {t("Manage your vehicles and their specifications")}
               </p>
             </div>
             <div className="flex items-center mt-4 md:mt-0">
@@ -411,12 +422,12 @@ export default function MyVehicles() {
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-base mr-2"
               >
                 <FaArrowLeft className="mr-2" />
-                Nazad
+                {t("Back")}
               </button>
               <Link to="/add-vehicle">
                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-base">
                   <FaPlus className="mr-2" />
-                  Dodaj novo vozilo
+                  {t("Add new vehicle")}
                 </button>
               </Link>
             </div>
@@ -427,7 +438,7 @@ export default function MyVehicles() {
         <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
-            Filteri
+            {t("Filters")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -435,14 +446,14 @@ export default function MyVehicles() {
             <div>
               <label className="text-sm font-medium text-gray-700 dark:text-white mb-2 flex items-center">
                 <FaCar className="text-green-500 mr-2" />
-                Tip vozila
+                {t("Vehicle type")}
               </label>
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Svi tipovi</option>
+                <option value="">{t("All types")}</option>
                 {uniqueTypes.map((type) => (
                   <option key={type} value={type}>
                     {type}
@@ -458,7 +469,7 @@ export default function MyVehicles() {
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-colors w-full h-[42px] text-base"
               >
                 <FaSyncAlt className="mr-2" />
-                Reset filtera
+                {t("Reset filters")}
               </button>
             </div>
           </div>
@@ -470,7 +481,7 @@ export default function MyVehicles() {
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
               <p className="text-gray-600 dark:text-white mt-4">
-                Učitavanje vozila...
+                {t("Loading vehicles...")}
               </p>
             </div>
           ) : filteredVehicles.length === 0 ? (
@@ -478,12 +489,12 @@ export default function MyVehicles() {
               <FaCar className="text-4xl text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 dark:text-white text-lg">
                 {filterType
-                  ? `Nema vozila tipa ${filterType}`
-                  : "Trenutno nema dostupnih vozila."}
+                  ? `${t("No vehicles of type")} ${filterType}`
+                  : t("Currently no available vehicles.")}
               </p>
               <Link to="/add-vehicle" className="mt-4 inline-block">
                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
-                  Dodaj prvo vozilo
+                  {t("Add first vehicle")}
                 </button>
               </Link>
             </div>
@@ -500,14 +511,14 @@ export default function MyVehicles() {
                   {editingVehicle === vehicle._id ? (
                     <div className="space-y-4">
                       <h3 className="text-lg font-medium text-gray-800 dark:text-white mb-4">
-                        Izmena vozila
+                        {t("Editing vehicle")}
                       </h3>
 
                       <div className="space-y-4">
                         <div>
                           <label className="text-sm font-medium text-gray-700 dark:text-white mb-2 flex items-center">
                             <FaCar className="text-blue-500 mr-2" />
-                            Tip vozila
+                            {t("Vehicle type")}
                           </label>
                           <select
                             name="type"
@@ -528,7 +539,7 @@ export default function MyVehicles() {
                         <div>
                           <label className="text-sm font-medium text-gray-700 dark:text-white mb-2 flex items-center">
                             <FaCar className="text-green-500 mr-2" />
-                            Registarska oznaka
+                            {t("License plate")}
                           </label>
                           <input
                             name="licensePlate"
@@ -541,7 +552,7 @@ export default function MyVehicles() {
                         <div>
                           <label className="text-sm font-medium text-gray-700 dark:text-white mb-2 flex items-center">
                             <FaWeightHanging className="text-purple-500 mr-2" />
-                            Nosivost (kg)
+                            {t("Capacity (kg)")}
                           </label>
                           <input
                             name="capacity"
@@ -555,7 +566,7 @@ export default function MyVehicles() {
                         <div>
                           <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                             <FaCalendarAlt className="text-yellow-500 mr-2" />
-                            Godina proizvodnje
+                            {t("Year of production")}
                           </label>
                           <input
                             name="year"
@@ -569,7 +580,7 @@ export default function MyVehicles() {
                         <div>
                           <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                             <FaPallet className="text-indigo-500 mr-2" />
-                            Broj paletnih mesta
+                            {t("Number of pallet spaces")}
                           </label>
                           <input
                             name="pallets"
@@ -583,13 +594,13 @@ export default function MyVehicles() {
                         <div>
                           <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                             <FaRulerCombined className="text-red-500 mr-2" />
-                            Dimenzije (cm)
+                            {t("Dimensions (cm)")}
                           </label>
                           <div className="grid grid-cols-3 gap-2">
                             <input
                               name="length"
                               type="number"
-                              placeholder="Dužina"
+                              placeholder={t("Length")}
                               value={editForm.dimensions.length}
                               onChange={handleEditChange}
                               className="border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -597,7 +608,7 @@ export default function MyVehicles() {
                             <input
                               name="width"
                               type="number"
-                              placeholder="Širina"
+                              placeholder={t("Width")}
                               value={editForm.dimensions.width}
                               onChange={handleEditChange}
                               className="border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -605,7 +616,7 @@ export default function MyVehicles() {
                             <input
                               name="height"
                               type="number"
-                              placeholder="Visina"
+                              placeholder={t("Height")}
                               value={editForm.dimensions.height}
                               onChange={handleEditChange}
                               className="border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -618,7 +629,7 @@ export default function MyVehicles() {
                           <div>
                             <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                               <FaImage className="text-blue-500 mr-2" />
-                              Slika 1
+                              {t("Image 1")}
                             </label>
                             {editForm.existingImage1 ? (
                               <div className="relative">
@@ -640,7 +651,7 @@ export default function MyVehicles() {
                               <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 h-32 cursor-pointer hover:border-blue-400">
                                 <FaImage className="text-2xl text-gray-400 mb-2" />
                                 <span className="text-sm text-gray-600 dark:text-white">
-                                  Dodaj sliku
+                                  {t("Add image")}
                                 </span>
                                 <input
                                   type="file"
@@ -657,7 +668,7 @@ export default function MyVehicles() {
                           <div>
                             <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                               <FaImage className="text-blue-500 mr-2" />
-                              Slika 2
+                              {t("Image 2")}
                             </label>
                             {editForm.existingImage2 ? (
                               <div className="relative">
@@ -679,7 +690,7 @@ export default function MyVehicles() {
                               <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 h-32 cursor-pointer hover:border-blue-400">
                                 <FaImage className="text-2xl text-gray-400 mb-2" />
                                 <span className="text-sm text-gray-600 dark:text-white">
-                                  Dodaj sliku
+                                  {t("Add image")}
                                 </span>
                                 <input
                                   type="file"
@@ -700,13 +711,13 @@ export default function MyVehicles() {
                             disabled={saving}
                             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-base"
                           >
-                            {saving ? "Čuvanje..." : "Sačuvaj izmene"}
+                            {saving ? t("Saving...") : t("Save changes")}
                           </button>
                           <button
                             onClick={() => setEditingVehicle(null)}
                             className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-2 rounded-lg transition-colors text-base"
                           >
-                            Odustani
+                            {t("Cancel")}
                           </button>
                         </div>
                       </div>
@@ -732,20 +743,20 @@ export default function MyVehicles() {
                         <div className="space-y-2 text-sm text-gray-700 dark:text-white">
                           <div className="flex items-center">
                             <FaWeightHanging className="text-green-500 mr-2" />
-                            Nosivost: {vehicle.capacity} kg
+                            {t("Capacity")}: {vehicle.capacity} kg
                           </div>
 
                           {vehicle.year && (
                             <div className="flex items-center">
                               <FaCalendarAlt className="text-yellow-500 mr-2" />
-                              Godina: {vehicle.year}
+                              {t("Year")}: {vehicle.year}
                             </div>
                           )}
 
                           {vehicle.pallets > 0 && (
                             <div className="flex items-center">
                               <FaPallet className="text-indigo-500 mr-2" />
-                              Paletna mesta: {vehicle.pallets}
+                              {t("Pallet spaces")}: {vehicle.pallets}
                             </div>
                           )}
 
@@ -754,7 +765,7 @@ export default function MyVehicles() {
                             vehicle.dimensions?.height && (
                               <div className="flex items-center">
                                 <FaRulerCombined className="text-red-500 mr-2" />
-                                Dimenzije: {vehicle.dimensions.length} ×{" "}
+                                {t("Dimensions")}: {vehicle.dimensions.length} ×{" "}
                                 {vehicle.dimensions.width} ×{" "}
                                 {vehicle.dimensions.height} cm
                               </div>
@@ -797,14 +808,14 @@ export default function MyVehicles() {
                           className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-base px-3 py-2 rounded-lg transition-colors flex items-center justify-center"
                         >
                           <FaEdit className="mr-1" />
-                          Izmeni
+                          {t("Edit")}
                         </button>
                         <button
                           onClick={() => deleteVehicle(vehicle._id)}
                           className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-base"
                         >
                           <FaTrash className="mr-1" />
-                          Obriši
+                          {t("Delete")}
                         </button>
                       </div>
                     </>

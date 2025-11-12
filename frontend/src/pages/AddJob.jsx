@@ -3,6 +3,7 @@ import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../components/ToastContext";
+import { useTranslation } from "react-i18next";
 import {
   FaPlus,
   FaUserTie,
@@ -21,7 +22,7 @@ export default function AddJob() {
   const navigate = useNavigate();
   const [token] = useGlobalState("token");
   const [user] = useGlobalState("user");
-
+  const { t, i18n } = useTranslation();
   const [loading, setLoading] = useState(false);
   const { success, error } = useToast();
 
@@ -142,14 +143,22 @@ export default function AddJob() {
       setLoading(false);
     }
   };
-
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 flex items-center">
-            <FaUserTie className="mr-3 text-[#adadad]" />
-            Dodaj oglas za posao
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+            <FaUserTie className="mr-3 text-[#adadad] dark:text-darkText" />
+            {t("Add job advertisement")}
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -157,9 +166,9 @@ export default function AddJob() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center">
-                    <FaBriefcase className="mr-2 text-[#adadad]" />
-                    Naslov oglasa *
+                  <div className="flex items-center dark:text-white">
+                    <FaBriefcase className="mr-2 text-[#adadad] dark:text-darkText" />
+                    {t("Job title *")}
                   </div>
                 </label>
                 <input
@@ -167,17 +176,17 @@ export default function AddJob() {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
-                  placeholder="npr. Tražim vozača kamiona"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                  placeholder={t("e.g. Looking for truck driver")}
                   required
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center">
+                  <div className="flex items-center dark:text-white">
                     <FaUserTie className="mr-2 text-blue-500" />
-                    Pozicija *
+                    {t("Position *")}
                   </div>
                 </label>
                 <input
@@ -185,8 +194,8 @@ export default function AddJob() {
                   name="position"
                   value={formData.position}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
-                  placeholder="npr. Vozač kamiona"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                  placeholder={t("e.g. Truck driver")}
                   required
                 />
               </div>
@@ -195,9 +204,9 @@ export default function AddJob() {
             {/* Lokacije */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <div className="flex items-center">
-                  <FaMapMarkerAlt className="mr-2 text-[#adadad]" />
-                  Lokacije *
+                <div className="flex items-center dark:text-white">
+                  <FaMapMarkerAlt className="mr-2 text-[#adadad] dark:text-darkText" />
+                  {t("Locations *")}
                 </div>
               </label>
               {formData.location.map((location, index) => (
@@ -208,8 +217,8 @@ export default function AddJob() {
                     onChange={(e) =>
                       handleLocationChange(index, e.target.value)
                     }
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
-                    placeholder="Unesi lokaciju"
+                    className="dark:bg-mainDarkBG dark:text-white flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                    placeholder={t("Add location")}
                     required
                   />
                   {formData.location.length > 1 && (
@@ -229,7 +238,7 @@ export default function AddJob() {
                 className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center"
               >
                 <FaPlus className="mr-2" />
-                Dodaj lokaciju
+                {t("Add location")}
               </button>
             </div>
 
@@ -237,9 +246,9 @@ export default function AddJob() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center">
+                  <div className="flex items-center dark:text-white">
                     <FaMoneyBillWave className="mr-2 text-green-500" />
-                    Plata *
+                    {t("Salary *")}
                   </div>
                 </label>
                 <input
@@ -247,7 +256,7 @@ export default function AddJob() {
                   name="salary"
                   value={formData.salary}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
                   placeholder="npr. 1200-1500€"
                   required
                 />
@@ -255,26 +264,23 @@ export default function AddJob() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center">
+                  <div className="flex items-center dark:text-white">
                     <FaBriefcase className="mr-2 text-purple-500" />
-                    Tip zaposlenja *
+                    {t("Employment type *")}
                   </div>
                 </label>
                 <select
                   name="employmentType"
                   value={formData.employmentType}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
                   required
                 >
-                  <option value="Puno radno vreme">Puno radno vreme</option>
-                  <option value="Skraćeno radno vreme">
-                    Skraćeno radno vreme
-                  </option>
-                  <option value="Ugovor">Ugovor</option>
-                  <option value="Praksa">Praksa</option>
-                  <option value="Privremeno">Privremeno</option>
-                  <option value="Temporary">Temporary</option>
+                  <option value="Puno radno vreme">{t("Full time")}</option>
+                  <option value="Skraćeno radno vreme">{t("Part time")}</option>
+                  <option value="Ugovor">{t("Contract")}</option>
+                  <option value="Praksa">{t("Internship")}</option>
+                  <option value="Privremeno">{t("Temporary")}</option>
                 </select>
               </div>
             </div>
@@ -283,9 +289,9 @@ export default function AddJob() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center">
+                  <div className="flex items-center dark:text-white">
                     <FaUser className="mr-2 text-blue-500" />
-                    Kontakt osoba
+                    {t("Contact person")}
                   </div>
                 </label>
                 <input
@@ -293,16 +299,16 @@ export default function AddJob() {
                   name="person"
                   value={formData.contact.person}
                   onChange={handleContactChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
-                  placeholder="Ime i prezime"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                  placeholder={t("Full name")}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center">
+                  <div className="flex items-center dark:text-white">
                     <FaPhone className="mr-2 text-green-500" />
-                    Kontakt telefon
+                    {t("Contact phone")}
                   </div>
                 </label>
                 <input
@@ -310,16 +316,16 @@ export default function AddJob() {
                   name="phone"
                   value={formData.contact.phone}
                   onChange={handleContactChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
                   placeholder="+381 6x xxx xxxx"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center">
+                  <div className="flex items-center dark:text-white">
                     <FaEnvelope className="mr-2 text-purple-500" />
-                    Email
+                    {t("Email")}
                   </div>
                 </label>
                 <input
@@ -327,8 +333,8 @@ export default function AddJob() {
                   name="email"
                   value={formData.contact.email}
                   onChange={handleContactChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
-                  placeholder="email@primer.com"
+                  className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                  placeholder="email@gmail.com"
                 />
               </div>
             </div>
@@ -336,9 +342,9 @@ export default function AddJob() {
             {/* Opis posla */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <div className="flex items-center">
+                <div className="flex items-center dark:text-white">
                   <FaStickyNote className="mr-2 text-[#adadad]" />
-                  Opis posla *
+                  {t("Job description *")}
                 </div>
               </label>
               <textarea
@@ -346,7 +352,7 @@ export default function AddJob() {
                 value={formData.description}
                 onChange={handleChange}
                 rows="4"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
                 placeholder="Opisite detalje posla, odgovornosti, uslove..."
                 required
               />
@@ -354,8 +360,8 @@ export default function AddJob() {
 
             {/* Uslovi */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Uslovi
+              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
+                {t("Requirements")}
               </label>
               {formData.requirements.map((requirement, index) => (
                 <div key={index} className="flex gap-2 mb-2">
@@ -365,7 +371,7 @@ export default function AddJob() {
                     onChange={(e) =>
                       handleRequirementChange(index, e.target.value)
                     }
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
+                    className="dark:bg-mainDarkBG dark:text-white flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#adadad]"
                     placeholder="npr. B kategorija sa CE"
                   />
                   {formData.requirements.length > 1 && (
@@ -385,7 +391,7 @@ export default function AddJob() {
                 className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center"
               >
                 <FaPlus className="mr-2" />
-                Dodaj uslov
+                {t("Add requirement")}
               </button>
             </div>
 
@@ -394,10 +400,10 @@ export default function AddJob() {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg flex items-center justify-center transition-colors w-full"
+                className="dark:bg-mainDarkBG dark:text-white bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg flex items-center justify-center transition-colors w-full"
               >
                 <FaArrowLeft className="mr-2" />
-                Odustani
+                {t("Cancel")}
               </button>
 
               <button
@@ -406,11 +412,11 @@ export default function AddJob() {
                 className="bg-[#adadad] hover:bg-[#939393] text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 transition-colors w-full"
               >
                 {loading ? (
-                  "Dodavanje..."
+                  t("Adding...")
                 ) : (
                   <>
                     <FaPlus className="mr-2" />
-                    Dodaj oglas
+                    {t("Add advertisement")}
                   </>
                 )}
               </button>

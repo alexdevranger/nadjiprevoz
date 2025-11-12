@@ -459,19 +459,19 @@ export default function MyJobs() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-mainDarkBG py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white flex items-center">
                 Moji Oglasi za Posao
                 <span className="ml-3 text-lg font-medium text-blue-400 border-l-2 border-gray-300 pl-3">
                   {jobs.length} {jobs.length === 1 ? "oglas" : "oglasa"}
                 </span>
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 dark:text-darkText mt-2">
                 Upravljajte svojim oglasima za posao i njihovim statusom
               </p>
             </div>
@@ -491,7 +491,7 @@ export default function MyJobs() {
               </Link>
             </div>
           </div>
-          <div className="mt-5 flex items-center justify-between bg-gradient-to-r from-yellow-50 via-orange-50 to-pink-50 border border-yellow-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="mt-5 flex items-center justify-between bg-gradient-to-r from-yellow-50 via-orange-50 to-pink-50 dark:bg-cardBGText border border-yellow-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center">
               <div className="bg-yellow-100 p-2 rounded-full mr-3">
                 <FaStar className="text-yellow-500 text-xl" />
@@ -517,8 +517,8 @@ export default function MyJobs() {
         </div>
 
         {/* Filteri */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
             Filteri
           </h2>
@@ -526,7 +526,7 @@ export default function MyJobs() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Status filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label className="dark:text-darkText text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaBriefcase className="text-green-500 mr-2" />
                 Status oglasa
               </label>
@@ -556,11 +556,13 @@ export default function MyJobs() {
         </div>
 
         {/* Lista oglasa */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Učitavanje oglasa...</p>
+              <p className="text-gray-600 dark:text-darkText mt-4">
+                Učitavanje oglasa...
+              </p>
             </div>
           ) : filteredJobs.length === 0 ? (
             <div className="p-8 text-center">
@@ -1171,13 +1173,13 @@ export default function MyJobs() {
                     key={job._id}
                     className={`relative border-l-4 ${getRandomBorderColor(
                       index
-                    )} rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] bg-white`}
+                    )} rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] bg-white dark:bg-mainDarkBG`}
                   >
                     {/* ✅ GORNJI DEO KARTICE – ZATVORENI PRIKAZ */}
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         {/* Datum objave */}
-                        <p className="text-xs text-gray-500 mb-1">
+                        <p className="text-xs text-gray-500 mb-1 dark:text-darkText">
                           Objavljeno:{" "}
                           {new Date(job.createdAt).toLocaleDateString("sr-RS", {
                             day: "2-digit",
@@ -1192,12 +1194,12 @@ export default function MyJobs() {
                         </p>
 
                         {/* Naslov i pozicija */}
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                        <h3 className="text-xl font-bold text-gray-900 mb-2 dark:text-white">
                           {job.title}
                         </h3>
                         <div className="flex items-center mb-2">
                           <FaUserTie className="text-blue-500 mr-2" />
-                          <span className="text-gray-700 font-medium">
+                          <span className="text-gray-700 font-medium dark:text-white">
                             {job.position}
                           </span>
                         </div>
@@ -1214,7 +1216,7 @@ export default function MyJobs() {
                           <span className="ml-1 capitalize">{job.status}</span>
                         </span>
 
-                        <p className="text-sm text-gray-600 mt-2">
+                        <p className="text-sm text-gray-600 dark:text-darkText mt-2">
                           {applicationsCount} prijava
                         </p>
 

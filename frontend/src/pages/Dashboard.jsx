@@ -157,7 +157,7 @@ export default function Dashboard() {
               to={link}
               className="text-blue-500 text-sm font-medium mt-2 inline-block"
             >
-              Vidi detalje &rarr;
+              {t("More Details")} &rarr;
             </Link>
           )}
         </div>
@@ -925,7 +925,8 @@ export default function Dashboard() {
                 {/* Tema */}
                 <div>
                   <p className="text-sm text-gray-600 flex items-center mb-2">
-                    <FaAdjust className="mr-2 text-pink-500 text-lg" /> Tema
+                    <FaAdjust className="mr-2 text-pink-500 text-lg" />{" "}
+                    {t("Theme")}
                   </p>
                   <div className="flex space-x-2">
                     <button

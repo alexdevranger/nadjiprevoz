@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalState } from "../helper/globalState";
+import { useTranslation } from "react-i18next";
 import { useToast } from "../components/ToastContext";
 import PaymentModal from "../components/PaymentModal";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -39,6 +40,7 @@ export default function MyTours() {
   const [allMyTours, setAllMyTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const { t, i18n } = useTranslation();
   const [limit, setLimit] = useState(20);
   const [total, setTotal] = useState(0);
   const [rejectionModal, setRejectionModal] = useState({
@@ -171,7 +173,16 @@ export default function MyTours() {
       socket.off("myPaymentUpdated");
     };
   }, [user?.id]);
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
   // Funkcija za resetovanje stranice kada se promeni filter
   const handleFilterChange = (setter) => (value) => {
     setter(value);
@@ -406,7 +417,7 @@ export default function MyTours() {
       return (
         <div className="absolute top-3 right-3 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
           <FaCrown className="mr-1" />
-          PREMIUM
+          {t("PREMIUM")}
         </div>
       );
     }
@@ -416,14 +427,14 @@ export default function MyTours() {
         return (
           <div className="absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
             <FaClock className="mr-1" />
-            NA ČEKANJU
+            {t("PENDING")}
           </div>
         );
       case "rejected":
         return (
           <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
             <FaTimes className="mr-1" />
-            ODBIJENO
+            {t("REJECTED")}
           </div>
         );
       default:
@@ -444,10 +455,10 @@ export default function MyTours() {
           <button
             disabled
             className="flex-1 bg-yellow-500 text-white px-3 py-2 rounded-lg flex items-center justify-center text-sm font-medium cursor-not-allowed opacity-70"
-            title="Zahtev je već poslat. Sačekajte odobrenje admina."
+            title={t("Send premium request again")}
           >
             <FaCrown className="mr-1" />
-            Premium
+            {t("Premium")}
           </button>
         );
       case "rejected":
@@ -458,7 +469,7 @@ export default function MyTours() {
             title="Pošalji ponovo zahtev za premium"
           >
             <FaCrown className="mr-1" />
-            Premium
+            {t("Premium")}
           </button>
         );
       default:
@@ -466,10 +477,10 @@ export default function MyTours() {
           <button
             onClick={() => handlePayPremium(tour._id)}
             className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
-            title="Plati premijum"
+            title={t("Pay premium")}
           >
             <FaCrown className="mr-1" />
-            Premium
+            {t("Premium")}
           </button>
         );
     }
@@ -486,7 +497,7 @@ export default function MyTours() {
           className="text-xs text-red-600 hover:text-red-700 underline flex items-center justify-center gap-1 bg-white bg-opacity-90 px-2 py-1 rounded"
         >
           <FaInfoCircle className="text-xs" />
-          Razlog odbijanja
+          {t("Reason for rejection")}
         </button>
       </div>
     );
@@ -501,19 +512,19 @@ export default function MyTours() {
             <div className="bg-white dark:bg-cardBGText p-6 rounded-lg w-96 max-w-sm">
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <FaInfoCircle className="text-red-500" />
-                Razlog odbijanja
+                {t("Reason for rejection")}
               </h3>
 
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-sm text-gray-700 dark:text-white">
                   {rejectionModal.adminNotes ||
-                    "Nije naveden razlog odbijanja."}
+                    t("No reason for rejection provided.")}
                 </p>
               </div>
 
               <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-xs text-blue-700 text-center">
-                  Kontaktirajte support za dodatna objašnjenja
+                  {t("Contact support for additional explanations")}
                 </p>
               </div>
 
@@ -522,7 +533,7 @@ export default function MyTours() {
                   onClick={closeRejectionModal}
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                 >
-                  Zatvori
+                  {t("Close")}
                 </button>
               </div>
             </div>
@@ -771,13 +782,13 @@ export default function MyTours() {
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
-                Moje Ture
+                {t("My Tours")}
                 <span className="ml-3 text-lg font-medium text-blue-400 border-l-2 border-gray-300 pl-3">
-                  {total} tura (strana {page})
+                  {total} {t("tours (page")} {page})
                 </span>
               </h1>
               <p className="text-gray-600 mt-2 dark:text-white">
-                Upravljajte svojim turama i njihovim detaljima
+                {t("Manage your tours and their details")}
               </p>
             </div>
             <div className="flex items-center mt-4 md:mt-0">
@@ -787,12 +798,12 @@ export default function MyTours() {
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-base mr-2"
               >
                 <FaArrowLeft className="mr-2" />
-                Nazad
+                {t("Back")}
               </button>
               <Link to="/add-tour">
                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors duration-300">
                   <FaPlus className="mr-2" />
-                  Dodaj novu turu
+                  {t("Add new tour")}
                 </button>
               </Link>
             </div>
@@ -803,7 +814,7 @@ export default function MyTours() {
         <div className="bg-white dark:bg-cardBGText dark:text-white rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
-            Filteri
+            {t("Filters")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -811,7 +822,7 @@ export default function MyTours() {
             <div>
               <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" />
-                Datum
+                {t("Date")}
               </label>
               <DatePicker
                 selected={filterDate}
@@ -828,7 +839,7 @@ export default function MyTours() {
             <div>
               <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaTruck className="text-green-500 mr-2" />
-                Vrsta vozila
+                {t("Vehicle type")}
               </label>
               <select
                 value={vehicleType}
@@ -837,7 +848,7 @@ export default function MyTours() {
                 }
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Sve vrste</option>
+                <option value="">{t("All types")}</option>
                 {uniqueVehicleTypes.map((type) => (
                   <option key={type} value={type}>
                     {type}
@@ -850,7 +861,7 @@ export default function MyTours() {
             <div>
               <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaWeightHanging className="text-purple-500 mr-2" />
-                Nosivost (kg)
+                {t("Capacity (kg)")}
               </label>
               <input
                 type="number"
@@ -858,7 +869,7 @@ export default function MyTours() {
                 onChange={(e) =>
                   handleFilterChange(setMinCapacity)(e.target.value)
                 }
-                placeholder="Min. nosivost"
+                placeholder={t("Min. capacity")}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min={0}
               />
@@ -868,7 +879,7 @@ export default function MyTours() {
             <div>
               <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" />
-                Početna lokacija
+                {t("Start location")}
               </label>
               <input
                 type="text"
@@ -876,7 +887,7 @@ export default function MyTours() {
                 onChange={(e) =>
                   handleFilterChange(setStartLocation)(e.target.value)
                 }
-                placeholder="Unesi lokaciju"
+                placeholder={t("Enter location")}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -889,12 +900,12 @@ export default function MyTours() {
               className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-colors"
             >
               <FaSyncAlt className="mr-2" />
-              Reset filtera
+              {t("Reset filters")}
             </button>
 
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-700 dark:text-white ">
-                Prikaži po strani:
+                {t("Show per page:")}
               </label>
               <select
                 value={limit}
@@ -917,14 +928,14 @@ export default function MyTours() {
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Učitavanje tura...</p>
+              <p className="text-gray-600 mt-4"> {t("Loading tours...")}</p>
             </div>
           ) : tours.length === 0 ? (
             <div className="p-8 text-center">
               <p className="text-gray-600 text-lg">
                 {filterDate || vehicleType || startLocation || minCapacity
-                  ? "Nema tura za prikaz sa odabranim filterima"
-                  : "Trenutno nema dostupnih tura."}
+                  ? t("No tours to display with selected filters")
+                  : t("Currently no available tours.")}
               </p>
             </div>
           ) : (
@@ -988,7 +999,7 @@ export default function MyTours() {
                       {tour.contactPerson && tour.contactPhone && (
                         <div className="flex items-center gap-2">
                           <span>
-                            <span className="font-medium">Kontakt:</span>{" "}
+                            <span className="font-medium">{t("Contact:")}</span>{" "}
                             {tour.contactPerson} ({tour.contactPhone})
                           </span>
                         </div>
@@ -1007,8 +1018,8 @@ export default function MyTours() {
                               className="ml-2 text-blue-600 hover:underline focus:outline-none"
                             >
                               {expandedNotes[tour._id]
-                                ? "Prikaži manje"
-                                : "Prikaži više"}
+                                ? t("Show less")
+                                : t("Show more")}
                             </button>
                           )}
                         </div>
@@ -1022,7 +1033,7 @@ export default function MyTours() {
                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
                       >
                         <FaEdit className="mr-1" />
-                        Izmeni
+                        {t("Edit")}
                       </Link>
 
                       <button
@@ -1030,7 +1041,7 @@ export default function MyTours() {
                         className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
                       >
                         <FaTrash className="mr-1" />
-                        Obriši
+                        {t("Delete")}
                       </button>
                       {renderPremiumButton(tour)}
                     </div>
@@ -1046,8 +1057,8 @@ export default function MyTours() {
           <div className="bg-white rounded-xl shadow-md p-6">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-600">
-                Prikazano {tours.length} od {total} tura • Strana {page} od{" "}
-                {totalPages}
+                {t("Showing")} {tours.length} {t("of")} {total} {t("tours")} •{" "}
+                {t("Page")} {page} {t("of")} {totalPages}
               </div>
 
               <div className="flex items-center gap-4">
@@ -1058,7 +1069,7 @@ export default function MyTours() {
                     className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <FaChevronLeft className="text-sm" />
-                    Prethodna
+                    {t("Previous")}
                   </button>
 
                   <div className="flex gap-1">
@@ -1085,7 +1096,7 @@ export default function MyTours() {
                     onClick={() => setPage(page + 1)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Sledeća
+                    {t("Next")}
                     <FaChevronRight className="text-sm" />
                   </button>
                 </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   FaPlus,
   FaCalendarAlt,
@@ -12,7 +13,6 @@ import {
   FaStickyNote,
   FaArrowLeft,
 } from "react-icons/fa";
-
 import LocationAutocomplete from "../components/LocationAutocomplete";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useToast } from "../components/ToastContext";
@@ -25,6 +25,7 @@ export default function AddTour() {
   const navigate = useNavigate();
   const [token] = useGlobalState("token");
   const [vehicles, setVehicles] = useState([]);
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     date: new Date(),
     vehicle: "",
@@ -134,7 +135,7 @@ export default function AddTour() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-6">
-            Dodaj novu turu
+            {t("Add new tour")}
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -143,7 +144,7 @@ export default function AddTour() {
               <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
                 <div className="flex items-center">
                   <FaCalendarAlt className="mr-2 text-blue-500" />
-                  Datum ture
+                  {t("Tour date")}
                 </div>
               </label>
               <DatePicker
@@ -151,7 +152,7 @@ export default function AddTour() {
                 onChange={handleDateChange}
                 locale="sr-latin"
                 dateFormat="d. MMMM yyyy"
-                placeholderText="Izaberite datum"
+                placeholderText={t("Select date")}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 required
               />
@@ -163,7 +164,7 @@ export default function AddTour() {
                 <label className="dark:text-white block text-sm font-medium text-gray-700 mb-2">
                   <div className="flex items-center">
                     <FaUser className="mr-2 text-blue-500" />
-                    Kontakt osoba
+                    {t("Contact person")}
                   </div>
                 </label>
                 <input
@@ -172,7 +173,7 @@ export default function AddTour() {
                   value={formData.contactPerson}
                   onChange={handleChange}
                   className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
-                  placeholder="Ime i prezime"
+                  placeholder={t("Full name")}
                   required
                 />
               </div>
@@ -181,7 +182,7 @@ export default function AddTour() {
                 <label className="dark:text-white block text-sm font-medium text-gray-700 mb-2">
                   <div className="flex items-center">
                     <FaPhone className="mr-2 text-blue-500" />
-                    Kontakt telefon
+                    {t("Contact phone")}
                   </div>
                 </label>
                 <input
@@ -190,7 +191,7 @@ export default function AddTour() {
                   value={formData.contactPhone}
                   onChange={handleChange}
                   className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
-                  placeholder="+381 6x xxx xxxx"
+                  placeholder={t("e.g. +381 6x xxx xxxx")}
                   required
                 />
               </div>
@@ -201,7 +202,7 @@ export default function AddTour() {
               <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                 <div className="flex items-center">
                   <FaTruck className="mr-2 text-blue-500" />
-                  Izaberi vozilo
+                  {t("Select vehicle")}
                 </div>
               </label>
               <select
@@ -211,7 +212,7 @@ export default function AddTour() {
                 required
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
               >
-                <option value="">-- Izaberi vozilo --</option>
+                <option value="">{t("-- Select vehicle --")}</option>
                 {vehicles.map((v) => (
                   <option key={v._id} value={v._id}>
                     {v.type} - {v.licensePlate} ({v.capacity} kg)
@@ -226,7 +227,7 @@ export default function AddTour() {
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                   <div className="flex items-center">
                     <FaMapMarkerAlt className="mr-2 text-red-500" />
-                    Početna destinacija
+                    {t("Start destination")}
                   </div>
                 </label>
                 <LocationAutocomplete
@@ -247,7 +248,7 @@ export default function AddTour() {
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                   <div className="flex items-center">
                     <FaMapMarkerAlt className="mr-2 text-green-500" />
-                    Krajnja destinacija
+                    {t("End destination")}
                   </div>
                 </label>
                 <LocationAutocomplete
@@ -270,7 +271,7 @@ export default function AddTour() {
               <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                 <div className="flex items-center">
                   <FaStickyNote className="mr-2 text-blue-500" />
-                  Napomena
+                  {t("Note")}
                 </div>
               </label>
               <textarea
@@ -279,7 +280,7 @@ export default function AddTour() {
                 onChange={handleChange}
                 rows="3"
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
-                placeholder="Unesite dodatne informacije o turi"
+                placeholder={t("Enter additional tour information")}
               />
             </div>
 
@@ -290,7 +291,7 @@ export default function AddTour() {
                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg flex items-center justify-center transition-colors duration-300 w-full"
               >
                 <FaArrowLeft className="mr-2" />
-                Odustani
+                {t("Cancel")}
               </button>
 
               <button
@@ -299,11 +300,10 @@ export default function AddTour() {
                 className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 transition-colors duration-300 w-full"
               >
                 {loading ? (
-                  <>Dodavanje...</>
+                  t("Adding...")
                 ) : (
                   <>
-                    <FaPlus className="mr-2" />
-                    Dodaj Turu
+                    <FaPlus className="mr-2" /> {t("Add Tour")}
                   </>
                 )}
               </button>

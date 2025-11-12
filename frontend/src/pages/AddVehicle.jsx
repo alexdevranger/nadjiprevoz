@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalState } from "../helper/globalState";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../components/ToastContext";
+import { useTranslation } from "react-i18next";
 
 import {
   FaCar,
@@ -34,7 +35,17 @@ export default function AddVehicle() {
   });
   const [uploading, setUploading] = useState(false);
   const { success, error, warning, info } = useToast();
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -116,7 +127,7 @@ export default function AddVehicle() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaCar className="mr-2 text-blue-500" />
-                    Tip vozila *
+                    {t("Vehicle type *")}
                   </div>
                 </label>
                 <select
@@ -126,12 +137,14 @@ export default function AddVehicle() {
                   required
                   className="dark:text-white dark:bg-cardBGText w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                 >
-                  <option value="">Odaberi vrstu vozila</option>
-                  <option value="Kamion">Kamion</option>
-                  <option value="Kombi">Kombi</option>
-                  <option value="Šleper">Šleper</option>
-                  <option value="Dostavno vozilo">Dostavno vozilo</option>
-                  <option value="Hladnjača">Hladnjača</option>
+                  <option value="">{t("Select vehicle type")}</option>
+                  <option value="Kamion">{t("Truck")}</option>
+                  <option value="Kombi">{t("Van")}</option>
+                  <option value="Šleper">{t("Trailer")}</option>
+                  <option value="Dostavno vozilo">
+                    {t("Delivery vehicle")}
+                  </option>
+                  <option value="Hladnjača">{t("Refrigerator truck")}</option>
                 </select>
               </div>
 
@@ -139,12 +152,12 @@ export default function AddVehicle() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaHashtag className="mr-2 text-purple-500" />
-                    Registarska oznaka *
+                    {t("License plate *")}
                   </div>
                 </label>
                 <input
                   name="licensePlate"
-                  placeholder="npr. BG123AB"
+                  placeholder={t("e.g. BG123AB")}
                   value={formData.licensePlate}
                   onChange={handleChange}
                   required
@@ -156,13 +169,13 @@ export default function AddVehicle() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaWeight className="mr-2 text-green-500" />
-                    Nosivost (kg) *
+                    {t("Capacity (kg) *")}
                   </div>
                 </label>
                 <input
                   name="capacity"
                   type="number"
-                  placeholder="npr. 3500"
+                  placeholder={t("e.g. 3500")}
                   value={formData.capacity}
                   onChange={handleChange}
                   required
@@ -174,13 +187,13 @@ export default function AddVehicle() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaCalendar className="mr-2 text-[#ff6dd8]" />
-                    Godina proizvodnje
+                    {t("Year of production")}
                   </div>
                 </label>
                 <input
                   name="year"
                   type="number"
-                  placeholder="npr. 2020"
+                  placeholder={t("e.g. 2020")}
                   value={formData.year}
                   onChange={handleChange}
                   className="dark:text-white dark:bg-cardBGText w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
@@ -191,13 +204,13 @@ export default function AddVehicle() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaPallet className="mr-2 text-indigo-500" />
-                    Broj paletnih mesta
+                    {t("Number of pallet spaces")}
                   </div>
                 </label>
                 <input
                   name="pallets"
                   type="number"
-                  placeholder="npr. 10"
+                  placeholder={t("e.g. 10")}
                   value={formData.pallets}
                   onChange={handleChange}
                   className="dark:text-white dark:bg-cardBGText w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
@@ -208,14 +221,14 @@ export default function AddVehicle() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaRuler className="mr-2 text-yellow-400" />
-                    Dimenzije (cm)
+                    {t("Dimensions (cm)")}
                   </div>
                 </label>
                 <div className="grid grid-cols-3 gap-2 mt-0">
                   <input
                     name="length"
                     type="number"
-                    placeholder="Dužina"
+                    placeholder={t("Length")}
                     value={formData.dimensions.length}
                     onChange={handleChange}
                     className="dark:text-white dark:bg-cardBGText border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
@@ -223,7 +236,7 @@ export default function AddVehicle() {
                   <input
                     name="width"
                     type="number"
-                    placeholder="Širina"
+                    placeholder={t("Width")}
                     value={formData.dimensions.width}
                     onChange={handleChange}
                     className="dark:text-white dark:bg-cardBGText border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
@@ -231,7 +244,7 @@ export default function AddVehicle() {
                   <input
                     name="height"
                     type="number"
-                    placeholder="Visina"
+                    placeholder={t("Height")}
                     value={formData.dimensions.height}
                     onChange={handleChange}
                     className="dark:text-white dark:bg-cardBGText border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
@@ -244,7 +257,7 @@ export default function AddVehicle() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                   <div className="flex items-center">
                     <FaImage className="mr-2 text-[#BA68C8]" />
-                    Slika 1
+                    {t("Image 1")}
                   </div>
                 </label>
                 {formData.image1 ? (
@@ -267,7 +280,7 @@ export default function AddVehicle() {
                     <label className="cursor-pointer text-center">
                       <FaImage className="mx-auto text-gray-400 text-2xl mb-2 transition-colors duration-300 hover:text-blue-500" />
                       <span className="text-sm text-gray-600 transition-colors duration-300 hover:text-blue-500">
-                        Dodaj sliku
+                        {t("Add image")}
                       </span>
                       <input
                         type="file"
@@ -325,12 +338,14 @@ export default function AddVehicle() {
               <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
                 <div className="flex items-center">
                   <FaInfo className="mr-2 text-gray-500" />
-                  Opis vozila
+                  {t("Vehicle description")}
                 </div>
               </label>
               <textarea
                 name="description"
-                placeholder="Opis vozila i dodatne specifikacije..."
+                placeholder={t(
+                  "Vehicle description and additional specifications..."
+                )}
                 value={formData.description}
                 onChange={handleChange}
                 rows="3"
@@ -345,7 +360,7 @@ export default function AddVehicle() {
                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg flex items-center justify-center transition-colors duration-300 w-full"
               >
                 <FaArrowLeft className="mr-2" />
-                Odustani
+                {t("Cancel")}
               </button>
 
               <button
@@ -354,11 +369,10 @@ export default function AddVehicle() {
                 className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 transition-colors duration-300 w-full"
               >
                 {uploading ? (
-                  <>Dodavanje...</>
+                  t("Adding...")
                 ) : (
                   <>
-                    <FaPlus className="mr-2" />
-                    Dodaj Vozilo
+                    <FaPlus className="mr-2" /> {t("Add Vehicle")}
                   </>
                 )}
               </button>

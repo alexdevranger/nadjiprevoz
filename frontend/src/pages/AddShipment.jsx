@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useGlobalState } from "../helper/globalState";
 import { useToast } from "../components/ToastContext";
 import LocationAutocomplete from "../components/LocationAutocomplete";
+import { useTranslation } from "react-i18next";
 import {
   FaPlus,
   FaCalendarAlt,
@@ -27,6 +28,7 @@ registerLocale("sr-latin", srLatin);
 
 export default function AddShipment() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [token] = useGlobalState("token");
   const [form, setForm] = useState({
     pickupLocation: "",
@@ -47,7 +49,16 @@ export default function AddShipment() {
   const [distanceInfo, setDistanceInfo] = useState(null);
   const mapRef = useRef(null);
   const polyRef = useRef(null);
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
   function handleChange(e) {
     const { name, value } = e.target;
     if (["length", "width", "height"].includes(name)) {
@@ -178,7 +189,7 @@ export default function AddShipment() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">
-            Dodaj Novi Zahtev za Prevoz
+            {t("Add New Transport Request")}
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -186,7 +197,7 @@ export default function AddShipment() {
             <div>
               <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" />
-                Datum transporta
+                {t("Transport date")}
               </label>
               <DatePicker
                 selected={form.date}
@@ -203,7 +214,7 @@ export default function AddShipment() {
               <div>
                 <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaMapMarkerAlt className="text-red-500 mr-2" />
-                  Početna destinacija
+                  {t("Start destination")}
                 </label>
                 <LocationAutocomplete
                   value={form.pickupLocation}
@@ -219,7 +230,7 @@ export default function AddShipment() {
               <div>
                 <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaMapMarkerAlt className="text-green-500 mr-2" />
-                  Krajnja destinacija
+                  {t("End destination")}
                 </label>
                 <LocationAutocomplete
                   value={form.dropoffLocation}
@@ -256,12 +267,12 @@ export default function AddShipment() {
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-blue-800 mb-2 flex items-center">
                   <FaRoad className="mr-2" />
-                  Informacije o ruti
+                  {t("Route information")}
                 </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center">
                     <FaRoad className="text-green-500 mr-2" />
-                    Udaljenost: {distanceInfo.distance} km
+                    {t("Distance")}: {distanceInfo.distance} {t("km")}
                   </div>
                   <div className="flex items-center">
                     <FaClock className="text-purple-500 mr-2" />
@@ -271,7 +282,7 @@ export default function AddShipment() {
                       const minutes = Math.round(totalMinutes % 60);
                       return (
                         <>
-                          Vreme:{" "}
+                          {t("Time")}:{" "}
                           {hours > 0
                             ? `${hours}h ${minutes}min`
                             : `${minutes}min`}
@@ -288,7 +299,7 @@ export default function AddShipment() {
               <div>
                 <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaWeightHanging className="text-green-500 mr-2" />
-                  Težina (kg)
+                  {t("Weight (kg)")}
                 </label>
                 <input
                   name="weightKg"
@@ -304,7 +315,7 @@ export default function AddShipment() {
               <div>
                 <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaPallet className="text-purple-500 mr-2" />
-                  Broj paleta
+                  {t("Number of pallets")}
                 </label>
                 <input
                   name="pallets"
@@ -321,7 +332,7 @@ export default function AddShipment() {
             <div>
               <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaRulerCombined className="text-indigo-500 mr-2" />
-                Dimenzije (m)
+                {t("Dimensions (m)")}
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <div>
@@ -329,7 +340,7 @@ export default function AddShipment() {
                     name="length"
                     value={form.dimensions.length}
                     onChange={handleChange}
-                    placeholder="Dužina"
+                    placeholder={t("Length")}
                     className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -338,7 +349,7 @@ export default function AddShipment() {
                     name="width"
                     value={form.dimensions.width}
                     onChange={handleChange}
-                    placeholder="Širina"
+                    placeholder={t("Width")}
                     className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -347,7 +358,7 @@ export default function AddShipment() {
                     name="height"
                     value={form.dimensions.height}
                     onChange={handleChange}
-                    placeholder="Visina"
+                    placeholder={t("Height")}
                     className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -359,13 +370,13 @@ export default function AddShipment() {
               <div>
                 <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaBox className="text-yellow-500 mr-2" />
-                  Vrsta robe
+                  {t("Goods type")}
                 </label>
                 <input
                   name="goodsType"
                   value={form.goodsType}
                   onChange={handleChange}
-                  placeholder="Vrsta robe"
+                  placeholder={t("Goods type")}
                   className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -373,13 +384,13 @@ export default function AddShipment() {
               <div>
                 <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <FaPhone className="text-green-500 mr-2" />
-                  Kontakt telefon
+                  {t("Contact phone")}
                 </label>
                 <input
                   name="contactPhone"
                   value={form.contactPhone}
                   onChange={handleChange}
-                  placeholder="Kontakt telefon"
+                  placeholder={t("Contact phone")}
                   className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -389,7 +400,7 @@ export default function AddShipment() {
             <div>
               <label className="dark:text-white text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaStickyNote className="text-blue-500 mr-2" />
-                Napomena
+                {t("Note")}
               </label>
               <textarea
                 name="note"
@@ -408,7 +419,7 @@ export default function AddShipment() {
                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg flex items-center justify-center transition-colors duration-300 w-full"
               >
                 <FaArrowLeft className="mr-2" />
-                Odustani
+                {t("Cancel")}
               </button>
 
               <button
@@ -417,11 +428,10 @@ export default function AddShipment() {
                 className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 transition-colors duration-300 w-full"
               >
                 {loading ? (
-                  <>Dodavanje...</>
+                  t("Adding...")
                 ) : (
                   <>
-                    <FaPlus className="mr-2" />
-                    Pošalji Zahtev
+                    <FaPlus className="mr-2" /> {t("Send Request")}
                   </>
                 )}
               </button>
