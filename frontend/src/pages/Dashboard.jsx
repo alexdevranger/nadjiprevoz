@@ -466,10 +466,10 @@ export default function Dashboard() {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold">
-                        Vaš poslovni profil je aktivan!
+                        {t("Your business profile is active!")}
                       </h2>
                       <p className="opacity-90">
-                        Podelite svoj profil sa potencijalnim klijentima
+                        {t("Share your profile with potential clients")}
                       </p>
                     </div>
                   </div>
@@ -478,20 +478,21 @@ export default function Dashboard() {
                       to={`/shop/${shop.slug}`}
                       className="bg-white text-indigo-600 font-semibold px-4 py-2 rounded-lg flex items-center hover:bg-gray-100 transition-colors"
                     >
-                      <FaExternalLinkAlt className="mr-2" /> Poseti svoj profil
+                      <FaExternalLinkAlt className="mr-2" />{" "}
+                      {t("Visit your profile")}
                     </Link>
                     <Link
                       to="/my-shop"
                       className="bg-indigo-800 text-white font-semibold px-4 py-2 rounded-lg flex items-center hover:bg-indigo-900 transition-colors"
                     >
                       <FaEdit className="mr-2" />
-                      Upravljaj profilom
+                      {t("Manage profile")}
                     </Link>
                     <button
                       onClick={() => setShowDeleteConfirm(true)}
                       className="bg-red-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center"
                     >
-                      <FaTrash className="mr-2" /> Obriši profil
+                      <FaTrash className="mr-2" /> {t("Delete profile")}
                     </button>
                   </div>
                 </div>
@@ -507,17 +508,18 @@ export default function Dashboard() {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold">
-                        Vaš portfolio vozača je aktivan!
+                        {t("Your driver portfolio is active!")}
                       </h2>
                       <p className="opacity-90">
-                        Podelite svoj profesionalni portfolio sa poslodavcima
+                        {t("Share your professional portfolio with employers")}
                       </p>
                       <div className="flex items-center mt-2 text-sm opacity-90">
                         <span className="bg-white bg-opacity-20 px-2 py-1 rounded mr-2">
-                          {portfolio.vehicles?.length || 0} vozila
+                          {portfolio.vehicles?.length || 0} {t("vehicles")}
                         </span>
                         <span className="bg-white bg-opacity-20 px-2 py-1 rounded mr-2">
-                          {portfolio.yearsOfExperience || 0} god. iskustva
+                          {portfolio.yearsOfExperience || 0}{" "}
+                          {t("years of experience")}
                         </span>
                         {portfolio.hasPaidPortfolio && (
                           <span className="bg-yellow-500 bg-opacity-80 px-2 py-1 rounded flex items-center">
@@ -533,21 +535,21 @@ export default function Dashboard() {
                       target="_blank"
                       className="bg-white text-teal-600 font-semibold px-4 py-2 rounded-lg flex items-center hover:bg-gray-100 transition-colors"
                     >
-                      <FaExternalLinkAlt className="mr-2" /> Javni pregled
+                      <FaExternalLinkAlt className="mr-2" /> {t("Public view")}
                     </Link>
                     <Link
                       to="/driver-portfolio"
                       className="bg-teal-800 text-white font-semibold px-4 py-2 rounded-lg flex items-center hover:bg-teal-900 transition-colors"
                     >
                       <FaEdit className="mr-2" />
-                      Uredi portfolio
+                      {t("Edit portfolio")}
                     </Link>
                     {!portfolio.hasPaidPortfolio && (
                       <button
                         onClick={() => navigate("/driver-portfolio")}
                         className="bg-yellow-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors flex items-center"
                       >
-                        <FaStar className="mr-2" /> Nadogradi na Premium
+                        <FaStar className="mr-2" /> {t("Upgrade to Premium")}
                       </button>
                     )}
                   </div>
@@ -558,8 +560,8 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <DashboardCard
                 icon={<FaCar className="text-blue-500" />}
-                title="Moja vozila"
-                description="Dodajte i upravljajte vašim vozilima"
+                title={t("My vehicles")}
+                description={"Add and manage your vehicles"}
                 link="/my-vehicles"
                 count={vehicles.length}
                 color="border-l-blue-500"
@@ -567,8 +569,8 @@ export default function Dashboard() {
 
               <DashboardCard
                 icon={<FaClipboardList className="text-green-500" />}
-                title="Moje ture"
-                description="Pregledajte i upravljajte vašim turama"
+                title={t("My tours")}
+                description={t("View and manage your tours")}
                 link="/my-tours"
                 count={tours.length}
                 color="border-l-green-500"
@@ -576,8 +578,8 @@ export default function Dashboard() {
 
               <DashboardCard
                 icon={<FaBriefcase className="text-purple-500" />}
-                title="Moji zahtevi"
-                description="Pregledajte vaše zahteve za transport"
+                title={t("My requests")}
+                description={t("View your transport requests")}
                 link="/my-shipments"
                 count={shipments.length}
                 color="border-l-purple-500"
@@ -585,23 +587,24 @@ export default function Dashboard() {
 
               <DashboardCard
                 icon={<FaPlusCircle className="text-yellow-500" />}
-                title="Dodaj vozilo"
-                description="Dodajte novo vozilo u vašu flotu"
+                title={t("Add vehicle")}
+                description={t("Add new vehicle to your fleet")}
                 link="/add-vehicle"
                 color="border-l-yellow-500"
               />
 
               <DashboardCard
                 icon={<FaPlusCircle className="text-red-500" />}
-                title="Dodaj turu"
-                description="Kreirajte novu turu za prevoz"
+                title={t("Add tour")}
+                description={t("Create new transport tour")}
                 link="/add-tour"
                 color="border-l-red-500"
               />
+
               <DashboardCard
                 icon={<FaPlusCircle className="text-green-500" />}
-                title="Dodaj zahtev"
-                description="Kreirajte novu zahtev za prevoz"
+                title={t("Add request")}
+                description={t("Create new transport request")}
                 link="/add-shipment"
                 color="border-l-red-500"
               />
@@ -610,8 +613,8 @@ export default function Dashboard() {
               {hasShop ? (
                 <DashboardCard
                   icon={<FaStore className="text-indigo-500" />}
-                  title="Upravljaj poslovnim profilom"
-                  description="Upravljajte vašim shopom/portfoliom"
+                  title={t("Manage business profile")}
+                  description={t("Manage your shop/portfolio")}
                   link="/my-shop"
                   color="border-l-indigo-500"
                 />
@@ -629,8 +632,8 @@ export default function Dashboard() {
                 >
                   <DashboardCard
                     icon={<FaPlusCircle className="text-green-500" />}
-                    title="Napravi poslovni profil"
-                    description="Kreirajte svoju biznis stranu"
+                    title={t("Create business profile")}
+                    description={t("Create your business page")}
                     color="border-l-green-500"
                     onClick={() => {
                       // if (vehicles.length === 0) {
@@ -647,17 +650,18 @@ export default function Dashboard() {
 
               <DashboardCard
                 icon={<FaComments className="text-indigo-500" />}
-                title="Chat"
-                description="Komunicirajte sa drugim korisnicima"
+                title={t("Chat")}
+                description={t("Communicate with other users")}
                 link="/chat"
                 color="border-l-indigo-500"
               />
+
               {/* PORTFOLIO KARTICA */}
               {hasPortfolio ? (
                 <DashboardCard
                   icon={<FaUserTie className="text-teal-500" />}
-                  title="Moj Portfolio"
-                  description="Upravljajte vašim profesionalnim portfolioom"
+                  title={t("My Portfolio")}
+                  description={t("Manage your professional portfolio")}
                   link="/driver-portfolio"
                   color="border-l-teal-500"
                 />
@@ -665,31 +669,34 @@ export default function Dashboard() {
                 <div onClick={() => navigate("/driver-portfolio")}>
                   <DashboardCard
                     icon={<FaPlusCircle className="text-teal-500" />}
-                    title="Napravi Portfolio"
-                    description="Kreirajte profesionalni portfolio vozača"
+                    title={t("Create Portfolio")}
+                    description={t("Create professional driver portfolio")}
                     color="border-l-teal-500"
                     onClick={() => navigate("/driver-portfolio")}
                   />
                 </div>
               )}
+
               <DashboardCard
                 icon={<FaBriefcase className="text-orange-500" />}
-                title="Moje prijave za posao"
-                description="Pregledajte oglase na koje ste aplicirali"
+                title={t("My job applications")}
+                description={t("View job ads you applied for")}
                 link="/my-job-applications"
                 color="border-l-orange-500"
               />
+
               <DashboardCard
                 icon={<FaUserTie className="text-[#adadad]" />}
-                title="Dodaj Posao"
-                description="Pronađite idealnog kandidata za vaš tim"
+                title={t("Add Job")}
+                description={t("Find the ideal candidate for your team")}
                 link="/add-job"
                 color="border-l-indigo-500"
               />
+
               <DashboardCard
                 icon={<FaUserTie className="text-[#adadad]" />}
-                title="Moji Poslovi"
-                description="Pronađite idealnog kandidata za vaš tim"
+                title={t("My Jobs")}
+                description={t("Find the ideal candidate for your team")}
                 link="/my-jobs"
                 color="border-l-indigo-500"
               />
@@ -709,7 +716,7 @@ export default function Dashboard() {
                   <FaUser className="text-2xl" />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-800">
-                  Profilna slika
+                  {t("Profile picture")}
                 </h2>
               </div>
 
@@ -738,7 +745,7 @@ export default function Dashboard() {
                     <label className="cursor-pointer text-center">
                       <FaImage className="mx-auto text-gray-400 text-2xl mb-2 transition-colors duration-300 hover:text-blue-500" />
                       <span className="text-sm text-gray-600 transition-colors duration-300 hover:text-blue-500">
-                        Dodaj sliku
+                        {t("Add image")}
                       </span>
                       <input
                         type="file"
@@ -757,7 +764,7 @@ export default function Dashboard() {
               {uploading && (
                 <div className="flex items-center justify-center text-blue-600 mt-4 text-sm">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                  Uploaduje se...
+                  {t("Uploading...")}
                 </div>
               )}
               {uploadMessage && (
@@ -784,7 +791,7 @@ export default function Dashboard() {
                     <FaUserCircle className="text-2xl" />
                   </div>
                   <h2 className="text-lg font-semibold text-gray-800">
-                    Lični podaci
+                    {t("Personal data")}
                   </h2>
                 </div>
 
@@ -793,7 +800,7 @@ export default function Dashboard() {
                     onClick={() => setEditingProfile(true)}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded flex items-center text-sm"
                   >
-                    <FaEdit className="mr-1" /> Izmeni
+                    <FaEdit className="mr-1" /> {t("Edit")}
                   </button>
                 ) : (
                   <div className="flex space-x-2">
@@ -801,7 +808,7 @@ export default function Dashboard() {
                       onClick={handleProfileUpdate}
                       className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded flex items-center text-sm"
                     >
-                      <FaSave className="mr-1" /> Sačuvaj
+                      <FaSave className="mr-1" /> {t("Save")}
                     </button>
                     <button
                       onClick={() => {
@@ -814,7 +821,7 @@ export default function Dashboard() {
                       }}
                       className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm"
                     >
-                      Odustani
+                      {t("Cancel")}
                     </button>
                   </div>
                 )}
@@ -824,7 +831,8 @@ export default function Dashboard() {
                 {/* Ime */}
                 <div>
                   <p className="text-sm text-gray-600 flex items-center mb-1">
-                    <FaUser className="mr-2 text-blue-500 text-lg" /> Ime
+                    <FaUser className="mr-2 text-blue-500 text-lg" />{" "}
+                    {t("Name")}
                   </p>
                   {editingProfile ? (
                     <input
@@ -837,7 +845,7 @@ export default function Dashboard() {
                     />
                   ) : (
                     <p className="font-medium text-gray-800">
-                      {user?.name || "Nije postavljeno"}
+                      {user?.name || t("Not set")}
                     </p>
                   )}
                 </div>
@@ -846,7 +854,7 @@ export default function Dashboard() {
                 <div>
                   <p className="text-sm text-gray-600 flex items-center mb-1">
                     <FaBuilding className="mr-2 text-purple-500 text-lg" />{" "}
-                    Kompanija
+                    {t("Company")}
                   </p>
                   {editingProfile ? (
                     <div className="flex items-center">
@@ -865,7 +873,7 @@ export default function Dashboard() {
                         <button
                           onClick={handleDeleteCompany}
                           className="ml-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded"
-                          title="Obriši kompaniju"
+                          title={t("Delete company")}
                         >
                           <FaTrash />
                         </button>
@@ -881,7 +889,8 @@ export default function Dashboard() {
                 {/* Email */}
                 <div>
                   <p className="text-sm text-gray-600 flex items-center mb-1">
-                    <FaEnvelope className="mr-2 text-pink-500 text-lg" /> Email
+                    <FaEnvelope className="mr-2 text-pink-500 text-lg" />{" "}
+                    {t("Email")}
                   </p>
                   <p className="font-medium text-gray-800">
                     {user?.email || "Nije postavljen"}
@@ -891,7 +900,8 @@ export default function Dashboard() {
                 {/* Uloga */}
                 <div>
                   <p className="text-sm text-gray-600 flex items-center mb-1">
-                    <FaUserTag className="mr-2 text-orange-500 text-lg" /> Uloga
+                    <FaUserTag className="mr-2 text-orange-500 text-lg" />{" "}
+                    {t("Role")}
                   </p>
                   <p className="font-medium text-gray-800">
                     {user?.roles?.join(", ") || "Nije postavljena"}
@@ -907,7 +917,7 @@ export default function Dashboard() {
                   <FaCog className="text-2xl" />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-800">
-                  Podešavanja
+                  {t("Settings")}
                 </h2>
               </div>
 
@@ -922,13 +932,13 @@ export default function Dashboard() {
                       type="button"
                       className="flex-1 px-3 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm"
                     >
-                      Light
+                      {t("Light")}
                     </button>
                     <button
                       type="button"
                       className="flex-1 px-3 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 text-sm"
                     >
-                      Dark
+                      {t("Dark")}
                     </button>
                   </div>
                 </div>
@@ -945,24 +955,25 @@ export default function Dashboard() {
                 <FaSignOutAlt className="mx-auto" />
               </div>
               <h2 className="text-2xl font-bold mb-4">
-                Želite da se odjavite?
+                {t("Do you want to log out?")}
               </h2>
               <p className="text-gray-600 mb-6">
-                Da li ste sigurni da želite da napustite svoj nalog? Možete se
-                ponovo prijaviti u bilo kom trenutku.
+                {t(
+                  "Are you sure you want to leave your account? You can log in again at any time."
+                )}
               </p>
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={() => setActiveTab("overview")}
                   className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  Nazad na pregled
+                  {t("Back to overview")}
                 </button>
                 <button
                   onClick={handleLogout}
                   className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center"
                 >
-                  <FaSignOutAlt className="mr-2" /> Da, odjavi me
+                  <FaSignOutAlt className="mr-2" /> {t("Yes, log me out")}
                 </button>
               </div>
             </div>
@@ -1078,7 +1089,7 @@ export default function Dashboard() {
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
-                Dobrodošli, {user?.hasCompany ? user.company : user?.name}!
+                {t("Welcome")}, {user?.hasCompany ? user.company : user?.name}!
               </h1>
               {/* <p className="text-gray-600 mt-2">
                 {user?.roles?.join(", ") || "Korisnik"}
@@ -1106,10 +1117,10 @@ export default function Dashboard() {
                 )}
                 <div>
                   <p className="text-sm text-gray-600 dark:text-white">
-                    Trenutno prijavljeni kao
+                    {t("Currently logged in as")}
                   </p>
                   <p className="font-medium text-gray-600 dark:text-white">
-                    {user?.hasCompany ? "Kompanija" : "Pojedinac"}
+                    {user?.hasCompany ? t("Company") : t("Individual")}
                   </p>
                 </div>
               </div>
@@ -1129,7 +1140,7 @@ export default function Dashboard() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-white"
                 }`}
               >
-                <FaChartBar className="mr-2" /> Pregled
+                <FaChartBar className="mr-2" /> {t("Overview")}
               </button>
               <button
                 onClick={() => setActiveTab("profile")}
@@ -1139,7 +1150,7 @@ export default function Dashboard() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-white"
                 }`}
               >
-                <FaUser className="mr-2" /> Profil i Postavke
+                <FaUser className="mr-2" /> {t("Profile and Settings")}
               </button>
               <button
                 onClick={() => setActiveTab("logout")}
@@ -1149,7 +1160,7 @@ export default function Dashboard() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-white"
                 }`}
               >
-                <FaSignOutAlt className="mr-1" /> Odjavi se
+                <FaSignOutAlt className="mr-1" /> {t("Log out")}
               </button>
             </nav>
           </div>
@@ -1168,7 +1179,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-white">
-                    Ukupno vozila
+                    {t("Total vehicles")}
                   </p>
                   <p className="text-2xl font-bold dark:text-white">
                     {vehicles.length}
@@ -1184,7 +1195,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-white">
-                    Aktivne ture
+                    {t("Active tours")}
                   </p>
                   <p className="text-2xl font-bold dark:text-white">
                     {tours.length}
@@ -1200,7 +1211,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-white">
-                    Aktivni zahtevi
+                    {t("Active requests")}
                   </p>
                   <p className="text-2xl font-bold dark:text-white">
                     {shipments.length}
@@ -1216,15 +1227,15 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-white">
-                    Portfolio status
+                    {t("Portfolio status")}
                   </p>
                   <p className="text-2xl font-bold dark:text-white">
-                    {hasPortfolio ? "Aktivan" : "Nije kreiran"}
+                    {hasPortfolio ? t("Active") : t("Not created")}
                   </p>
                   {hasPortfolio && portfolio && (
                     <p className="text-xs text-gray-500 mt-1">
-                      {portfolio.vehicles?.length || 0} vozila •{" "}
-                      {portfolio.viewCount || 0} pregleda
+                      {portfolio.vehicles?.length || 0} {t("vehicles")} •{" "}
+                      {portfolio.viewCount || 0} {t("views")}
                     </p>
                   )}
                 </div>
@@ -1236,11 +1247,11 @@ export default function Dashboard() {
       {showCreateShop && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Kreiraj Shop</h2>
+            <h2 className="text-xl font-bold mb-4">{t("Create Shop")}</h2>
 
             <div className="mb-4">
               <label className="block text-sm font-medium mb-2">
-                Naziv vašeg shopa *
+                {t("Name of your shop *")}
               </label>
               <input
                 type="text"
@@ -1249,7 +1260,7 @@ export default function Dashboard() {
                   setShopName(e.target.value);
                   checkSlugAvailability(e.target.value);
                 }}
-                placeholder="npr. premium-transport"
+                placeholder={t("e.g. premium-transport")}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
@@ -1260,8 +1271,8 @@ export default function Dashboard() {
                   }`}
                 >
                   {slugAvailable
-                    ? "✓ Naziv je dostupan"
-                    : "✗ Naziv je već zauzet, izaberite drugi"}
+                    ? t("✓ Name is available")
+                    : t("✗ Name is already taken, choose another")}
                 </p>
               )}
             </div>
@@ -1271,14 +1282,14 @@ export default function Dashboard() {
                 onClick={() => setShowCreateShop(false)}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
-                Otkaži
+                {t("Cancel")}
               </button>
               <button
                 onClick={handleCreateShop}
                 disabled={!shopName.trim() || slugAvailable === false}
                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Kreiraj
+                {t("Create")}
               </button>
             </div>
           </div>
@@ -1288,13 +1299,16 @@ export default function Dashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4 text-red-600">
-              Obriši profil
+              {t("Delete profile")}
             </h2>
 
             <div className="mb-4">
               <p className="text-gray-700">
-                Da li ste sigurni da želite da obrišete svoj profil"
-                {shop.name}"? Ova akcija je nepovratna i biće trajno izbrisana.
+                {t("Are you sure you want to delete your profile")} "{shop.name}
+                "?{" "}
+                {t(
+                  "This action is irreversible and will be permanently deleted."
+                )}
               </p>
             </div>
 
@@ -1303,13 +1317,13 @@ export default function Dashboard() {
                 onClick={() => setShowDeleteConfirm(false)}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
-                Otkaži
+                {t("Cancel")}
               </button>
               <button
                 onClick={handleDeleteShop}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
               >
-                Da, obriši profil
+                {t("Yes, delete profile")}
               </button>
             </div>
           </div>
