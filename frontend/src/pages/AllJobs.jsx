@@ -419,7 +419,7 @@ import {
   FaAlignLeft,
   FaPaperPlane,
 } from "react-icons/fa";
-
+import { useTranslation } from "react-i18next";
 export default function AllJobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -429,6 +429,7 @@ export default function AllJobs() {
     employmentType: "",
     location: "",
   });
+  const { t, i18n } = useTranslation();
   const [token] = useGlobalState("token");
   const [user] = useGlobalState("user");
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -478,7 +479,15 @@ export default function AllJobs() {
     fetchJobs();
     checkPortfolio();
   }, []);
-
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
   // Aplikuj filtere
   useEffect(() => {
     let result = jobs;
@@ -657,13 +666,13 @@ export default function AllJobs() {
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white flex items-center">
-                Svi Oglasi za Posao
+                {t("All Job Advertisements")}
                 <span className="ml-3 text-lg font-medium text-blue-400 border-l-2 border-gray-300 pl-3">
-                  {jobs.length} {jobs.length === 1 ? "oglas" : "oglasa"}
+                  {jobs.length} {jobs.length === 1 ? t("ad") : t("ads")}
                 </span>
               </h1>
               <p className="text-gray-600 dark:text-darkText mt-2">
-                Pronađite savršen posao za vas medju našim oglasima
+                {t("Find the perfect job for you among our ads")}
               </p>
             </div>
           </div>
@@ -673,7 +682,7 @@ export default function AllJobs() {
         <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
-            Pretraga i filteri
+            {t("Search and filters")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -681,13 +690,13 @@ export default function AllJobs() {
             <div>
               <label className="text-sm font-medium text-gray-700 dark:text-darkText mb-2 flex items-center">
                 <FaSearch className="text-blue-500 mr-2" />
-                Pretraži oglase
+                {t("Search ads")}
               </label>
               <input
                 type="text"
                 value={filters.search}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
-                placeholder="Naslov, pozicija, kompanija..."
+                placeholder={t("Title, position, company...")}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -696,7 +705,7 @@ export default function AllJobs() {
             <div>
               <label className="dark:text-darkText text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaUserTie className="text-purple-500 mr-2" />
-                Tip zaposlenja
+                {t("Employment type")}
               </label>
               <select
                 value={filters.employmentType}
@@ -705,7 +714,7 @@ export default function AllJobs() {
                 }
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Svi tipovi</option>
+                <option value="">{t("All types")}</option>
                 {employmentTypes.map((type) => (
                   <option key={type} value={type}>
                     {type}
@@ -718,14 +727,14 @@ export default function AllJobs() {
             <div>
               <label className="dark:text-darkText text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" />
-                Lokacija
+                {t("Location")}
               </label>
               <select
                 value={filters.location}
                 onChange={(e) => handleFilterChange("location", e.target.value)}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Sve lokacije</option>
+                <option value="">{t("All locations")}</option>
                 {allLocations.map((location) => (
                   <option key={location} value={location}>
                     {location}
@@ -741,15 +750,15 @@ export default function AllJobs() {
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-blueBg dark:text-white px-4 py-2 rounded-lg flex items-center transition-colors w-full h-[42px] text-base"
               >
                 <FaSyncAlt className="mr-2" />
-                Reset filtera
+                {t("Reset filters")}
               </button>
             </div>
           </div>
 
           {/* Broj pronađenih oglasa */}
           <div className="mt-4 text-sm text-gray-600 dark:text-darkText">
-            Pronađeno: <strong>{filteredJobs.length}</strong> od{" "}
-            <strong>{jobs.length}</strong> oglasa
+            {t("Found")}: <strong>{filteredJobs.length}</strong> {t("of")}{" "}
+            <strong>{jobs.length}</strong> {t("ads")}
           </div>
         </div>
 
@@ -759,7 +768,7 @@ export default function AllJobs() {
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
               <p className="text-gray-600 dark:text-darkText mt-4">
-                Učitavanje oglasa...
+                {t("Loading ads...")}
               </p>
             </div>
           ) : filteredJobs.length === 0 ? (
@@ -767,15 +776,15 @@ export default function AllJobs() {
               <FaBriefcase className="text-4xl text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 dark:text-darkText text-lg">
                 {filters.search || filters.employmentType || filters.location
-                  ? "Nema oglasa koji odgovaraju vašim filterima."
-                  : "Trenutno nema dostupnih oglasa za posao."}
+                  ? t("No ads matching your filters.")
+                  : t("Currently no available job ads.")}
               </p>
               {filters.search || filters.employmentType || filters.location ? (
                 <button
                   onClick={resetFilters}
                   className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  Resetuj filtere
+                  {t("Reset filters")}
                 </button>
               ) : null}
             </div>
@@ -825,14 +834,14 @@ export default function AllJobs() {
                     <div className="space-y-3 mb-4">
                       <div className="flex items-center text-sm text-gray-600 dark:text-white">
                         <FaMapMarkerAlt className="text-red-500 mr-2" />
-                        <span className="font-medium">Lokacije:</span>
+                        <span className="font-medium">{t("Locations")}</span>
                         <span className="ml-2">{job.location.join(", ")}</span>
                       </div>
 
                       {job.salary && (
                         <div className="flex items-center text-sm text-gray-600 dark:text-white">
                           <FaMoneyBillWave className="text-green-500 mr-2" />
-                          <span className="font-medium">Plata:</span>
+                          <span className="font-medium">{t("Salary")}</span>
                           <span className="ml-2">{job.salary}</span>
                         </div>
                       )}
@@ -853,7 +862,7 @@ export default function AllJobs() {
                       {job.requirements && job.requirements.length > 0 && (
                         <div className="mb-4">
                           <h4 className="font-medium text-gray-800 mb-2 text-sm dark:text-white">
-                            Uslovi:
+                            {t("Requirements")}:
                           </h4>
                           <ul className="text-sm text-gray-600 space-y-1 dark:text-white">
                             {job.requirements.slice(0, 4).map((req, idx) => (
@@ -864,7 +873,8 @@ export default function AllJobs() {
                             ))}
                             {job.requirements.length > 4 && (
                               <li className="text-blue-500 text-sm">
-                                +{job.requirements.length - 4} još uslova
+                                +{job.requirements.length - 4}{" "}
+                                {t("more conditions")}
                               </li>
                             )}
                           </ul>
@@ -881,14 +891,14 @@ export default function AllJobs() {
                     <div className="flex gap-2">
                       <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm">
                         <FaEye className="mr-1" />
-                        Pogledaj detalje
+                        {t("View details")}
                       </button>
                       <button
                         onClick={() => handleApplyClick(job)}
                         className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
                       >
                         <FaPaperPlane className="mr-1" />
-                        Konkuriši
+                        {t("Apply")}
                       </button>
                     </div>
                   </div>
@@ -903,7 +913,7 @@ export default function AllJobs() {
       {showApplyModal && selectedJob && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Apliciraj za posao</h2>
+            <h2 className="text-xl font-bold mb-4">{t("Apply for job")}</h2>
 
             <div className="mb-4 p-4 bg-gray-50 rounded-lg">
               <h3 className="font-semibold text-lg mb-2">
@@ -921,18 +931,19 @@ export default function AllJobs() {
                   <div className="flex items-center mb-2">
                     <FaUserTie className="text-green-500 mr-2" />
                     <span className="font-semibold text-green-800">
-                      Koristiće se podaci iz vašeg portfolija
+                      {t("Using data from your portfolio")}
                     </span>
                   </div>
                   <p className="text-sm text-green-700">
-                    Vaši podaci iz portfolija će automatski biti poslati
-                    poslodavcu.
+                    {t(
+                      "Your portfolio data will be automatically sent to the employer."
+                    )}
                   </p>
                 </div>
 
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Poruka poslodavcu (opciono)
+                    {t("Message to employer (optional)")}
                   </label>
                   <textarea
                     value={applyForm.message}
@@ -940,7 +951,7 @@ export default function AllJobs() {
                       setApplyForm({ ...applyForm, message: e.target.value })
                     }
                     rows="3"
-                    placeholder="Dodatna poruka ili napomena..."
+                    placeholder={t("Additional message or note...")}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -954,12 +965,12 @@ export default function AllJobs() {
                     {applying ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Apliciranje...
+                        {t("Applying...")}
                       </>
                     ) : (
                       <>
                         <FaPaperPlane className="mr-2" />
-                        Apliciraj sa Portfolio podacima
+                        {t("Apply with Portfolio data")}
                       </>
                     )}
                   </button>
@@ -967,7 +978,7 @@ export default function AllJobs() {
                     onClick={() => setShowApplyModal(false)}
                     className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
                   >
-                    Otkaži
+                    {t("Cancel")}
                   </button>
                 </div>
               </div>
@@ -977,18 +988,20 @@ export default function AllJobs() {
                   <div className="flex items-center mb-2">
                     <FaUserTie className="text-blue-500 mr-2" />
                     <span className="font-semibold text-blue-800">
-                      Popunite prijavu ručno
+                      {t("Fill out application manually")}
                     </span>
                   </div>
                   <p className="text-sm text-blue-700">
-                    Nemate portfolio. Molimo popunite sledeća polja.
+                    {t(
+                      "You don't have a portfolio. Please fill out the following fields."
+                    )}
                   </p>
                 </div>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Poruka poslodavcu *
+                      {t("Message to employer *")}
                     </label>
                     <textarea
                       value={applyForm.message}
@@ -1004,7 +1017,7 @@ export default function AllJobs() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Link ka CV-u (opciono)
+                      {t("CV link (optional)")}
                     </label>
                     <input
                       type="url"
@@ -1027,12 +1040,12 @@ export default function AllJobs() {
                     {applying ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Apliciranje...
+                        {t("Applying...")}
                       </>
                     ) : (
                       <>
                         <FaPaperPlane className="mr-2" />
-                        Pošalji prijavu
+                        {t("Send application")}
                       </>
                     )}
                   </button>
@@ -1040,7 +1053,7 @@ export default function AllJobs() {
                     onClick={() => setShowApplyModal(false)}
                     className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
                   >
-                    Otkaži
+                    {t("Cancel")}
                   </button>
                 </div>
               </div>
@@ -1049,13 +1062,13 @@ export default function AllJobs() {
             {!hasPortfolio && (
               <div className="mt-4 text-center">
                 <p className="text-sm text-gray-600">
-                  Želite da brže aplicirate?{" "}
+                  {t("Want to apply faster?")}{" "}
                   <Link
                     to="/driver-portfolio"
                     className="text-blue-600 hover:text-blue-800 font-medium"
                     onClick={() => setShowApplyModal(false)}
                   >
-                    Kreirajte portfolio
+                    {t("Create portfolio")}
                   </Link>
                 </p>
               </div>

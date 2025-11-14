@@ -6,6 +6,7 @@ import srLatin from "../helper/sr-latin";
 import { useToast } from "../components/ToastContext";
 import { useGlobalState } from "../helper/globalState";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   FaFilter,
   FaSearch,
@@ -29,7 +30,7 @@ export default function AllShipments() {
   const [token] = useGlobalState("token");
   const [user] = useGlobalState("user");
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
   const [shipments, setShipments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalShipments, setTotalShipments] = useState([]);
@@ -126,7 +127,15 @@ export default function AllShipments() {
     fetchShipments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterDate, minWeight, pickupLocation, goodsType, page, limit]);
-
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
   // load conversations for badges (same approach as you had)
   useEffect(() => {
     if (!token || !user) return;
@@ -276,22 +285,22 @@ export default function AllShipments() {
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
-                Svi Transportni Zahtevi
+                {t("All Transport Requests")}
               </h1>
               <p className="text-gray-600 mt-2 dark:text-darkText">
-                Pronađite savršenu pošiljku za vaš transport
+                {t("Find the perfect shipment for your transport")}
               </p>
             </div>
             <div className="flex items-center mt-4 md:mt-0">
               <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mr-3 dark:text-white dark:bg-blueBg">
-                {total} zahteva (strana {page})
+                {total} {t("requests (page")} {page})
               </span>
               <button
                 onClick={handleResetFilters}
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 dark:text-darkText dark:bg-mainDarkBG px-4 py-2 rounded-lg flex items-center transition-colors"
               >
                 <FaSyncAlt className="mr-2" />
-                Reset filtera
+                {t("Reset filters")}
               </button>
             </div>
           </div>
@@ -300,19 +309,19 @@ export default function AllShipments() {
         {/* Filteri */}
         <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center dark:text-white">
-            <FaFilter className="text-blue-500 mr-2" /> Filteri
+            <FaFilter className="text-blue-500 mr-2" /> {t("Filters")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="flex text-sm font-medium text-gray-700 mb-2 items-center dark:text-darkText">
-                <FaCalendarAlt className="text-blue-500 mr-2" /> Datum
+                <FaCalendarAlt className="text-blue-500 mr-2" /> {t("Date")}
               </label>
               <DatePicker
                 selected={filterDate}
                 onChange={handleFilterChange(setFilterDate)}
                 isClearable
-                placeholderText="Svi datumi"
+                placeholderText={t("All dates")}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 dateFormat="d. MMMM yyyy"
                 locale="sr-latin"
@@ -322,7 +331,8 @@ export default function AllShipments() {
 
             <div>
               <label className="flex text-sm font-medium text-gray-700 mb-2 items-center dark:text-darkText">
-                <FaWeightHanging className="text-green-500 mr-2" /> Težina (kg)
+                <FaWeightHanging className="text-green-500 mr-2" />{" "}
+                {t("Weight (kg)")}
               </label>
               <input
                 type="number"
@@ -330,7 +340,7 @@ export default function AllShipments() {
                 onChange={(e) =>
                   handleFilterChange(setMinWeight)(e.target.value)
                 }
-                placeholder="Min. težina"
+                placeholder={t("Min. weight")}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min={0}
               />
@@ -338,8 +348,8 @@ export default function AllShipments() {
 
             <div>
               <label className="flex text-sm font-medium text-gray-700 mb-2 items-center dark:text-darkText">
-                <FaMapMarkerAlt className="text-purple-500 mr-2" /> Početna
-                lokacija
+                <FaMapMarkerAlt className="text-purple-500 mr-2" />{" "}
+                {t("Start location")}
               </label>
               <input
                 type="text"
@@ -347,14 +357,14 @@ export default function AllShipments() {
                 onChange={(e) =>
                   handleFilterChange(setPickupLocation)(e.target.value)
                 }
-                placeholder="Unesi lokaciju"
+                placeholder={t("Enter location")}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
               <label className="flex dark:text-darkText text-sm font-medium text-gray-700 mb-2 items-center">
-                <FaBox className="text-red-500 mr-2" /> Vrsta robe
+                <FaBox className="text-red-500 mr-2" /> {t("Goods type")}
               </label>
               <input
                 type="text"
@@ -362,7 +372,7 @@ export default function AllShipments() {
                 onChange={(e) =>
                   handleFilterChange(setGoodsType)(e.target.value)
                 }
-                placeholder="Unesi vrstu robe"
+                placeholder={t("Enter goods type")}
                 className="dark:bg-mainDarkBG dark:text-white w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -378,13 +388,13 @@ export default function AllShipments() {
                 checked={hideMyShipments}
                 onChange={() => setHideMyShipments((p) => !p)}
               />
-              Sakrij moje zahteve
+              {t("Hide my requests")}
             </label>
           </div>
 
           <div className="flex items-center gap-2">
             <label className="text-sm text-gray-700 mr-2 dark:text-darkText">
-              Prikaži po strani:
+              {t("Show per page:")}
             </label>
             <select
               value={limit}
@@ -407,7 +417,7 @@ export default function AllShipments() {
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
               <p className="text-gray-600 mt-4 dark:text-darkText">
-                Učitavanje zahteva...
+                {t("Loading requests...")}
               </p>
             </div>
           ) : currentShipments.length === 0 ? (
@@ -415,8 +425,8 @@ export default function AllShipments() {
               <FaSearch className="text-4xl text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 text-lg">
                 {filterDate || minWeight || pickupLocation || goodsType
-                  ? "Nema zahteva za prikaz sa odabranim filterima"
-                  : "Trenutno nema dostupnih zahteva."}
+                  ? t("No requests to display with selected filters")
+                  : t("Currently no available requests.")}
               </p>
             </div>
           ) : (
@@ -486,8 +496,8 @@ export default function AllShipments() {
                                 className="ml-2 text-blue-600 hover:underline focus:outline-none text-sm"
                               >
                                 {expandedShipmentGoods
-                                  ? "Prikaži manje"
-                                  : "Prikaži više"}
+                                  ? t("Show less")
+                                  : t("Show more")}
                               </button>
                             )}
                           </div>
@@ -498,7 +508,7 @@ export default function AllShipments() {
                         shipment.dimensions?.width &&
                         shipment.dimensions?.height && (
                           <div className="text-gray-600 dark:text-darkText">
-                            Dimenzije: {shipment.dimensions.length} ×{" "}
+                            {t("Dimensions")} {shipment.dimensions.length} ×{" "}
                             {shipment.dimensions.width} ×{" "}
                             {shipment.dimensions.height} m
                           </div>
@@ -534,7 +544,7 @@ export default function AllShipments() {
                               className="ml-auto bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-lg flex items-center"
                             >
                               <FaPhoneAlt className="mr-1" />
-                              Pozovi
+                              {t("Call")}
                             </a>
                           )}
                         </div>
@@ -581,9 +591,9 @@ export default function AllShipments() {
                         <FaComment className="mr-1" />
                         {isOwner
                           ? userConvs.has(String(shipment._id))
-                            ? "Idi na chat"
-                            : "Nema poruka"
-                          : "Pošalji poruku"}
+                            ? t("Go to chat")
+                            : t("No messages")
+                          : t("Send message")}
                         {isOwner &&
                           unreadByShipment[String(shipment._id)] > 0 && (
                             <span className="ml-1 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs">
@@ -598,7 +608,7 @@ export default function AllShipments() {
                           className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
                         >
                           <FaTrash className="mr-1" />
-                          Obriši
+                          {t("Delete")}
                         </button>
                       )}
                     </div>
@@ -614,8 +624,8 @@ export default function AllShipments() {
           <div className="bg-white rounded-xl shadow-md p-6">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-600">
-                Prikazano {currentShipments.length} od {total} zahteva • Strana{" "}
-                {page} od {totalPages}
+                {t("Showing")} {currentShipments.length} {t("of")} {total}{" "}
+                {t("requests")} • {t("Page")} {page} od {totalPages}
               </div>
 
               <div className="flex items-center gap-4">
@@ -625,7 +635,7 @@ export default function AllShipments() {
                     onClick={() => setPage(page - 1)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    <FaChevronLeft className="text-sm" /> Prethodna
+                    <FaChevronLeft className="text-sm" /> {t("Previous")}
                   </button>
 
                   <div className="flex gap-1">
@@ -652,7 +662,7 @@ export default function AllShipments() {
                     onClick={() => setPage(page + 1)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Sledeća <FaChevronRight className="text-sm" />
+                    {t("Next")} <FaChevronRight className="text-sm" />
                   </button>
                 </div>
               </div>

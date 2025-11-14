@@ -23,6 +23,7 @@ import {
   FaPhone,
   FaEnvelope,
 } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export default function DriverPortfolioPage() {
   const [token] = useGlobalState("token");
@@ -35,6 +36,7 @@ export default function DriverPortfolioPage() {
   const [userVehicles, setUserVehicles] = useState([]);
   const [slugAvailable, setSlugAvailable] = useState(null);
   const { success, error } = useToast();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -85,7 +87,12 @@ export default function DriverPortfolioPage() {
     fetchPortfolio();
     fetchUserVehicles();
   }, []);
-
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  useEffect(() => {
+    console.log("Test prevod:", t("NAĐI PREVOZ"));
+  }, [t, i18n.language]);
   useEffect(() => {
     // Automatski ukloni obrisana vozila iz portfolio forme
     if (portfolio && formData.vehicles.length > 0) {
@@ -400,14 +407,16 @@ export default function DriverPortfolioPage() {
               </button>
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
-                  {viewMode ? "Pregled Portfolija" : "Moj Portfolio Vozača"}
+                  {viewMode ? t("Portfolio Preview") : t("My Driver Portfolio")}
                 </h1>
                 <p className="text-gray-600 mt-2 dark:text-darkText">
                   {viewMode
-                    ? "Ovako će vaš portfolio izgledati poslodavcima"
+                    ? t("This is how your portfolio will appear to employers")
                     : portfolio
-                    ? "Upravljajte vašim profesionalnim portfolioom"
-                    : "Kreirajte profesionalni portfolio kako biste se istakli pred poslodavcima"}
+                    ? t("Manage your professional portfolio")
+                    : t(
+                        "Create a professional portfolio to stand out to employers"
+                      )}
                 </p>
               </div>
             </div>
@@ -422,7 +431,9 @@ export default function DriverPortfolioPage() {
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center"
                       >
                         <FaEdit className="mr-2" />{" "}
-                        {portfolio ? "Izmeni" : "Kreiraj"} Portfolio
+                        {portfolio
+                          ? t("Edit Portfolio")
+                          : t("Create Portfolio")}
                       </button>
                       {portfolio && (
                         <>
@@ -430,7 +441,7 @@ export default function DriverPortfolioPage() {
                             onClick={() => setViewMode(true)}
                             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center"
                           >
-                            <FaEye className="mr-2" /> Pregledaj
+                            <FaEye className="mr-2" /> {t("Preview")}
                           </button>
                           <a
                             href={`/#/driver/${portfolio.slug}`}
@@ -438,7 +449,8 @@ export default function DriverPortfolioPage() {
                             rel="noopener noreferrer"
                             className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center"
                           >
-                            <FaExternalLinkAlt className="mr-2" /> Javni Pogled
+                            <FaExternalLinkAlt className="mr-2" />{" "}
+                            {t("Public View")}
                           </a>
                         </>
                       )}
@@ -446,7 +458,7 @@ export default function DriverPortfolioPage() {
                         onClick={() => navigate("/dashboard")}
                         className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
                       >
-                        Nazad
+                        {t("Back")}
                       </button>
                     </>
                   ) : (
@@ -457,7 +469,7 @@ export default function DriverPortfolioPage() {
                         className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center disabled:opacity-50"
                       >
                         <FaSave className="mr-2" />
-                        {saving ? "Čuvanje..." : "Sačuvaj"}
+                        {saving ? t("Saving...") : t("Save")}
                       </button>
                       <button
                         onClick={() => {
@@ -466,7 +478,7 @@ export default function DriverPortfolioPage() {
                         }}
                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center"
                       >
-                        <FaTimes className="mr-2" /> Otkaži
+                        <FaTimes className="mr-2" /> {t("Cancel")}
                       </button>
                     </>
                   )}
@@ -477,13 +489,13 @@ export default function DriverPortfolioPage() {
                     onClick={() => setViewMode(false)}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center"
                   >
-                    <FaEdit className="mr-2" /> Nastavi sa Izmenama
+                    <FaEdit className="mr-2" /> {t("Continue Editing")}
                   </button>
                   <button
                     onClick={() => navigate("/dashboard")}
                     className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
                   >
-                    Zatvori
+                    {t("Close")}
                   </button>
                 </>
               )}
@@ -494,7 +506,7 @@ export default function DriverPortfolioPage() {
           <div className="flex flex-wrap gap-3 mt-4">
             {portfolio?.hasPaidPortfolio && (
               <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-4 py-2 rounded-lg inline-flex items-center">
-                <FaStar className="mr-2" /> Premium Portfolio
+                <FaStar className="mr-2" /> {t("Premium Portfolio")}
               </div>
             )}
             <div
@@ -523,7 +535,7 @@ export default function DriverPortfolioPage() {
                 <FaUser className="text-2xl" />
               </div>
               <h2 className="text-xl font-semibold dark:text-white">
-                Kontakt Informacije
+                {t("Contact Information")}
               </h2>
             </div>
 
@@ -531,7 +543,7 @@ export default function DriverPortfolioPage() {
               {/* IME */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  Ime *
+                  {t("First Name")} *
                 </label>
                 {editing ? (
                   <input
@@ -554,7 +566,7 @@ export default function DriverPortfolioPage() {
               {/* PREZIME */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  Prezime *
+                  {t("Last Name")} *
                 </label>
                 {editing ? (
                   <input
@@ -564,12 +576,12 @@ export default function DriverPortfolioPage() {
                       setFormData({ ...formData, lastName: e.target.value })
                     }
                     className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Unesite vaše prezime"
+                    placeholder={t("Enter your last name")}
                     required
                   />
                 ) : (
                   <p className="text-lg font-medium bg-gray-50 dark:text-white dark:bg-mainDarkBG p-3 rounded-lg">
-                    {formData.lastName || "Nije postavljeno"}
+                    {formData.lastName || t("Not set")}
                   </p>
                 )}
               </div>
@@ -577,7 +589,7 @@ export default function DriverPortfolioPage() {
               {/* EMAIL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  Email *
+                  {t("Email")} *
                 </label>
                 {editing ? (
                   <input
@@ -598,7 +610,7 @@ export default function DriverPortfolioPage() {
                   />
                 ) : (
                   <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg dark:text-white dark:bg-mainDarkBG">
-                    {formData.contactInfo.email || "Nije postavljeno"}
+                    {formData.contactInfo.email || t("Not set")}
                   </p>
                 )}
               </div>
@@ -606,7 +618,7 @@ export default function DriverPortfolioPage() {
               {/* TELEFON */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  Telefon
+                  {t("Phone")}
                 </label>
                 {editing ? (
                   <input
@@ -626,7 +638,7 @@ export default function DriverPortfolioPage() {
                   />
                 ) : (
                   <p className="dark:text-white dark:bg-mainDarkBG text-lg font-medium bg-gray-50 p-3 rounded-lg">
-                    {formData.contactInfo.phone || "Nije postavljeno"}
+                    {formData.contactInfo.phone || t("Not set")}
                   </p>
                 )}
               </div>
@@ -634,7 +646,7 @@ export default function DriverPortfolioPage() {
               {/* URL PORTFOLIJA */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  URL Portfolija
+                  {t("Portfolio URL")}
                 </label>
                 {editing ? (
                   <div>
@@ -656,12 +668,13 @@ export default function DriverPortfolioPage() {
                         }`}
                       >
                         {slugAvailable
-                          ? "✓ URL je dostupan"
-                          : "✗ URL je zauzet"}
+                          ? t("URL is available")
+                          : t("URL is taken")}
                       </p>
                     )}
                     <p className="text-xs text-gray-500 mt-1 ">
-                      Vaš portfolio će biti dostupan na: /driver/{formData.slug}
+                      {t("Your portfolio will be available at")}: /driver/
+                      {formData.slug}
                     </p>
                   </div>
                 ) : (
@@ -692,13 +705,15 @@ export default function DriverPortfolioPage() {
               <div className="p-3 rounded-full bg-green-100 text-green-600 mr-3">
                 <FaBriefcase className="text-2xl" />
               </div>
-              <h2 className="text-xl font-semibold">Osnovne Informacije</h2>
+              <h2 className="text-xl font-semibold">
+                {t("Basic Information")}
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  Godine iskustva {editing && "*"}
+                  {t("Years of experience")} {editing && "*"}
                 </label>
                 {editing ? (
                   <input
@@ -717,14 +732,14 @@ export default function DriverPortfolioPage() {
                 ) : (
                   <p className="text-lg font-medium bg-gray-50 p-3 rounded-lg dark:bg-mainDarkBG dark:text-white ">
                     {formData.yearsOfExperience || 0}{" "}
-                    {formData.yearsOfExperience === 1 ? "godina" : "godine"}
+                    {formData.yearsOfExperience === 1 ? t("year") : t("years")}
                   </p>
                 )}
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  Kategorije vozačke dozvole
+                  {t("Driver's license categories")}
                 </label>
                 {editing ? (
                   <div className="flex flex-wrap gap-2">
@@ -756,7 +771,7 @@ export default function DriverPortfolioPage() {
                     {(!formData.licenseCategories ||
                       formData.licenseCategories.length === 0) && (
                       <span className="text-gray-500 bg-gray-50 p-3 rounded-lg dark:bg-mainDarkBG dark:text-white ">
-                        Nema unetih kategorija
+                        {t("No categories added")}
                       </span>
                     )}
                   </div>
@@ -773,15 +788,17 @@ export default function DriverPortfolioPage() {
                   <FaCar className="text-2xl" />
                 </div>
                 <h2 className="text-xl font-semibold dark:text-white">
-                  Moja Vozila
+                  {t("My Vehicles")}
                 </h2>
               </div>
 
               {editing ? (
                 <div className="space-y-3">
                   <p className="text-sm text-gray-600 mb-4 dark:text-darkText">
-                    Odaberite vozila iz vaše liste koja želite da prikažete u
-                    portfolio-u:
+                    {t(
+                      "Select vehicles from your list to display in portfolio"
+                    )}
+                    :
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {userVehicles.map((vehicle) => (
@@ -825,8 +842,8 @@ export default function DriverPortfolioPage() {
                                 }`}
                               >
                                 {formData.vehicles.includes(vehicle._id)
-                                  ? "✓ Odabrano za portfolio"
-                                  : "✗ Nije odabrano"}
+                                  ? t("Selected for portfolio")
+                                  : t("Not selected")}
                               </div>
                             </div>
                           </div>
@@ -869,7 +886,7 @@ export default function DriverPortfolioPage() {
                               <div className="text-sm text-gray-600 space-y-1">
                                 <div className="flex items-center">
                                   <span className="font-medium">
-                                    Registracija:
+                                    {t("Registration")}:
                                   </span>
                                   <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
                                     {vehicle.licensePlate}
@@ -877,7 +894,7 @@ export default function DriverPortfolioPage() {
                                 </div>
                                 <div>
                                   <span className="font-medium">
-                                    Kapacitet:
+                                    {t("Capacity")}:
                                   </span>
                                   <span className="ml-2">
                                     {vehicle.capacity} kg
@@ -885,7 +902,9 @@ export default function DriverPortfolioPage() {
                                 </div>
                                 {vehicle.brand && vehicle.model && (
                                   <div>
-                                    <span className="font-medium">Vozilo:</span>
+                                    <span className="font-medium">
+                                      {t("Vehicle")}:
+                                    </span>
                                     <span className="ml-2">
                                       {vehicle.brand} {vehicle.model}
                                     </span>
@@ -893,13 +912,17 @@ export default function DriverPortfolioPage() {
                                 )}
                                 {vehicle.year && (
                                   <div>
-                                    <span className="font-medium">Godina:</span>
+                                    <span className="font-medium">
+                                      {t("Year")}:
+                                    </span>
                                     <span className="ml-2">{vehicle.year}</span>
                                   </div>
                                 )}
                                 {vehicle.pallets > 0 && (
                                   <div>
-                                    <span className="font-medium">Paleta:</span>
+                                    <span className="font-medium">
+                                      {t("Pallets")}:
+                                    </span>
                                     <span className="ml-2">
                                       {vehicle.pallets}
                                     </span>
@@ -923,7 +946,7 @@ export default function DriverPortfolioPage() {
                         >
                           <div className="text-center text-gray-500 py-4">
                             <FaCar className="text-3xl mx-auto mb-2 opacity-50" />
-                            <p>Vozilo je obrisano</p>
+                            <p>{t("Vehicle deleted")}</p>
                             <p className="text-xs mt-1">ID: {vehicleId}</p>
                           </div>
                         </div>
@@ -932,11 +955,13 @@ export default function DriverPortfolioPage() {
                   ) : (
                     <div className="col-span-2 text-center text-gray-500 py-8 dark:text-darkText">
                       <FaCar className="text-4xl mx-auto mb-3 opacity-30" />
-                      <p className="text-lg">Nema odabranih vozila za prikaz</p>
+                      <p className="text-lg">
+                        {t("No selected vehicles to display")}
+                      </p>
                       <p className="text-sm mt-1">
                         {editing
-                          ? "Odaberite vozila iz liste iznad"
-                          : "Dodajte vozila u edit modu"}
+                          ? t("Select vehicles from list above")
+                          : t("Add vehicles in edit mode")}
                       </p>
                     </div>
                   )}
@@ -952,14 +977,14 @@ export default function DriverPortfolioPage() {
                 <FaBriefcase className="text-2xl" />
               </div>
               <h2 className="text-xl font-semibold dark:text-white">
-                Prethodno Iskustvo
+                {t("Previous Experience")}
               </h2>
             </div>
 
             {editing && (
               <div className="mb-6 p-4 bg-gray-50 dark:bg-mainDarkBG rounded-lg">
                 <h3 className="font-medium mb-3 dark:text-white">
-                  Dodaj novo iskustvo
+                  {t("Add new experience")}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <input
@@ -1027,7 +1052,9 @@ export default function DriverPortfolioPage() {
                         }
                         className="mr-2"
                       />
-                      <span className="text-sm dark:text-white">Trenutno</span>
+                      <span className="text-sm dark:text-white">
+                        {t("Current")}
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -1047,7 +1074,7 @@ export default function DriverPortfolioPage() {
                   onClick={addExperience}
                   className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center"
                 >
-                  <FaPlus className="mr-2" /> Dodaj Iskustvo
+                  <FaPlus className="mr-2" /> {t("Add Experience")}
                 </button>
               </div>
             )}
@@ -1078,7 +1105,7 @@ export default function DriverPortfolioPage() {
                       <button
                         onClick={() => removeExperience(index)}
                         className="text-red-500 hover:text-red-700 ml-4 p-2"
-                        title="Obriši iskustvo"
+                        title={t("Delete experience")}
                       >
                         <FaTrash />
                       </button>
@@ -1090,8 +1117,8 @@ export default function DriverPortfolioPage() {
               {formData.previousExperience.length === 0 && (
                 <p className="text-gray-500 text-center py-4 dark:text-darkText">
                   {editing
-                    ? "Dodajte svoje prvo radno iskustvo"
-                    : "Nema unetog radnog iskustva"}
+                    ? t("Add your first work experience")
+                    : t("No work experience entered")}
                 </p>
               )}
             </div>
@@ -1106,7 +1133,7 @@ export default function DriverPortfolioPage() {
                   <FaGraduationCap className="text-2xl" />
                 </div>
                 <h2 className="text-xl font-semibold dark:text-white">
-                  Veštine
+                  {t("Skills")}
                 </h2>
               </div>
 
@@ -1162,7 +1189,7 @@ export default function DriverPortfolioPage() {
                   ))}
                   {formData.skills.length === 0 && (
                     <span className="text-gray-500 dark:text-darkText">
-                      Nema unetih veština
+                      {t("No skills added")}
                     </span>
                   )}
                 </div>
@@ -1176,7 +1203,7 @@ export default function DriverPortfolioPage() {
                   <FaLanguage className="text-2xl" />
                 </div>
                 <h2 className="text-xl font-semibold dark:text-white">
-                  Jezici
+                  {t("Languages")}
                 </h2>
               </div>
 
@@ -1276,14 +1303,14 @@ export default function DriverPortfolioPage() {
                 <FaEuroSign className="text-2xl" />
               </div>
               <h2 className="text-xl font-semibold dark:text-white">
-                Dodatne Informacije
+                {t("Additional Information")}
               </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-darkText mb-2">
-                  Dostupnost
+                  {t("Availability")}
                 </label>
                 {editing ? (
                   <select
@@ -1310,7 +1337,7 @@ export default function DriverPortfolioPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  Očekivana plata (RSD)
+                  {t("Salary expectation")} (RSD)
                 </label>
                 {editing ? (
                   <input
@@ -1329,14 +1356,14 @@ export default function DriverPortfolioPage() {
                   <p className="text-lg font-medium dark:text-white">
                     {formData.salaryExpectation
                       ? `${formData.salaryExpectation} €`
-                      : "Nije navedeno"}
+                      : t("Not set")}
                   </p>
                 )}
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-darkText">
-                  O meni
+                  {t("About me")}
                 </label>
                 {editing ? (
                   <textarea
@@ -1351,12 +1378,12 @@ export default function DriverPortfolioPage() {
                   />
                 ) : (
                   <p className="text-gray-700 whitespace-pre-wrap dark:text-white">
-                    {formData.aboutMe || "Nema unetog opisa."}
+                    {formData.aboutMe || t("No description entered") + "."}
                   </p>
                 )}
                 {editing && (
                   <p className="text-xs text-gray-500 dark:text-darkText mt-1">
-                    {formData.aboutMe.length}/1000 karaktera
+                    {formData.aboutMe.length}/1000 {t("characters")}
                   </p>
                 )}
               </div>
@@ -1369,14 +1396,15 @@ export default function DriverPortfolioPage() {
           <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl shadow-lg p-6 text-white text-center mt-8">
             <FaStar className="text-3xl mx-auto mb-4" />
             <h3 className="text-xl font-bold mb-2">
-              Nadogradite na Premium Portfolio!
+              {t("Upgrade to Premium Portfolio!")}
             </h3>
             <p className="mb-4 opacity-90">
-              Dobijte više pregleda, istaknuti prikaz i direktne kontakte
-              poslodavaca
+              {t(
+                "Get more views, featured display and direct employer contacts"
+              )}
             </p>
             <button className="bg-white text-purple-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">
-              Nadogradi na Premium - 9.99€/mesečno
+              {t("Upgrade to Premium")} - 9.99€/{t("monthly")}
             </button>
           </div>
         )}

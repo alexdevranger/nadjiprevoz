@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { useToast } from "../components/ToastContext";
 import srLatin from "../helper/sr-latin";
 import "react-datepicker/dist/react-datepicker.css";
+import { useTranslation } from "react-i18next";
 import {
   FaFilter,
   FaSearch,
@@ -29,7 +30,7 @@ export default function AllTours() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [user] = useGlobalState("user");
-
+  const { t, i18n } = useTranslation();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalTours, setTotalTours] = useState([]);
@@ -102,7 +103,15 @@ export default function AllTours() {
       error("Greška pri otvaranju konverzacije");
     }
   }
-
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "dir",
+      i18n.language === "ar" ? "rtl" : "ltr"
+    );
+  }, [i18n.language]);
   useEffect(() => {
     if (token) {
       axios
@@ -233,22 +242,22 @@ export default function AllTours() {
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
-                Sve Dostupne Ture
+                {t("All Available Tours")}
               </h1>
               <p className="text-gray-600 mt-2 dark:text-darkText">
-                Pronađite savršenu turu za vaš transport
+                {t("Find the perfect tour for your transport")}
               </p>
             </div>
             <div className="flex items-center mt-4 md:mt-0">
-              <span className="bg-blue-100 dark:bg-mainDarkBG text-blue-800 dark:text-white dark:bg-blueBg text-sm px-3 py-1 rounded-full mr-3">
-                {total} tura (strana {page})
+              <span className="bg-blue-100 dark:bg-mainDarkBG text-blue-800 dark:text-white text-sm px-3 py-1 rounded-full mr-3">
+                {total} {t("tours (page")} {page})
               </span>
               <button
                 onClick={handleResetFilters}
                 className="bg-gray-100 dark:bg-mainDarkBG hover:bg-gray-200 text-gray-700 dark:text-white px-4 py-2 rounded-lg flex items-center transition-colors"
               >
                 <FaSyncAlt className="mr-2" />
-                Reset filtera
+                {t("Reset filters")}
               </button>
             </div>
           </div>
@@ -258,7 +267,7 @@ export default function AllTours() {
         <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
-            Filteri
+            {t("Filters")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -266,13 +275,13 @@ export default function AllTours() {
             <div>
               <label className="flex text-sm font-medium text-gray-700 dark:text-white mb-2 items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" />
-                Datum
+                {t("Date")}
               </label>
               <DatePicker
                 selected={filterDate}
                 onChange={handleFilterChange(setFilterDate)}
                 isClearable
-                placeholderText="Svi datumi"
+                placeholderText={t("All dates")}
                 className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 dateFormat="d. MMMM yyyy"
                 locale="sr-latin"
@@ -284,7 +293,7 @@ export default function AllTours() {
             <div>
               <label className="flex text-sm font-medium text-gray-700 dark:text-white mb-2 items-center">
                 <FaTruck className="text-green-500 mr-2" />
-                Vrsta vozila
+                {t("Vehicle type")}
               </label>
               <select
                 value={filterVehicleType}
@@ -293,7 +302,7 @@ export default function AllTours() {
                 }
                 className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Sve vrste</option>
+                <option value="">{t("All types")}</option>
                 {uniqueVehicleTypes.map((type) => (
                   <option key={type} value={type}>
                     {type}
@@ -306,7 +315,7 @@ export default function AllTours() {
             <div>
               <label className="flex text-sm font-medium text-gray-700 dark:text-white mb-2 items-center">
                 <FaWeightHanging className="text-purple-500 mr-2" />
-                Nosivost (kg)
+                {t("Capacity (kg)")}
               </label>
               <input
                 type="number"
@@ -314,7 +323,7 @@ export default function AllTours() {
                 onChange={(e) =>
                   handleFilterChange(setFilterCapacity)(e.target.value)
                 }
-                placeholder="Min. nosivost"
+                placeholder={t("Min. capacity")}
                 className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min={0}
               />
@@ -324,7 +333,7 @@ export default function AllTours() {
             <div>
               <label className="flex text-sm font-medium text-gray-700 dark:text-white mb-2 items-center">
                 <FaMapMarkerAlt className="text-red-500 mr-2" />
-                Početna lokacija
+                {t("Start location")}
               </label>
               <input
                 type="text"
@@ -332,7 +341,7 @@ export default function AllTours() {
                 onChange={(e) =>
                   handleFilterChange(setFilterStartLocation)(e.target.value)
                 }
-                placeholder="Unesi lokaciju"
+                placeholder={t("Enter location")}
                 className="dark:text-white dark:bg-mainDarkBG w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -348,12 +357,12 @@ export default function AllTours() {
                 checked={hideMyTours}
                 onChange={() => setHideMyTours(!hideMyTours)}
               />
-              Sakrij moje ture
+              {t("Hide my tours")}
             </label>
           </div>
           <div>
             <label className="flex items-center gap-2">
-              Prikaži po strani:
+              {t("Show per page:")}
               <select
                 value={limit}
                 onChange={(e) => {
@@ -375,7 +384,7 @@ export default function AllTours() {
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Učitavanje tura...</p>
+              <p className="text-gray-600 mt-4"> {t("Loading tours...")}</p>
             </div>
           ) : tours.length === 0 ? (
             <div className="p-8 text-center">
@@ -385,8 +394,8 @@ export default function AllTours() {
                 filterVehicleType ||
                 filterCapacity ||
                 filterStartLocation
-                  ? "Nema tura za prikaz sa odabranim filterima"
-                  : "Trenutno nema dostupnih tura."}
+                  ? t("No tours to display with selected filters")
+                  : t("Currently no available tours.")}
               </p>
             </div>
           ) : (
@@ -464,7 +473,9 @@ export default function AllTours() {
                           <div className="flex items-center gap-2">
                             {isOwner ? (
                               <span>
-                                <span className="font-medium">Kontakt:</span>{" "}
+                                <span className="font-medium">
+                                  {t("Contact:")}
+                                </span>{" "}
                                 {tour.contactPerson} ({tour.contactPhone})
                               </span>
                             ) : (
@@ -478,7 +489,7 @@ export default function AllTours() {
                                   className="ml-auto bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-lg flex items-center"
                                 >
                                   <FaPhoneAlt className="mr-1" />
-                                  Pozovi
+                                  {t("Call")}
                                 </a>
                               </>
                             )}
@@ -499,8 +510,8 @@ export default function AllTours() {
                                   className="ml-2 text-blue-600 hover:underline focus:outline-none text-sm"
                                 >
                                   {expandedNotes
-                                    ? "Prikaži manje"
-                                    : "Prikaži više"}
+                                    ? t("Show less")
+                                    : t("Show more")}
                                 </button>
                               )}
                             </div>
@@ -536,9 +547,9 @@ export default function AllTours() {
                           <FaComment className="mr-1" />
                           {isOwner
                             ? userConvs.has(String(tour._id))
-                              ? "Idi na chat"
-                              : "Nema poruka"
-                            : "Pošalji poruku"}
+                              ? t("Go to chat")
+                              : t("No messages")
+                            : t("Send message")}
                           {isOwner && unreadByTour[String(tour._id)] > 0 && (
                             <span className="ml-1 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs">
                               {unreadByTour[String(tour._id)]}
@@ -552,7 +563,7 @@ export default function AllTours() {
                             className="flex-1 bg-[#d7d7d7] hover:bg-[#c1c1c1] text-[#3d3d3d] px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm font-medium"
                           >
                             <FaTrash className="mr-1" />
-                            Obriši
+                            {t("Delete")}
                           </button>
                         )}
                       </div>
@@ -568,8 +579,8 @@ export default function AllTours() {
           <div className="bg-white rounded-xl shadow-md p-6">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-600">
-                Prikazano {tours.length} od {total} tura • Strana {page} od{" "}
-                {totalPages}
+                {t("Showing")} {tours.length} {t("of")} {total} {t("tours")} •{" "}
+                {t("Page")} {page} {t("of")} {totalPages}
               </div>
 
               <div className="flex items-center gap-4">
@@ -580,7 +591,7 @@ export default function AllTours() {
                     className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <FaChevronLeft className="text-sm" />
-                    Prethodna
+                    {t("Previous")}
                   </button>
 
                   <div className="flex gap-1">
@@ -607,7 +618,7 @@ export default function AllTours() {
                     onClick={() => setPage(page + 1)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Sledeća
+                    {t("Next")}
                     <FaChevronRight className="text-sm" />
                   </button>
                 </div>

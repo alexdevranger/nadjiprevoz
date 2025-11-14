@@ -27,12 +27,14 @@ import {
   FaStar,
   FaExternalLinkAlt,
 } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export default function MyJobs() {
   const [token] = useGlobalState("token");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingJob, setEditingJob] = useState(null);
+  const { t, i18n } = useTranslation();
   const [editForm, setEditForm] = useState({
     title: "",
     position: "",
@@ -91,7 +93,12 @@ export default function MyJobs() {
       isLoading: false,
     });
   };
-
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  useEffect(() => {
+    console.log("Test prevod:", t("NAĐI PREVOZ"));
+  }, [t, i18n.language]);
   // Dodaj ovu funkciju za učitavanje aplikacija
   // const fetchJobApplications = async (jobId) => {
   //   try {
@@ -466,13 +473,13 @@ export default function MyJobs() {
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white flex items-center">
-                Moji Oglasi za Posao
+                {t("My Job Advertisements")}
                 <span className="ml-3 text-lg font-medium text-blue-400 border-l-2 border-gray-300 pl-3">
-                  {jobs.length} {jobs.length === 1 ? "oglas" : "oglasa"}
+                  {jobs.length} {jobs.length === 1 ? t("ad") : t("ads")}
                 </span>
               </h1>
               <p className="text-gray-600 dark:text-darkText mt-2">
-                Upravljajte svojim oglasima za posao i njihovim statusom
+                {t("Manage your job ads and their status")}
               </p>
             </div>
             <div className="flex items-center mt-4 md:mt-0">
@@ -481,12 +488,12 @@ export default function MyJobs() {
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-base mr-2"
               >
                 <FaArrowLeft className="mr-2" />
-                Nazad
+                {t("Back")}
               </button>
               <Link to="/add-job">
                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-base">
                   <FaPlus className="mr-2" />
-                  Dodaj novi oglas
+                  {t("Add new ad")}
                 </button>
               </Link>
             </div>
@@ -498,11 +505,10 @@ export default function MyJobs() {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-gray-800">
-                  Pogledajte sve ocene kandidata
+                  {t("View all candidate ratings")}
                 </h3>
                 <p className="text-xs text-gray-600">
-                  Pregledajte, izmenite ili dodajte svoje komentare o
-                  kandidatima.
+                  {t("Review, edit or add your comments about candidates.")}
                 </p>
               </div>
             </div>
@@ -511,7 +517,7 @@ export default function MyJobs() {
               className="ml-4 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow transition-all flex items-center"
             >
               <FaExternalLinkAlt className="mr-1" />
-              Vidi ocene
+              {t("View ratings")}
             </Link>
           </div>
         </div>
@@ -520,7 +526,7 @@ export default function MyJobs() {
         <div className="bg-white dark:bg-cardBGText rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <FaFilter className="text-blue-500 mr-2" />
-            Filteri
+            {t("Filters")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -528,17 +534,17 @@ export default function MyJobs() {
             <div>
               <label className="dark:text-darkText text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <FaBriefcase className="text-green-500 mr-2" />
-                Status oglasa
+                {t("Ad status")}
               </label>
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Svi statusi</option>
-                <option value="aktivan">Aktivni</option>
-                <option value="pauziran">Pauzirani</option>
-                <option value="arhiviran">Arhivirani</option>
+                <option value="">{t("All statuses")}</option>
+                <option value="aktivan">{t("Active")}</option>
+                <option value="pauziran">{t("Paused")}</option>
+                <option value="arhiviran">{t("Archived")}</option>
               </select>
             </div>
 
@@ -549,7 +555,7 @@ export default function MyJobs() {
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-colors w-full h-[42px] text-base"
               >
                 <FaSyncAlt className="mr-2" />
-                Reset filtera
+                {t("Reset filters")}
               </button>
             </div>
           </div>
@@ -561,7 +567,7 @@ export default function MyJobs() {
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
               <p className="text-gray-600 dark:text-darkText mt-4">
-                Učitavanje oglasa...
+                {t("Loading ads...")}
               </p>
             </div>
           ) : filteredJobs.length === 0 ? (
@@ -569,12 +575,12 @@ export default function MyJobs() {
               <FaBriefcase className="text-4xl text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 text-lg">
                 {filterStatus
-                  ? `Nema oglasa sa statusom ${filterStatus}`
-                  : "Trenutno nema dostupnih oglasa."}
+                  ? `${t("No ads with status")} ${filterStatus}`
+                  : t("Currently no available ads.")}
               </p>
               <Link to="/add-job" className="mt-4 inline-block">
                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
-                  Dodaj prvi oglas
+                  {t("Add first ad")}
                 </button>
               </Link>
             </div>
@@ -1180,7 +1186,7 @@ export default function MyJobs() {
                       <div className="flex-1">
                         {/* Datum objave */}
                         <p className="text-xs text-gray-500 mb-1 dark:text-darkText">
-                          Objavljeno:{" "}
+                          {t("Published")}:{" "}
                           {new Date(job.createdAt).toLocaleDateString("sr-RS", {
                             day: "2-digit",
                             month: "2-digit",
@@ -1233,7 +1239,7 @@ export default function MyJobs() {
                           }}
                           className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm transition-colors"
                         >
-                          {isExpanded ? "Sakrij detalje" : "Vidi više"}
+                          {isExpanded ? t("Hide details") : t("Show more")}
                         </button>
 
                         {/* <button
@@ -1258,7 +1264,7 @@ export default function MyJobs() {
                           <div className="space-y-4">
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Naslov oglasa
+                                {t("Job title")}
                               </label>
                               <input
                                 type="text"
@@ -1271,7 +1277,7 @@ export default function MyJobs() {
 
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Pozicija
+                                {t("Position")}
                               </label>
                               <input
                                 type="text"
@@ -1284,7 +1290,7 @@ export default function MyJobs() {
 
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Opis posla
+                                {t("Job description")}
                               </label>
                               <textarea
                                 name="description"
@@ -1297,7 +1303,7 @@ export default function MyJobs() {
 
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Status oglasa
+                                {t("Ad status")}
                               </label>
                               <select
                                 name="status"
@@ -1305,9 +1311,11 @@ export default function MyJobs() {
                                 onChange={handleEditChange}
                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                               >
-                                <option value="aktivan">Aktivan</option>
-                                <option value="pauziran">Pauziran</option>
-                                <option value="arhiviran">Arhiviran</option>
+                                <option value="aktivan">{t("Active")}</option>
+                                <option value="pauziran">{t("Paused")}</option>
+                                <option value="arhiviran">
+                                  {t("Archived")}
+                                </option>
                               </select>
                             </div>
 
@@ -1318,13 +1326,13 @@ export default function MyJobs() {
                                 disabled={saving}
                                 className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors text-sm"
                               >
-                                {saving ? "Čuvanje..." : "Sačuvaj izmene"}
+                                {saving ? t("Saving...") : t("Save changes")}
                               </button>
                               <button
                                 onClick={() => setEditingJob(null)}
                                 className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded-lg transition-colors text-sm"
                               >
-                                Otkaži
+                                {t("Cancel")}
                               </button>
                             </div>
                           </div>
@@ -1339,7 +1347,9 @@ export default function MyJobs() {
                         <div className="space-y-3 mb-4">
                           <div className="flex items-center text-sm text-gray-600">
                             <FaMapMarkerAlt className="text-red-500 mr-2" />
-                            <span className="font-medium">Lokacije:</span>
+                            <span className="font-medium">
+                              {t("Locations")}:
+                            </span>
                             <span className="ml-2">
                               {job.location.join(", ")}
                             </span>
@@ -1348,14 +1358,18 @@ export default function MyJobs() {
                           {job.salary && (
                             <div className="flex items-center text-sm text-gray-600">
                               <FaMoneyBillWave className="text-green-500 mr-2" />
-                              <span className="font-medium">Plata:</span>
+                              <span className="font-medium">
+                                {t("Salary")}:
+                              </span>
                               <span className="ml-2">{job.salary}</span>
                             </div>
                           )}
 
                           <div className="flex items-center text-sm text-gray-600">
                             <FaBriefcase className="text-purple-500 mr-2" />
-                            <span className="font-medium">Tip zaposlenja:</span>
+                            <span className="font-medium">
+                              {t("Employment type")}:
+                            </span>
                             <span className="ml-2">{job.employmentType}</span>
                           </div>
                         </div>
@@ -1369,7 +1383,7 @@ export default function MyJobs() {
                           {job.requirements && job.requirements.length > 0 && (
                             <div className="mb-4">
                               <h4 className="font-medium text-gray-800 mb-2 text-sm">
-                                Uslovi:
+                                {t("Requirements")}:
                               </h4>
                               <ul className="text-sm text-gray-600 space-y-1">
                                 {job.requirements.map((req, idx) => (
@@ -1391,7 +1405,7 @@ export default function MyJobs() {
                           job.contact?.phone) && (
                           <div className="border-t pt-3 mt-3">
                             <h4 className="font-medium text-gray-800 mb-2">
-                              Kontakt:
+                              {t("Contact")}:
                             </h4>
                             <div className="space-y-1 text-sm">
                               {job.contact?.person && (
@@ -1423,7 +1437,7 @@ export default function MyJobs() {
                             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
                           >
                             <FaEdit className="mr-1" />
-                            Izmeni
+                            {t("Edit")}
                           </button>
 
                           <button
@@ -1433,7 +1447,7 @@ export default function MyJobs() {
                             className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
                           >
                             <FaUserTie className="mr-1" />
-                            Kandidati
+                            {t("Candidates")}
                           </button>
 
                           <button
@@ -1441,7 +1455,7 @@ export default function MyJobs() {
                             className="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center justify-center text-sm"
                           >
                             <FaTrash className="mr-1" />
-                            Obriši
+                            {t("Delete")}
                           </button>
                         </div>
                       </div>
